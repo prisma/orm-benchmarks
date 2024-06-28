@@ -1,26 +1,26 @@
 // src/entity/Address.ts
-import "reflect-metadata"
+import "reflect-metadata";
 
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne } from 'typeorm';
-import { Customer } from './Customer';
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne } from "typeorm";
+import { Customer } from "./Customer";
 
-@Entity()
+@Entity("Address")
 export class Address {
-    @PrimaryGeneratedColumn()
-    id: number;
+  @PrimaryGeneratedColumn()
+  id: number;
 
-    @Column()
-    street: string;
+  @Column()
+  street: string;
 
-    @Column()
-    city: string;
+  @Column()
+  city: string;
 
-    @Column()
-    postalCode: string;
+  @Column({ name: "postalCode" })
+  postalCode: string;
 
-    @Column()
-    country: string;
+  @Column()
+  country: string;
 
-    @ManyToOne(() => Customer, customer => customer.addresses, { onDelete: 'CASCADE', onUpdate: 'CASCADE' })
-    customer: Customer;
+  @ManyToOne(() => Customer, (customer) => customer.addresses, { onDelete: "CASCADE", onUpdate: "CASCADE" })
+  customer: Customer;
 }

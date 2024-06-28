@@ -9,14 +9,29 @@ export default async function prepare() {
 
   // Clean tables
   console.log(`Clearing tables ...`)
-  await prisma.address.deleteMany()
-  await prisma.$executeRaw`DELETE FROM sqlite_sequence WHERE name='Address';`
-  await prisma.order.deleteMany()
-  await prisma.$executeRaw`DELETE FROM sqlite_sequence WHERE name='Order';`
-  await prisma.product.deleteMany()
-  await prisma.$executeRaw`DELETE FROM sqlite_sequence WHERE name='Product';`
-  await prisma.customer.deleteMany()
-  await prisma.$executeRaw`DELETE FROM sqlite_sequence WHERE name='Customer';`
+
+  // SQLite
+  // await prisma.address.deleteMany()
+  // await prisma.$executeRaw`DELETE FROM sqlite_sequence WHERE name='Address';`
+  // await prisma.order.deleteMany()
+  // await prisma.$executeRaw`DELETE FROM sqlite_sequence WHERE name='Order';`
+  // await prisma.product.deleteMany()
+  // await prisma.$executeRaw`DELETE FROM sqlite_sequence WHERE name='Product';`
+  // await prisma.customer.deleteMany()
+  // await prisma.$executeRaw`DELETE FROM sqlite_sequence WHERE name='Customer';`
+
+  // Postgres
+  await prisma.address.deleteMany();
+  await prisma.$executeRaw`ALTER SEQUENCE "Address_id_seq" RESTART WITH 1`;
+
+  await prisma.order.deleteMany();
+  await prisma.$executeRaw`ALTER SEQUENCE "Order_id_seq" RESTART WITH 1`;
+
+  await prisma.product.deleteMany();
+  await prisma.$executeRaw`ALTER SEQUENCE "Product_id_seq" RESTART WITH 1`;
+
+  await prisma.customer.deleteMany();
+  await prisma.$executeRaw`ALTER SEQUENCE "Customer_id_seq" RESTART WITH 1`;
 
 
   console.log(`Seeding data ...`)

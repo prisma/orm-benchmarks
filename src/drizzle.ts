@@ -1,15 +1,25 @@
-import { drizzle } from "drizzle-orm/better-sqlite3";
-import Database from "better-sqlite3";
+// import { drizzle } from "drizzle-orm/better-sqlite3";
+// import Database from "better-sqlite3";
+
+import { drizzle } from "drizzle-orm/postgres-js";
+
 import { Customer, Order, Address } from "./drizzle/schema";
 import * as schema from "./drizzle/schema";
 import * as relations from "./drizzle/relations";
 import { eq, desc } from "drizzle-orm";
 import prepare from "./lib/prepare";
 import measure from "./lib/measure";
+import postgres from "postgres";
 
-const sqlite = new Database("./prisma/dev.db");
+// const sqlite = new Database("./prisma/dev.db");
+// export const db = drizzle(sqlite, { schema: { ...schema, ...relations } });
 
-export const db = drizzle(sqlite, { schema: { ...schema, ...relations } });
+const connectionString = process.env.DATABASE_URL || "postgresql://nikolasburk:nikolasburk@localhost:5432/benchmark";
+console.log(`connect to: `, connectionString)
+const client = postgres(connectionString,{
+  // timezone: 'UTC' // or use 'Europe/Berlin', '+02:00', etc.
+});
+const db = drizzle(client, { schema: { ...schema, ...relations } });
 
 async function main() {
   await prepare();
@@ -85,7 +95,7 @@ async function main() {
       .insert(Customer)
       .values({
         name: "John Doe",
-        email: new Date() + "@example.com",
+        email: "john.doe@example.com",
         isActive: "false",
       })
       .returning()
@@ -97,7 +107,7 @@ async function main() {
       .insert(Customer)
       .values({
         name: "John Doe",
-        email: new Date() + "@example.com",
+        email: "john.doe@example.com",
         isActive: "false",
       })
       .returning();
@@ -109,7 +119,10 @@ async function main() {
       .insert(Order)
       .values({
         customerId: customerId,
-        date: `${new Date()}`,
+        // sqlite
+        // date: `${new Date()}`,
+        // postgres
+        date: `${new Date().toISOString()}`,
         totalAmount: "100.5",
       })
       .returning();
@@ -208,7 +221,9 @@ async function main() {
    */
 
   await measure("drizzle-delete", db.delete(Customer).where(eq(Customer.id, 1)));
+  
+  await client.end(); // Close the database connection
 
 }
 
-main();
+main()

@@ -1,7 +1,7 @@
 // src/entity/Product.ts
 import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
 
-@Entity()
+@Entity("Product")
 export class Product {
     @PrimaryGeneratedColumn()
     id: number;

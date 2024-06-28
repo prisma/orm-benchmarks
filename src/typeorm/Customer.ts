@@ -3,12 +3,15 @@ import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from 'typeorm';
 import { Order } from './Order';
 import { Address } from './Address';
 
-@Entity()
+@Entity("Customer")
 export class Customer {
     @PrimaryGeneratedColumn()
     id: number;
 
-    @Column({ type: 'datetime', default: () => 'CURRENT_TIMESTAMP' })
+    // sqlite
+    // @Column({ type: 'datetime', default: () => 'CURRENT_TIMESTAMP' })
+    // postgres
+    @Column({ name: "createdAt", type: 'timestamptz', default: () => "CURRENT_TIMESTAMP" })
     createdAt: Date;
 
     @Column({ nullable: true })
@@ -17,7 +20,7 @@ export class Customer {
     @Column()
     email: string;
 
-    @Column({ default: false })
+    @Column({ name: "isActive", default: false })
     isActive: boolean;
 
     @OneToMany(() => Order, order => order.customer)

@@ -1,7 +1,12 @@
-import { sqliteTable, AnySQLiteColumn, text, numeric, integer, uniqueIndex, foreignKey, real, index } from "drizzle-orm/sqlite-core"
-  import { sql } from "drizzle-orm"
+// SQLite
+// import { pgTable, AnySQLiteColumn, text, numeric, integer, uniqueIndex, foreignKey, real, index } from "drizzle-orm/sqlite-core"
 
-export const _prisma_migrations = sqliteTable("_prisma_migrations", {
+// PostgreSQL
+import { pgTable, AnyPgColumn, text, numeric, serial, integer, uniqueIndex, foreignKey, real, index } from "drizzle-orm/pg-core"
+
+import { sql } from "drizzle-orm"
+
+export const _prisma_migrations = pgTable("_prisma_migrations", {
 	id: text("id").primaryKey().notNull(),
 	checksum: text("checksum").notNull(),
 	finished_at: numeric("finished_at"),
@@ -12,21 +17,21 @@ export const _prisma_migrations = sqliteTable("_prisma_migrations", {
 	applied_steps_count: integer("applied_steps_count").default(0).notNull(),
 });
 
-export const Customer = sqliteTable("Customer", {
-	id: integer("id").primaryKey({ autoIncrement: true }).notNull(),
+export const Customer = pgTable("Customer", {
+	id: serial("id").primaryKey().notNull(),
 	createdAt: numeric("createdAt").default(sql`(CURRENT_TIMESTAMP)`).notNull(),
 	name: text("name"),
 	email: text("email").notNull(),
 	isActive: numeric("isActive").notNull(),
 });
 
-export const Address = sqliteTable("Address", {
-	id: integer("id").primaryKey({ autoIncrement: true }).notNull(),
+export const Address = pgTable("Address", {
+	id: serial("id").primaryKey().notNull(),
 	street: text("street"),
 	city: text("city"),
 	postalCode: text("postalCode"),
 	country: text("country"),
-	customerId: integer("customerId").notNull().references(() => Customer.id, { onDelete: "cascade", onUpdate: "cascade" } ),
+	customerId: serial("customerId").notNull().references(() => Customer.id, { onDelete: "cascade", onUpdate: "cascade" } ),
 },
 (table) => {
 	return {
@@ -34,22 +39,22 @@ export const Address = sqliteTable("Address", {
 	}
 });
 
-export const Order = sqliteTable("Order", {
-	id: integer("id").primaryKey({ autoIncrement: true }).notNull(),
+export const Order = pgTable("Order", {
+	id: serial("id").primaryKey().notNull(),
 	date: numeric("date").notNull(),
 	totalAmount: numeric("totalAmount").notNull(),
-	customerId: integer("customerId").notNull().references(() => Customer.id, { onDelete: "cascade", onUpdate: "cascade" } ),
+	customerId: serial("customerId").notNull().references(() => Customer.id, { onDelete: "cascade", onUpdate: "cascade" } ),
 });
 
-export const Product = sqliteTable("Product", {
-	id: integer("id").primaryKey({ autoIncrement: true }).notNull(),
+export const Product = pgTable("Product", {
+	id: serial("id").primaryKey().notNull(),
 	name: text("name").notNull(),
 	price: real("price").notNull(),
 	quantity: integer("quantity").notNull(),
 	description: text("description"),
 });
 
-export const _OrderProducts = sqliteTable("_OrderProducts", {
+export const _OrderProducts = pgTable("_OrderProducts", {
 	A: integer("A").notNull().references(() => Order.id, { onDelete: "cascade", onUpdate: "cascade" } ),
 	B: integer("B").notNull().references(() => Product.id, { onDelete: "cascade", onUpdate: "cascade" } ),
 },

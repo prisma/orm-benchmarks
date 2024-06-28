@@ -1,23 +1,36 @@
-import { PrismaClient } from '@prisma/client';
-import { faker } from '@faker-js/faker';
+import { PrismaClient } from "@prisma/client";
+import { faker } from "@faker-js/faker";
 
 const prisma = new PrismaClient();
 
 async function main() {
-
-  console.log(`Seeding ...`)
+  console.log(`Seeding ...`);
 
   // Clean tables
-  console.log(`Clear tables ...`)
-  await prisma.address.deleteMany()
-  await prisma.$executeRaw`DELETE FROM sqlite_sequence WHERE name='Address';`
-  await prisma.order.deleteMany()
-  await prisma.$executeRaw`DELETE FROM sqlite_sequence WHERE name='Order';`
-  await prisma.product.deleteMany()
-  await prisma.$executeRaw`DELETE FROM sqlite_sequence WHERE name='Product';`
-  await prisma.customer.deleteMany()
-  await prisma.$executeRaw`DELETE FROM sqlite_sequence WHERE name='Customer';`
+  console.log(`Clear tables ...`);
 
+  // SQLite
+  // await prisma.address.deleteMany()
+  // await prisma.$executeRaw`DELETE FROM sqlite_sequence WHERE name='Address';`
+  // await prisma.order.deleteMany()
+  // await prisma.$executeRaw`DELETE FROM sqlite_sequence WHERE name='Order';`
+  // await prisma.product.deleteMany()
+  // await prisma.$executeRaw`DELETE FROM sqlite_sequence WHERE name='Product';`
+  // await prisma.customer.deleteMany()
+  // await prisma.$executeRaw`DELETE FROM sqlite_sequence WHERE name='Customer';`
+
+  // Postgres
+  await prisma.address.deleteMany();
+  await prisma.$executeRaw`ALTER SEQUENCE address_id_seq RESTART WITH 1`;
+
+  await prisma.order.deleteMany();
+  await prisma.$executeRaw`ALTER SEQUENCE order_id_seq RESTART WITH 1`;
+
+  await prisma.product.deleteMany();
+  await prisma.$executeRaw`ALTER SEQUENCE product_id_seq RESTART WITH 1`;
+
+  await prisma.customer.deleteMany();
+  await prisma.$executeRaw`ALTER SEQUENCE customer_id_seq RESTART WITH 1`;
 
   // Seed Customers
   for (let i = 0; i < 100; i++) {
@@ -83,12 +96,13 @@ async function main() {
   const productsCount = await prisma.product.count();
   const addressesCount = await prisma.address.count();
   const customersCount = await prisma.customer.count();
-  console.log(`Created: \n${ordersCount} orders\n${productsCount} products\n${addressesCount} addresses\n${customersCount} customers`)
-
+  console.log(
+    `Created: \n${ordersCount} orders\n${productsCount} products\n${addressesCount} addresses\n${customersCount} customers`
+  );
 }
 
 main()
-  .catch(e => {
+  .catch((e) => {
     console.error(e);
     process.exit(1);
   })

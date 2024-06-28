@@ -7,21 +7,28 @@ import { Product } from "./typeorm/Product";
 import prepare from "./lib/prepare";
 import measure from "./lib/measure";
 
+// export const AppDataSource = new DataSource({
+//   type: "sqlite",
+//   database: "../prisma/dev.db",
+//   synchronize: true,
+//   logging: false,
+//   entities: [Customer, Order, Address, Product],
+//   migrations: [],
+//   subscribers: [],
+// });
+
 export const AppDataSource = new DataSource({
-  type: "sqlite",
-  database: "./prisma/dev.db",
-  synchronize: true,
+  type: "postgres",
+  url: process.env.DATABASE_URL || "postgresql://nikolasburk:nikolasburk@localhost:5432/benchmark",
   logging: false,
   entities: [Customer, Order, Address, Product],
-  migrations: [],
-  subscribers: [],
 });
 
 AppDataSource.initialize()
   .then(async () => {
-
-    console.log(`typeorm benchmark`)
+    console.log(`typeorm benchmark`);
     await prepare();
+    console.log(`done preparing`);
 
     /**
      * findMany
@@ -46,11 +53,19 @@ AppDataSource.initialize()
     /**
      * findFirst
      */
-    await measure("typeorm-findFirst", AppDataSource.getRepository(Customer).findOne({}));
+    await measure(
+      "typeorm-findFirst",
+      AppDataSource.getRepository(Customer).find({
+        take: 1,
+      })
+    );
 
     await measure(
       "typeorm-findFirst-1-level-nesting",
-      AppDataSource.getRepository(Customer).findOne({ relations: ["orders"] })
+      AppDataSource.getRepository(Customer).find({
+        take: 1,
+        relations: ["orders"],
+      })
     );
 
     /**
@@ -82,7 +97,7 @@ AppDataSource.initialize()
       // Insert customer
       const customer = await transactionalEntityManager.save(Customer, {
         name: "John Doe",
-        email: new Date() + "@example.com",
+        email: "john.doe@example.com",
         isActive: false,
       });
 
@@ -94,15 +109,15 @@ AppDataSource.initialize()
       });
 
       // Insert products with the associated orderId
-      await transactionalEntityManager
-        .createQueryBuilder()
-        .insert()
-        .into("_OrderProducts")
-        .values([
-          { A: order.id, B: 1 },
-          { A: order.id, B: 2 },
-        ])
-        .execute();
+      // await transactionalEntityManager
+      //   .createQueryBuilder()
+      //   .insert()
+      //   .into("_OrderProducts")
+      //   .values([
+      //     { A: order.id, B: 1 },
+      //     { A: order.id, B: 2 },
+      //   ])
+      //   .execute();
     });
     await measure("typeorm-nested-create", nestedCreate);
 
@@ -138,17 +153,19 @@ AppDataSource.initialize()
       })
     );
 
+    // Nested upsert operation using transaction
     const nestedUpsert = AppDataSource.transaction(async (transactionalEntityManager) => {
-      // Update customer name
+      // Upsert Customer
       const customer = await transactionalEntityManager.save(Customer, {
-        id: 1,
+        id: 1, // Set the ID if you want to update an existing record
         name: "John Doe Upserted",
         email: "john.doe@example.com",
         isActive: false,
       });
 
-      // Update address
+      // Upsert Address
       await transactionalEntityManager.save(Address, {
+        id: 1, // Set the ID if you want to update an existing record
         customer: customer,
         street: "456 New St",
         city: "Anytown",
@@ -156,7 +173,27 @@ AppDataSource.initialize()
         country: "Country",
       });
     });
+
     await measure("typeorm-nested-upsert", nestedUpsert);
+    // const nestedUpsert = AppDataSource.transaction(async (transactionalEntityManager) => {
+    //   // Update customer name
+    //   const customer = await transactionalEntityManager.save(Customer, {
+    //     id: 1,
+    //     name: "John Doe Upserted",
+    //     email: "john.doe@example.com",
+    //     isActive: false,
+    //   });
+
+    //   // Update address
+    //   await transactionalEntityManager.save(Address, {
+    //     customer: customer,
+    //     street: "456 New St",
+    //     city: "Anytown",
+    //     postalCode: "12345",
+    //     country: "Country",
+    //   });
+    // });
+    // await measure("typeorm-nested-upsert", nestedUpsert);
 
     /**
      * delete
