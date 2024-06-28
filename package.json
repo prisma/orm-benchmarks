@@ -1,0 +1,27 @@
+{
+  "name": "script",
+  "license": "MIT",
+  "scripts": {
+    "dev": "ts-node ./script.ts",
+    "prisma": "ts-node ./src/prisma.ts",
+    "drizzle": "ts-node ./src/drizzle.ts"
+  },
+  "dependencies": {
+    "@prisma/client": "5.15.0",
+    "better-sqlite3": "^11.0.0",
+    "drizzle-orm": "^0.31.2"
+  },
+  "devDependencies": {
+    "@types/node": "20.14.7",
+    "@faker-js/faker": "^8.4.1",
+    "@types/better-sqlite3": "^7.6.10",
+    "@types/faker": "^6.6.9",
+    "drizzle-kit": "^0.22.7",
+    "prisma": "5.15.0",
+    "ts-node": "10.9.2",
+    "typescript": "5.5.2"
+  },
+  "prisma": {
+    "seed": "ts-node ./prisma/seed.ts"
+  }
+}
