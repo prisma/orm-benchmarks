@@ -55,21 +55,6 @@ async function main() {
   );
 
   /**
-   * findFirstOrThrow
-   */
-
-  // await measure("drizzle-findFirstOrThrow", prisma.customer.findFirstOrThrow());
-
-  // await measure(
-  //   "drizzle-findFirstOrThrow-1-level-nesting",
-  //   prisma.customer.findFirstOrThrow({
-  //     include: {
-  //       orders: true,
-  //     },
-  //   })
-  // );
-
-  /**
    * findUnique
    */
 
@@ -89,27 +74,6 @@ async function main() {
       },
     })
   );
-
-  // /**
-  //  * findUniqueOrThrow
-  //  */
-
-  // await measure(
-  //   "drizzle-findUniqueOrThrow",
-  //   prisma.customer.findUniqueOrThrow({
-  //     where: { id: 1 },
-  //   })
-  // );
-
-  // await measure(
-  //   "drizzle-findUniqueOrThrow-1-level-nesting",
-  //   prisma.customer.findUniqueOrThrow({
-  //     where: { id: 1 },
-  //     include: {
-  //       orders: true,
-  //     },
-  //   })
-  // );
 
   /**
    * create
@@ -245,89 +209,6 @@ async function main() {
 
   await measure("drizzle-delete", db.delete(Customer).where(eq(Customer.id, 1)));
 
-  /**
-   * createMany
-   */
-
-  // const _customersToCreate: Prisma.CustomerCreateInput[] = [];
-
-  // for (let i = 0; i < 1000; i++) {
-  //   _customersToCreate.push({
-  //     name: `Customer ${i}`,
-  //     email: `customer${i}@example.com`,
-  //   });
-  // }
-
-  // await measure(
-  //   "drizzle-createMany",
-  //   prisma.customer.createMany({
-  //     data: _customersToCreate,
-  //   })
-  // );
-
-  /**
-   * createManyAndReturn
-   */
-
-  // await measure(
-  //   "drizzle-createManyAndReturn",
-  //   prisma.customer.createManyAndReturn({
-  //     data: _customersToCreate,
-  //   })
-  // );
-
-  /**
-   * updateMany
-   */
-
-  // await measure(
-  //   "drizzle-updateMany",
-  //   prisma.customer.updateMany({
-  //     where: { isActive: false },
-  //     data: { isActive: true },
-  //   })
-  // );
-
-  /**
-   * deleteMany
-   */
-
-  // await measure(
-  //   "drizzle-deleteMany",
-  //   prisma.customer.deleteMany({
-  //     where: { isActive: false },
-  //   })
-  // );
-
-  /**
-   * aggregate
-   */
-
-  // await measure(
-  //   "drizzle-aggregate",
-  //   prisma.order.aggregate({
-  //     _sum: {
-  //       totalAmount: true,
-  //     },
-  //   })
-  // );
-
-  /**
-   * groupBy
-   */
-
-  // await measure(
-  //   "drizzle-groupBy",
-  //   prisma.order.groupBy({
-  //     by: ["customerId"],
-  //     _sum: {
-  //       totalAmount: true,
-  //     },
-  //     _count: {
-  //       _all: true,
-  //     },
-  //   })
-  // );
 }
 
 main();

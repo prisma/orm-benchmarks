@@ -9,13 +9,16 @@
   "dependencies": {
     "@prisma/client": "5.15.0",
     "better-sqlite3": "^11.0.0",
-    "drizzle-orm": "^0.31.2"
+    "drizzle-orm": "^0.31.2",
+    "reflect-metadata": "^0.2.2",
+    "sqlite3": "^5.1.7",
+    "typeorm": "^0.3.20"
   },
   "devDependencies": {
-    "@types/node": "20.14.7",
     "@faker-js/faker": "^8.4.1",
     "@types/better-sqlite3": "^7.6.10",
     "@types/faker": "^6.6.9",
+    "@types/node": "20.14.7",
     "drizzle-kit": "^0.22.7",
     "prisma": "5.15.0",
     "ts-node": "10.9.2",
