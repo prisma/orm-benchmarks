@@ -1,4 +1,4 @@
-import { PrismaClient, Prisma } from "@prisma/client";
+import { PrismaClient } from "@prisma/client";
 import prepare from "./lib/prepare"
 import measure from "./lib/measure"
 
@@ -12,10 +12,9 @@ async function main() {
    * findMany
    */
 
-  await measure('prisma-findMany', prisma.customer.findMany())
+  await measure('prisma-findMany', prisma.customer.findMany());
 
-  console.time('prisma-findMany-filter-paginate-order')
-  const _customersWithOptions = await prisma.customer.findMany({
+  await measure('prisma-findMany-filter-paginate-order', prisma.customer.findMany({
     where: {
       isActive: true,
     },
@@ -24,102 +23,53 @@ async function main() {
     },
     skip: 0,
     take: 10,
-  });
-  console.timeEnd('prisma-findMany-filter-paginate-order')
+  }));
 
-  console.time('prisma-findMany-1-level-nesting')
-  const _customersWithOrders = await prisma.customer.findMany({
+  await measure('prisma-findMany-1-level-nesting', prisma.customer.findMany({
     include: {
       orders: true,
     },
-  });
-  console.timeEnd('prisma-findMany-1-level-nesting')
+  }));
 
   /**
    * findFirst
    */
 
-  console.time('prisma-findFirst')
-  const _firstCustomer = await prisma.customer.findFirst();
-  console.timeEnd('prisma-findFirst')
+  await measure('prisma-findFirst', prisma.customer.findFirst());
 
-  console.time('prisma-findFirst-1-level-nesting')
-  const _firstCustomerWithOrders = await prisma.customer.findFirst({
+  await measure('prisma-findFirst-1-level-nesting', prisma.customer.findFirst({
     include: {
       orders: true,
     },
-  });
-  console.timeEnd('prisma-findFirst-1-level-nesting')
-
-  /**
-   * findFirstOrThrow
-   */
-
-  console.time('prisma-findFirstOrThrow')
-  const _firstCustomerOrThrow = await prisma.customer.findFirstOrThrow();
-  console.timeEnd('prisma-findFirstOrThrow')
-
-  console.time('prisma-findFirstOrThrow-1-level-nesting')
-  const _firstCustomerThrowWithOrders = await prisma.customer.findFirstOrThrow({
-    include: {
-      orders: true,
-    },
-  });
-  console.timeEnd('prisma-findFirstOrThrow-1-level-nesting')
+  }));
 
   /**
    * findUnique
    */
 
-  console.time('prisma-findUnique')
-  const _uniqueCustomer = await prisma.customer.findUnique({
+  await measure('prisma-findUnique', prisma.customer.findUnique({
     where: { id: 1 },
-  });
-  console.timeEnd('prisma-findUnique')
+  }));
 
-  console.time('prisma-findUnique-1-level-nesting')
-  const _uniqueCustomerWithOrders = await prisma.customer.findUnique({
+  await measure('prisma-findUnique-1-level-nesting', prisma.customer.findUnique({
     where: { id: 1 },
     include: {
       orders: true,
     },
-  });
-  console.timeEnd('prisma-findUnique-1-level-nesting')
-
-  /**
-   * findUniqueOrThrow
-   */
-
-  console.time('prisma-findUniqueOrThrow')
-  const _uniqueOrThrowCustomer = await prisma.customer.findUniqueOrThrow({
-    where: { id: 1 },
-  });
-  console.timeEnd('prisma-findUniqueOrThrow')
-
-  console.time('prisma-findUniqueOrThrow-1-level-nesting')
-  const _uniqueOrThrowCustomerWithOrders = await prisma.customer.findUniqueOrThrow({
-    where: { id: 1 },
-    include: {
-      orders: true,
-    },
-  });
-  console.timeEnd('prisma-findUniqueOrThrow-1-level-nesting')
+  }));
 
   /**
    * create
    */
 
-  console.time('prisma-create')
-  const _newCustomer = await prisma.customer.create({
+  await measure('prisma-create', prisma.customer.create({
     data: {
       name: "John Doe",
       email: new Date() + "@example.com",
     },
-  });
-  console.timeEnd('prisma-create')
+  }));
 
-  console.time('prisma-nested-create')
-  const _newCustomerWithOrder = await prisma.customer.create({
+  await measure('prisma-nested-create', prisma.customer.create({
     data: {
       name: "John Doe",
       email: "john.doe@example.com",
@@ -133,24 +83,20 @@ async function main() {
         },
       },
     },
-  });
-  console.timeEnd('prisma-nested-create')
+  }));
 
   /**
    * update
    */
 
-  console.time('prisma-update')
-  const _updatedCustomer = await prisma.customer.update({
+  await measure('prisma-update', prisma.customer.update({
     where: { id: 1 },
     data: {
       name: "John Doe Updated",
     },
-  });
-  console.timeEnd('prisma-update')
+  }));
 
-  console.time('prisma-nested-update')
-  const _updatedCustomerWithAddress = await prisma.customer.update({
+  await measure('prisma-nested-update', prisma.customer.update({
     where: { id: 1 },
     data: {
       name: "John Doe Updated",
@@ -160,15 +106,13 @@ async function main() {
         },
       },
     },
-  });
-  console.timeEnd('prisma-nested-update')
+  }));
 
   /**
    * upsert
    */
 
-  console.time('prisma-upsert')
-  const _upsertedCustomer = await prisma.customer.upsert({
+  await measure('prisma-upsert', prisma.customer.upsert({
     where: { id: 1 },
     update: {
       name: "John Doe Upserted",
@@ -177,11 +121,9 @@ async function main() {
       name: "John Doe",
       email: "john.doe@example.com",
     },
-  });
-  console.timeEnd('prisma-upsert')
+  }));
 
-  console.time('prisma-nested-upsert')
-  const _upsertedCustomerWithAddress = await prisma.customer.upsert({
+  await measure('prisma-nested-upsert', prisma.customer.upsert({
     where: { id: 1 },
     update: {
       name: "John Doe Upserted",
@@ -203,103 +145,83 @@ async function main() {
         },
       },
     },
-  });
-  console.timeEnd('prisma-nested-upsert')
+  }));
 
   /**
    * delete
    */
 
-  console.time('prisma-delete')
-  const deletedCustomer = await prisma.customer.delete({
+  await measure('prisma-delete', prisma.customer.delete({
     where: { id: 1 },
-  });
-  console.timeEnd('prisma-delete')
+  }));
 
+  // /**
+  //  * createMany
+  //  */
 
-  /**
-   * createMany
-   */
-
-  const _customersToCreate: Prisma.CustomerCreateInput[] = [];
+  // const _customersToCreate: Prisma.CustomerCreateInput[] = [];
     
-  for (let i = 0; i < 1000; i++) {
-    _customersToCreate.push({
-      name: `Customer ${i}`,
-      email: `customer${i}@example.com`,
-    });
-  }
+  // for (let i = 0; i < 1000; i++) {
+  //   _customersToCreate.push({
+  //     name: `Customer ${i}`,
+  //     email: `customer${i}@example.com`,
+  //   });
+  // }
 
-  console.time('prisma-creatMany')
-  const _createdCustomersCount = await prisma.customer.createMany({
-    data: _customersToCreate,
-  });
-  console.timeEnd('prisma-creatMany')
+  // await measure('prisma-createMany', prisma.customer.createMany({
+  //   data: _customersToCreate,
+  // }));
 
-  /**
-   * createManyAndReturn
-   */
+  // /**
+  //  * createManyAndReturn
+  //  */
 
-  console.time('prisma-createManyAndReturn')
-  const _createdCustomers = await prisma.customer.createManyAndReturn({
-    data: _customersToCreate,
-  });
-  console.timeEnd('prisma-createManyAndReturn')
+  // await measure('prisma-createManyAndReturn', prisma.customer.createManyAndReturn({
+  //   data: _customersToCreate,
+  // }));
 
-  /**
-   * updateMany
-   */
+  // /**
+  //  * updateMany
+  //  */
 
-  console.time('prisma-updateMany')
-  const _updatedCustomers = await prisma.customer.updateMany({
-    where: { isActive: false },
-    data: { isActive: true },
-  });
-  console.timeEnd('prisma-updateMany')
+  // await measure('prisma-updateMany', prisma.customer.updateMany({
+  //   where: { isActive: false },
+  //   data: { isActive: true },
+  // }));
 
-  /**
-   * deleteMany
-   */
+  // /**
+  //  * deleteMany
+  //  */
 
-  console.time('prisma-deleteMany')
-  const _deletedCustomers = await prisma.customer.deleteMany({
-    where: { isActive: false },
-  });
-  console.timeEnd('prisma-deleteMany')
+  // await measure('prisma-deleteMany', prisma.customer.deleteMany({
+  //   where: { isActive: false },
+  // }));
 
-    
-  /**
-   * aggregate
-   */
+  // /**
+  //  * aggregate
+  //  */
 
-  console.time('prisma-aggregate')
-  const _totalSales = await prisma.order.aggregate({
-    _sum: {
-      totalAmount: true,
-    },
-  });
-  console.timeEnd('prisma-aggregate')
+  // await measure('prisma-aggregate', prisma.order.aggregate({
+  //   _sum: {
+  //     totalAmount: true,
+  //   },
+  // }));
 
-    
-  /**
-   * groupBy
-   */
+  // /**
+  //  * groupBy
+  //  */
 
-  console.time('prisma-groupBy')
-  const _salesByCustomer = await prisma.order.groupBy({
-    by: ["customerId"],
-    _sum: {
-      totalAmount: true,
-    },
-    _count: {
-      _all: true,
-    },
-  });
-  console.timeEnd('prisma-groupBy')
-
+  // await measure('prisma-groupBy', prisma.order.groupBy({
+  //   by: ["customerId"],
+  //   _sum: {
+  //     totalAmount: true,
+  //   },
+  //   _count: {
+  //     _all: true,
+  //   },
+  // }));
 
 }
-
 
 main()
   .then(async () => {

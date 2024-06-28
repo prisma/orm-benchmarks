@@ -1,9 +1,9 @@
 import { drizzle } from "drizzle-orm/better-sqlite3";
 import Database from "better-sqlite3";
-import { Customer, Order, Product, Address } from "./drizzle/schema";
+import { Customer, Order, Address } from "./drizzle/schema";
 import * as schema from "./drizzle/schema";
 import * as relations from "./drizzle/relations";
-import { eq, desc, gt } from "drizzle-orm";
+import { eq, desc } from "drizzle-orm";
 import prepare from "./lib/prepare";
 import measure from "./lib/measure";
 
@@ -58,10 +58,10 @@ async function main() {
    * findFirstOrThrow
    */
 
-  // await measure("prisma-findFirstOrThrow", prisma.customer.findFirstOrThrow());
+  // await measure("drizzle-findFirstOrThrow", prisma.customer.findFirstOrThrow());
 
   // await measure(
-  //   "prisma-findFirstOrThrow-1-level-nesting",
+  //   "drizzle-findFirstOrThrow-1-level-nesting",
   //   prisma.customer.findFirstOrThrow({
   //     include: {
   //       orders: true,
@@ -74,14 +74,14 @@ async function main() {
    */
 
   await measure(
-    "prisma-findUnique",
+    "drizzle-findUnique",
     db.query.Customer.findFirst({
       where: eq(Customer.id, 1),
     })
   );
 
   await measure(
-    "prisma-findUnique-1-level-nesting",
+    "drizzle-findUnique-1-level-nesting",
     db.query.Customer.findFirst({
       where: eq(Customer.id, 1),
       with: {
@@ -95,14 +95,14 @@ async function main() {
   //  */
 
   // await measure(
-  //   "prisma-findUniqueOrThrow",
+  //   "drizzle-findUniqueOrThrow",
   //   prisma.customer.findUniqueOrThrow({
   //     where: { id: 1 },
   //   })
   // );
 
   // await measure(
-  //   "prisma-findUniqueOrThrow-1-level-nesting",
+  //   "drizzle-findUniqueOrThrow-1-level-nesting",
   //   prisma.customer.findUniqueOrThrow({
   //     where: { id: 1 },
   //     include: {
@@ -116,7 +116,7 @@ async function main() {
    */
 
   await measure(
-    "prisma-create",
+    "drizzle-create",
     db
       .insert(Customer)
       .values({
@@ -164,16 +164,16 @@ async function main() {
       },
     ]);
   });
-  await measure("prisma-nested-create", nestedCreate);
+  await measure("drizzle-nested-create", nestedCreate);
 
   /**
    * update
    */
 
-  await measure("prisma-update", db.update(Customer).set({ name: "John Doe Updated" }).where(eq(Customer.id, 1)));
+  await measure("drizzle-update", db.update(Customer).set({ name: "John Doe Updated" }).where(eq(Customer.id, 1)));
 
   await measure(
-    "prisma-nested-update",
+    "drizzle-nested-update",
     db.transaction(async (trx) => {
       // Update customer name
       await trx.update(Customer).set({ name: "John Doe Updated" }).where(eq(Customer.id, 1));
@@ -184,152 +184,150 @@ async function main() {
         .set({
           street: "456 New St",
         })
-        .where(eq(Customer.id, 1));
+        .where(eq(Address.customerId, 1));
     })
   );
 
   /**
    * upsert
    */
-
-  const q =   db.insert(Customer)
-  .values({
-    name: "John Doe",
-    email: "john.doe@example.com",
-    isActive: "false",
-  })
-  .onConflictDoUpdate({
-    target:  Customer.id,
-    set: { name: 'John Doe Upserted' },
-  });
-
-
   await measure(
-    "prisma-upsert",
-    q
-  );
-
-  await measure(
-    "prisma-nested-upsert",
-    prisma.customer.upsert({
-      where: { id: 1 },
-      update: {
-        name: "John Doe Upserted",
-        address: {
-          update: {
-            street: "456 New St",
-          },
-        },
-      },
-      create: {
+    "drizzle-upsert",
+    db
+      .insert(Customer)
+      .values({
         name: "John Doe",
         email: "john.doe@example.com",
-        address: {
-          create: {
-            street: "123 Main St",
-            city: "Anytown",
-            postalCode: "12345",
-            country: "Country",
-          },
-        },
-      },
-    })
+        isActive: "false",
+      })
+      .onConflictDoUpdate({
+        target: Customer.id,
+        set: { name: "John Doe Upserted" },
+      })
   );
+
+  const nestedUpsert = db.transaction(async (trx) => {
+    // Update customer name
+    const customer = await trx
+      .insert(Customer)
+      .values({
+        name: "John Doe",
+        email: "john.doe@example.com",
+        isActive: "false",
+      })
+      .onConflictDoUpdate({
+        target: Customer.id,
+        set: { name: "John Doe Upserted" },
+      })
+      .returning();
+    const customerId = customer[0].id;
+
+    // Update address
+    await trx
+      .insert(Address)
+      .values({
+        street: "456 New St",
+        city: "Anytown",
+        postalCode: "12345",
+        country: "Country",
+        customerId: customerId,
+      })
+      .onConflictDoUpdate({
+        target: Address.id,
+        set: { street: "456 New St" },
+      });
+  });
+  await measure("drizzle-nested-upsert", nestedUpsert);
 
   /**
    * delete
    */
 
-  await measure(
-    "prisma-delete",
-    prisma.customer.delete({
-      where: { id: 1 },
-    })
-  );
+  await measure("drizzle-delete", db.delete(Customer).where(eq(Customer.id, 1)));
 
   /**
    * createMany
    */
 
-  const _customersToCreate: Prisma.CustomerCreateInput[] = [];
+  // const _customersToCreate: Prisma.CustomerCreateInput[] = [];
 
-  for (let i = 0; i < 1000; i++) {
-    _customersToCreate.push({
-      name: `Customer ${i}`,
-      email: `customer${i}@example.com`,
-    });
-  }
+  // for (let i = 0; i < 1000; i++) {
+  //   _customersToCreate.push({
+  //     name: `Customer ${i}`,
+  //     email: `customer${i}@example.com`,
+  //   });
+  // }
 
-  await measure(
-    "prisma-createMany",
-    prisma.customer.createMany({
-      data: _customersToCreate,
-    })
-  );
+  // await measure(
+  //   "drizzle-createMany",
+  //   prisma.customer.createMany({
+  //     data: _customersToCreate,
+  //   })
+  // );
 
   /**
    * createManyAndReturn
    */
 
-  await measure(
-    "prisma-createManyAndReturn",
-    prisma.customer.createManyAndReturn({
-      data: _customersToCreate,
-    })
-  );
+  // await measure(
+  //   "drizzle-createManyAndReturn",
+  //   prisma.customer.createManyAndReturn({
+  //     data: _customersToCreate,
+  //   })
+  // );
 
   /**
    * updateMany
    */
 
-  await measure(
-    "prisma-updateMany",
-    prisma.customer.updateMany({
-      where: { isActive: false },
-      data: { isActive: true },
-    })
-  );
+  // await measure(
+  //   "drizzle-updateMany",
+  //   prisma.customer.updateMany({
+  //     where: { isActive: false },
+  //     data: { isActive: true },
+  //   })
+  // );
 
   /**
    * deleteMany
    */
 
-  await measure(
-    "prisma-deleteMany",
-    prisma.customer.deleteMany({
-      where: { isActive: false },
-    })
-  );
+  // await measure(
+  //   "drizzle-deleteMany",
+  //   prisma.customer.deleteMany({
+  //     where: { isActive: false },
+  //   })
+  // );
 
   /**
    * aggregate
    */
 
-  await measure(
-    "prisma-aggregate",
-    prisma.order.aggregate({
-      _sum: {
-        totalAmount: true,
-      },
-    })
-  );
+  // await measure(
+  //   "drizzle-aggregate",
+  //   prisma.order.aggregate({
+  //     _sum: {
+  //       totalAmount: true,
+  //     },
+  //   })
+  // );
 
   /**
    * groupBy
    */
 
-  await measure(
-    "prisma-groupBy",
-    prisma.order.groupBy({
-      by: ["customerId"],
-      _sum: {
-        totalAmount: true,
-      },
-      _count: {
-        _all: true,
-      },
-    })
-  );
+  // await measure(
+  //   "drizzle-groupBy",
+  //   prisma.order.groupBy({
+  //     by: ["customerId"],
+  //     _sum: {
+  //       totalAmount: true,
+  //     },
+  //     _count: {
+  //       _all: true,
+  //     },
+  //   })
+  // );
 }
 
 main();
