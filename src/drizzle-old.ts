@@ -14,18 +14,18 @@ async function main() {
    * findMany
    */
 
-  console.time("drizzle");
+  console.time("drizzle-findMany");
   const customersData = await db.query.Customer.findMany();
-  console.timeEnd("drizzle");
+  console.timeEnd("drizzle-findMany");
 
-  console.time("drizzle");
+  console.time("drizzle-findMany-filter-paginate-order");
   const customersWithOptions = await db.query.Customer.findMany({
     where: eq(Customer.isActive, "1"),
     orderBy: [desc(Customer.createdAt)],
     offset: 0,
     limit: 10,
   });
-  console.timeEnd("drizzle");
+  console.timeEnd("drizzle-findMany-filter-paginate-order");
 
   console.time("drizzle");
   const customersWithOrders = await db.query.Customer.findMany({

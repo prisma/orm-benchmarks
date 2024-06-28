@@ -24,7 +24,7 @@ model Address {
   postalCode  String?
   country     String?
   customerId  Int       @unique
-  customer    Customer  @relation(fields: [customerId], references: [id])
+  customer    Customer  @relation(fields: [customerId], references: [id], onDelete: Cascade)
 }
 
 model Order {
@@ -32,7 +32,7 @@ model Order {
   date        DateTime  
   totalAmount Decimal
   customerId  Int
-  customer    Customer  @relation(fields: [customerId], references: [id])
+  customer    Customer  @relation(fields: [customerId], references: [id], onDelete: Cascade)
   products    Product[] @relation("OrderProducts")
 }
 

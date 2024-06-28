@@ -1,17 +1,18 @@
 import { PrismaClient, Prisma } from "@prisma/client";
-import measure from './lib/measure'
+import prepare from "./lib/prepare"
+import measure from "./lib/measure"
 
 const prisma = new PrismaClient();
 
 async function main() {
+
+  await prepare();
     
   /**
    * findMany
    */
 
-  console.time('prisma-findMany')
-  const _customers = await prisma.customer.findMany();
-  console.timeEnd('prisma-findMany')
+  await measure('prisma-findMany', prisma.customer.findMany())
 
   console.time('prisma-findMany-filter-paginate-order')
   const _customersWithOptions = await prisma.customer.findMany({
@@ -108,16 +109,16 @@ async function main() {
    * create
    */
 
-  console.time('prisma')
+  console.time('prisma-create')
   const _newCustomer = await prisma.customer.create({
     data: {
       name: "John Doe",
       email: new Date() + "@example.com",
     },
   });
-  console.timeEnd('prisma')
+  console.timeEnd('prisma-create')
 
-  console.time('prisma')
+  console.time('prisma-nested-create')
   const _newCustomerWithOrder = await prisma.customer.create({
     data: {
       name: "John Doe",
@@ -133,22 +134,22 @@ async function main() {
       },
     },
   });
-  console.timeEnd('prisma')
+  console.timeEnd('prisma-nested-create')
 
   /**
    * update
    */
 
-  console.time('prisma')
+  console.time('prisma-update')
   const _updatedCustomer = await prisma.customer.update({
     where: { id: 1 },
     data: {
       name: "John Doe Updated",
     },
   });
-  console.timeEnd('prisma')
+  console.timeEnd('prisma-update')
 
-  console.time('prisma')
+  console.time('prisma-nested-update')
   const _updatedCustomerWithAddress = await prisma.customer.update({
     where: { id: 1 },
     data: {
@@ -160,35 +161,13 @@ async function main() {
       },
     },
   });
-  console.timeEnd('prisma')
-
-  console.time('prisma')
-  const _updatedCustomerWithOrder = await prisma.customer.update({
-    where: { id: 1 },
-    data: {
-      name: "John Doe Updated",
-      address: {
-        update: {
-          street: "456 New St",
-        },
-      },
-      orders: {
-        update: {
-          where: { id: 1 },
-          data: {
-            totalAmount: 200.0,
-          },
-        },
-      },
-    },
-  });
-  console.timeEnd('prisma')
+  console.timeEnd('prisma-nested-update')
 
   /**
    * upsert
    */
 
-  console.time('prisma')
+  console.time('prisma-upsert')
   const _upsertedCustomer = await prisma.customer.upsert({
     where: { id: 1 },
     update: {
@@ -199,9 +178,9 @@ async function main() {
       email: "john.doe@example.com",
     },
   });
-  console.timeEnd('prisma')
+  console.timeEnd('prisma-upsert')
 
-  console.time('prisma')
+  console.time('prisma-nested-upsert')
   const _upsertedCustomerWithAddress = await prisma.customer.upsert({
     where: { id: 1 },
     update: {
@@ -225,48 +204,17 @@ async function main() {
       },
     },
   });
-  console.timeEnd('prisma')
-
-  console.time('prisma')
-  const _upsertedCustomerWithOrder = await prisma.customer.upsert({
-    where: { id: 1 },
-    update: {
-      name: "John Doe Upserted",
-      orders: {
-        upsert: {
-          where: { id: 1 },
-          update: {
-            totalAmount: 200.0,
-          },
-          create: {
-            date: new Date(),
-            totalAmount: 100.5,
-            products: {
-              connect: [{ id: 1 }, { id: 2 }],
-            },
-          },
-        },
-      },
-    },
-    create: {
-      name: "John Doe",
-      email: "john.doe@example.com",
-      orders: {
-        create: {
-          date: new Date(),
-          totalAmount: 100.5,
-          products: {
-            connect: [{ id: 1 }, { id: 2 }],
-          },
-        },
-      },
-    },
-  });
-  console.timeEnd('prisma')
+  console.timeEnd('prisma-nested-upsert')
 
   /**
    * delete
    */
+
+  console.time('prisma-delete')
+  const deletedCustomer = await prisma.customer.delete({
+    where: { id: 1 },
+  });
+  console.timeEnd('prisma-delete')
 
 
   /**
@@ -282,62 +230,62 @@ async function main() {
     });
   }
 
-  console.time('prisma')
+  console.time('prisma-creatMany')
   const _createdCustomersCount = await prisma.customer.createMany({
     data: _customersToCreate,
   });
-  console.timeEnd('prisma')
+  console.timeEnd('prisma-creatMany')
 
   /**
    * createManyAndReturn
    */
 
-  console.time('prisma')
+  console.time('prisma-createManyAndReturn')
   const _createdCustomers = await prisma.customer.createManyAndReturn({
     data: _customersToCreate,
   });
-  console.timeEnd('prisma')
+  console.timeEnd('prisma-createManyAndReturn')
 
   /**
    * updateMany
    */
 
-  console.time('prisma')
+  console.time('prisma-updateMany')
   const _updatedCustomers = await prisma.customer.updateMany({
     where: { isActive: false },
     data: { isActive: true },
   });
-  console.timeEnd('prisma')
+  console.timeEnd('prisma-updateMany')
 
   /**
    * deleteMany
    */
 
-  console.time('prisma')
+  console.time('prisma-deleteMany')
   const _deletedCustomers = await prisma.customer.deleteMany({
     where: { isActive: false },
   });
-  console.timeEnd('prisma')
+  console.timeEnd('prisma-deleteMany')
 
     
   /**
    * aggregate
    */
 
-  console.time('prisma')
+  console.time('prisma-aggregate')
   const _totalSales = await prisma.order.aggregate({
     _sum: {
       totalAmount: true,
     },
   });
-  console.timeEnd('prisma')
+  console.timeEnd('prisma-aggregate')
 
     
   /**
    * groupBy
    */
 
-  console.time('prisma')
+  console.time('prisma-groupBy')
   const _salesByCustomer = await prisma.order.groupBy({
     by: ["customerId"],
     _sum: {
@@ -347,7 +295,7 @@ async function main() {
       _all: true,
     },
   });
-  console.timeEnd('prisma')
+  console.timeEnd('prisma-groupBy')
 
 
 }

@@ -26,7 +26,7 @@ export const Address = sqliteTable("Address", {
 	city: text("city"),
 	postalCode: text("postalCode"),
 	country: text("country"),
-	customerId: integer("customerId").notNull().references(() => Customer.id, { onDelete: "restrict", onUpdate: "cascade" } ),
+	customerId: integer("customerId").notNull().references(() => Customer.id, { onDelete: "cascade", onUpdate: "cascade" } ),
 },
 (table) => {
 	return {
@@ -38,7 +38,7 @@ export const Order = sqliteTable("Order", {
 	id: integer("id").primaryKey({ autoIncrement: true }).notNull(),
 	date: numeric("date").notNull(),
 	totalAmount: numeric("totalAmount").notNull(),
-	customerId: integer("customerId").notNull().references(() => Customer.id, { onDelete: "restrict", onUpdate: "cascade" } ),
+	customerId: integer("customerId").notNull().references(() => Customer.id, { onDelete: "cascade", onUpdate: "cascade" } ),
 });
 
 export const Product = sqliteTable("Product", {
