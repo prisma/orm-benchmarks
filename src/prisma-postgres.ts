@@ -7,12 +7,19 @@ const prisma = new PrismaClient();
 async function main() {
 
   await prepare();
-    
+
+  const results = []
+  let result = 0
   /**
    * findMany
    */
 
-  await measure('prisma-findMany', prisma.customer.findMany());
+
+  result = await measure('prisma-findMany', prisma.customer.findMany());
+  results.push({
+    query: 'prisma-findMany',
+    time: await measure('prisma-findMany', prisma.customer.findMany())
+  })
 
   await measure('prisma-findMany-filter-paginate-order', prisma.customer.findMany({
     where: {

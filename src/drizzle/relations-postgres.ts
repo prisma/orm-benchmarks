@@ -1,5 +1,5 @@
 import { relations } from "drizzle-orm/relations";
-import { Customer, Address, Order, Product, _OrderProducts } from "./schema";
+import { Customer, Address, Order, Product, _OrderProducts } from "./schema-postgres";
 
 export const AddressRelations = relations(Address, ({one}) => ({
 	Customer: one(Customer, {

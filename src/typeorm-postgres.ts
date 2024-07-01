@@ -7,16 +7,6 @@ import { Product } from "./typeorm/Product";
 import prepare from "./lib/prepare";
 import measure from "./lib/measure";
 
-// export const AppDataSource = new DataSource({
-//   type: "sqlite",
-//   database: "../prisma/dev.db",
-//   synchronize: true,
-//   logging: false,
-//   entities: [Customer, Order, Address, Product],
-//   migrations: [],
-//   subscribers: [],
-// });
-
 export const AppDataSource = new DataSource({
   type: "postgres",
   url: process.env.DATABASE_URL || "postgresql://nikolasburk:nikolasburk@localhost:5432/benchmark",

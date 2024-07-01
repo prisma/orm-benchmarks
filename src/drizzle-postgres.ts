@@ -3,9 +3,9 @@
 
 import { drizzle } from "drizzle-orm/postgres-js";
 
-import { Customer, Order, Address } from "./drizzle/schema";
-import * as schema from "./drizzle/schema";
-import * as relations from "./drizzle/relations";
+import { Customer, Order, Address } from "./drizzle/schema-postgres";
+import * as schema from "./drizzle/schema-postgres";
+import * as relations from "./drizzle/relations-postgres";
 import { eq, desc } from "drizzle-orm";
 import prepare from "./lib/prepare";
 import measure from "./lib/measure";
