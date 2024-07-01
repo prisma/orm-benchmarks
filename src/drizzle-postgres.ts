@@ -24,13 +24,16 @@ const db = drizzle(client, { schema: { ...schema, ...relations } });
 async function main() {
   await prepare();
 
+
+  const results = [];
+
   /**
    * findMany
    */
 
-  await measure("drizzle-findMany", db.query.Customer.findMany());
+  results.push(await measure("drizzle-findMany", db.query.Customer.findMany()));
 
-  await measure(
+  results.push(await measure(
     "drizzle-findMany-filter-paginate-order",
     db.query.Customer.findMany({
       where: eq(Customer.isActive, "1"),
@@ -38,44 +41,44 @@ async function main() {
       offset: 0,
       limit: 10,
     })
-  );
+  ));
 
-  await measure(
+  results.push(await measure(
     "drizzle-findMany-1-level-nesting",
     db.query.Customer.findMany({
       with: {
         Orders: true,
       },
     })
-  );
+  ));
 
   /**
    * findFirst
    */
 
-  await measure("drizzle-findFirst", db.query.Customer.findFirst());
+  results.push(await measure("drizzle-findFirst", db.query.Customer.findFirst()));
 
-  await measure(
+  results.push(await measure(
     "drizzle-findFirst-1-level-nesting",
     db.query.Customer.findFirst({
       with: {
         Orders: true,
       },
     })
-  );
+  ));
 
   /**
    * findUnique
    */
 
-  await measure(
+  results.push(await measure(
     "drizzle-findUnique",
     db.query.Customer.findFirst({
       where: eq(Customer.id, 1),
     })
-  );
+  ));
 
-  await measure(
+  results.push(await measure(
     "drizzle-findUnique-1-level-nesting",
     db.query.Customer.findFirst({
       where: eq(Customer.id, 1),
@@ -83,13 +86,13 @@ async function main() {
         Orders: true,
       },
     })
-  );
+  ));
 
   /**
    * create
    */
 
-  await measure(
+  results.push(await measure(
     "drizzle-create",
     db
       .insert(Customer)
@@ -99,7 +102,7 @@ async function main() {
         isActive: "false",
       })
       .returning()
-  );
+  ));
 
   const nestedCreate = db.transaction(async (trx) => {
     // Insert customer
@@ -141,15 +144,15 @@ async function main() {
       },
     ]);
   });
-  await measure("drizzle-nested-create", nestedCreate);
+  results.push(await measure("drizzle-nested-create", nestedCreate));
 
   /**
    * update
    */
 
-  await measure("drizzle-update", db.update(Customer).set({ name: "John Doe Updated" }).where(eq(Customer.id, 1)));
+  results.push(await measure("drizzle-update", db.update(Customer).set({ name: "John Doe Updated" }).where(eq(Customer.id, 1))));
 
-  await measure(
+  results.push(await measure(
     "drizzle-nested-update",
     db.transaction(async (trx) => {
       // Update customer name
@@ -163,12 +166,12 @@ async function main() {
         })
         .where(eq(Address.customerId, 1));
     })
-  );
+  ));
 
   /**
    * upsert
    */
-  await measure(
+  results.push(await measure(
     "drizzle-upsert",
     db
       .insert(Customer)
@@ -181,7 +184,7 @@ async function main() {
         target: Customer.id,
         set: { name: "John Doe Upserted" },
       })
-  );
+  ));
 
   const nestedUpsert = db.transaction(async (trx) => {
     // Update customer name
@@ -214,16 +217,18 @@ async function main() {
         set: { street: "456 New St" },
       });
   });
-  await measure("drizzle-nested-upsert", nestedUpsert);
+  results.push(await measure("drizzle-nested-upsert", nestedUpsert));
 
   /**
    * delete
    */
 
-  await measure("drizzle-delete", db.delete(Customer).where(eq(Customer.id, 1)));
-  
+  results.push(await measure("drizzle-delete", db.delete(Customer).where(eq(Customer.id, 1))));
+
   await client.end(); // Close the database connection
 
+  // Output the results array
+  console.log(results);
 }
 
 main()

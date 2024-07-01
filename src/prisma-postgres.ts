@@ -7,21 +7,16 @@ const prisma = new PrismaClient();
 async function main() {
 
   await prepare();
+   
+  const results = [];
 
-  const results = []
-  let result = 0
   /**
    * findMany
    */
 
+  results.push(await measure('prisma-findMany', prisma.customer.findMany()));
 
-  result = await measure('prisma-findMany', prisma.customer.findMany());
-  results.push({
-    query: 'prisma-findMany',
-    time: await measure('prisma-findMany', prisma.customer.findMany())
-  })
-
-  await measure('prisma-findMany-filter-paginate-order', prisma.customer.findMany({
+  results.push(await measure('prisma-findMany-filter-paginate-order', prisma.customer.findMany({
     where: {
       isActive: true,
     },
@@ -30,53 +25,53 @@ async function main() {
     },
     skip: 0,
     take: 10,
-  }));
+  })));
 
-  await measure('prisma-findMany-1-level-nesting', prisma.customer.findMany({
+  results.push(await measure('prisma-findMany-1-level-nesting', prisma.customer.findMany({
     include: {
       orders: true,
     },
-  }));
+  })));
 
   /**
    * findFirst
    */
 
-  await measure('prisma-findFirst', prisma.customer.findFirst());
+  results.push(await measure('prisma-findFirst', prisma.customer.findFirst()));
 
-  await measure('prisma-findFirst-1-level-nesting', prisma.customer.findFirst({
+  results.push(await measure('prisma-findFirst-1-level-nesting', prisma.customer.findFirst({
     include: {
       orders: true,
     },
-  }));
+  })));
 
   /**
    * findUnique
    */
 
-  await measure('prisma-findUnique', prisma.customer.findUnique({
+  results.push(await measure('prisma-findUnique', prisma.customer.findUnique({
     where: { id: 1 },
-  }));
+  })));
 
-  await measure('prisma-findUnique-1-level-nesting', prisma.customer.findUnique({
+  results.push(await measure('prisma-findUnique-1-level-nesting', prisma.customer.findUnique({
     where: { id: 1 },
     include: {
       orders: true,
     },
-  }));
+  })));
 
   /**
    * create
    */
 
-  await measure('prisma-create', prisma.customer.create({
+  results.push(await measure('prisma-create', prisma.customer.create({
     data: {
       name: "John Doe",
       email: new Date() + "@example.com",
     },
-  }));
+  })));
 
-  await measure('prisma-nested-create', prisma.customer.create({
+  results.push(await measure('prisma-nested-create', prisma.customer.create({
     data: {
       name: "John Doe",
       email: "john.doe@example.com",
@@ -90,20 +85,20 @@ async function main() {
         },
       },
     },
-  }));
+  })));
 
   /**
    * update
    */
 
-  await measure('prisma-update', prisma.customer.update({
+  results.push(await measure('prisma-update', prisma.customer.update({
     where: { id: 1 },
     data: {
       name: "John Doe Updated",
     },
-  }));
+  })));
 
-  await measure('prisma-nested-update', prisma.customer.update({
+  results.push(await measure('prisma-nested-update', prisma.customer.update({
     where: { id: 1 },
     data: {
       name: "John Doe Updated",
@@ -113,13 +108,13 @@ async function main() {
         },
       },
     },
-  }));
+  })));
 
   /**
    * upsert
    */
 
-  await measure('prisma-upsert', prisma.customer.upsert({
+  results.push(await measure('prisma-upsert', prisma.customer.upsert({
     where: { id: 1 },
     update: {
       name: "John Doe Upserted",
@@ -128,9 +123,9 @@ async function main() {
       name: "John Doe",
       email: "john.doe@example.com",
     },
-  }));
+  })));
 
-  await measure('prisma-nested-upsert', prisma.customer.upsert({
+  results.push(await measure('prisma-nested-upsert', prisma.customer.upsert({
     where: { id: 1 },
     update: {
       name: "John Doe Upserted",
@@ -152,15 +147,17 @@ async function main() {
         },
       },
     },
-  }));
+  })));
 
   /**
    * delete
    */
 
-  await measure('prisma-delete', prisma.customer.delete({
+  results.push(await measure('prisma-delete', prisma.customer.delete({
     where: { id: 1 },
-  }));
+  })));
+
+  console.log(results)
 
   // /**
   //  * createMany
