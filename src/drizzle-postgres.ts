@@ -7,7 +7,7 @@ import { Customer, Order, Address } from "./drizzle/schema-postgres";
 import * as schema from "./drizzle/schema-postgres";
 import * as relations from "./drizzle/relations-postgres";
 import { eq, desc } from "drizzle-orm";
-import prepare from "./lib/prepare";
+// import prepare from "./lib/prepare";
 import measure from "./lib/measure";
 import postgres from "postgres";
 
@@ -21,8 +21,8 @@ const client = postgres(connectionString,{
 });
 const db = drizzle(client, { schema: { ...schema, ...relations } });
 
-async function main() {
-  await prepare();
+export async function drizzlePg() {
+  // await prepare();
 
 
   const results = [];
@@ -227,8 +227,8 @@ async function main() {
 
   await client.end(); // Close the database connection
 
-  // Output the results array
-  console.log(results);
+
+  return results;
 }
 
-main()
+// main()
