@@ -34,10 +34,12 @@ export default async function prepare() {
   await prisma.$executeRaw`ALTER SEQUENCE "Customer_id_seq" RESTART WITH 1`;
 
 
+  const NUMBER_OF_RECORDS = 100
+
   console.log(`Seeding data ...`)
   // Seed Customers
   console.log(`Customers with orders ...`)
-  for (let i = 0; i < 100; i++) {
+  for (let i = 0; i < NUMBER_OF_RECORDS; i++) {
     const customer = await prisma.customer.create({
       data: {
         name: faker.person.fullName(),
@@ -68,7 +70,7 @@ export default async function prepare() {
 
   // Seed Products
   console.log(`Products ...`)
-  for (let i = 0; i < 100; i++) {
+  for (let i = 0; i < NUMBER_OF_RECORDS; i++) {
     await prisma.product.create({
       data: {
         name: faker.commerce.productName(),
