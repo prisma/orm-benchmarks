@@ -1,9 +1,8 @@
-import writeResults from "./lib/write-results";
 import prepare from "./lib/prepare";
 import { prismaPg } from "./prisma-postgres";
 import { typeormPg } from "./typeorm-postgres";
 import { drizzlePg } from "./drizzle-postgres";
-import * as fs from 'fs';
+import * as fs from "fs";
 
 async function runBenchmarks() {
   await prepare();
@@ -16,20 +15,23 @@ async function runBenchmarks() {
   await prepare();
   const typeormResults = await typeormPg();
 
-  const arrays: any = { prisma: prismaResults, drizzle: drizzleResults, typeorm: typeormResults };
+  const results: any = { prisma: prismaResults, drizzle: drizzleResults, typeorm: typeormResults };
+  writeResults(results);
+}
 
-  const header = [""].concat(prismaResults.map((item) => item.query));
+runBenchmarks();
+
+function writeResults(results: any) {
+  const header = [""].concat(results["prisma"].map((item: { query: any }) => item.query));
   const rows = [];
 
-  for (const key in arrays) {
-    const row = [key].concat(arrays[key].map((item: { time: any; }) => item.time));
+  for (const key in results) {
+    const row = [key].concat(results[key].map((item: { time: any }) => item.time));
     rows.push(row);
   }
 
   const csvContent = [header, ...rows].map((row) => row.join(",")).join("\n");
-  console.log(csvContent)
+  console.log(csvContent);
 
-  fs.writeFileSync(`./results/${new Date()}.csv`, csvContent);
+  fs.writeFileSync(`./results/results-${Date.now()}.csv`, csvContent);
 }
-
-runBenchmarks();
