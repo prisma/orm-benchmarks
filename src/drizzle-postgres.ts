@@ -14,23 +14,28 @@ import postgres from "postgres";
 // const sqlite = new Database("./prisma/dev.db");
 // export const db = drizzle(sqlite, { schema: { ...schema, ...relations } });
 
-
 const connectionString = process.env.DATABASE_URL || "postgresql://nikolasburk:nikolasburk@localhost:5432/benchmark";
-const client = postgres(connectionString,{
-  // timezone: 'UTC' // or use 'Europe/Berlin', '+02:00', etc.
+const client = postgres(connectionString, {
   ssl: {
     rejectUnauthorized: false
   }
 });
 const db = drizzle(client, { schema: { ...schema, ...relations } });
 
-
-export async function drizzlePg() {
+export async function drizzlePg(): Promise<
+  {
+    query: string;
+    time: number;
+  }[]
+> {
   // await prepare();
-  
-  console.log(`run drizzle benchmarks against DB: `, connectionString)
 
-  const results = [];
+  console.log(`run drizzle benchmarks against DB: `, connectionString);
+
+  const results: {
+    query: string;
+    time: number;
+  }[] = [];
 
   /**
    * findMany
@@ -38,24 +43,28 @@ export async function drizzlePg() {
 
   results.push(await measure("drizzle-findMany", db.query.Customer.findMany()));
 
-  results.push(await measure(
-    "drizzle-findMany-filter-paginate-order",
-    db.query.Customer.findMany({
-      where: eq(Customer.isActive, "1"),
-      orderBy: [desc(Customer.createdAt)],
-      offset: 0,
-      limit: 10,
-    })
-  ));
+  results.push(
+    await measure(
+      "drizzle-findMany-filter-paginate-order",
+      db.query.Customer.findMany({
+        where: eq(Customer.isActive, "1"),
+        orderBy: [desc(Customer.createdAt)],
+        offset: 0,
+        limit: 10,
+      })
+    )
+  );
 
-  results.push(await measure(
-    "drizzle-findMany-1-level-nesting",
-    db.query.Customer.findMany({
-      with: {
-        Orders: true,
-      },
-    })
-  ));
+  results.push(
+    await measure(
+      "drizzle-findMany-1-level-nesting",
+      db.query.Customer.findMany({
+        with: {
+          Orders: true,
+        },
+      })
+    )
+  );
 
   /**
    * findFirst
@@ -63,51 +72,59 @@ export async function drizzlePg() {
 
   results.push(await measure("drizzle-findFirst", db.query.Customer.findFirst()));
 
-  results.push(await measure(
-    "drizzle-findFirst-1-level-nesting",
-    db.query.Customer.findFirst({
-      with: {
-        Orders: true,
-      },
-    })
-  ));
+  results.push(
+    await measure(
+      "drizzle-findFirst-1-level-nesting",
+      db.query.Customer.findFirst({
+        with: {
+          Orders: true,
+        },
+      })
+    )
+  );
 
   /**
    * findUnique
    */
 
-  results.push(await measure(
-    "drizzle-findUnique",
-    db.query.Customer.findFirst({
-      where: eq(Customer.id, 1),
-    })
-  ));
+  results.push(
+    await measure(
+      "drizzle-findUnique",
+      db.query.Customer.findFirst({
+        where: eq(Customer.id, 1),
+      })
+    )
+  );
 
-  results.push(await measure(
-    "drizzle-findUnique-1-level-nesting",
-    db.query.Customer.findFirst({
-      where: eq(Customer.id, 1),
-      with: {
-        Orders: true,
-      },
-    })
-  ));
+  results.push(
+    await measure(
+      "drizzle-findUnique-1-level-nesting",
+      db.query.Customer.findFirst({
+        where: eq(Customer.id, 1),
+        with: {
+          Orders: true,
+        },
+      })
+    )
+  );
 
   /**
    * create
    */
 
-  results.push(await measure(
-    "drizzle-create",
-    db
-      .insert(Customer)
-      .values({
-        name: "John Doe",
-        email: "john.doe@example.com",
-        isActive: "false",
-      })
-      .returning()
-  ));
+  results.push(
+    await measure(
+      "drizzle-create",
+      db
+        .insert(Customer)
+        .values({
+          name: "John Doe",
+          email: "john.doe@example.com",
+          isActive: "false",
+        })
+        .returning()
+    )
+  );
 
   const nestedCreate = db.transaction(async (trx) => {
     // Insert customer
@@ -155,41 +172,47 @@ export async function drizzlePg() {
    * update
    */
 
-  results.push(await measure("drizzle-update", db.update(Customer).set({ name: "John Doe Updated" }).where(eq(Customer.id, 1))));
+  results.push(
+    await measure("drizzle-update", db.update(Customer).set({ name: "John Doe Updated" }).where(eq(Customer.id, 1)))
+  );
 
-  results.push(await measure(
-    "drizzle-nested-update",
-    db.transaction(async (trx) => {
-      // Update customer name
-      await trx.update(Customer).set({ name: "John Doe Updated" }).where(eq(Customer.id, 1));
+  results.push(
+    await measure(
+      "drizzle-nested-update",
+      db.transaction(async (trx) => {
+        // Update customer name
+        await trx.update(Customer).set({ name: "John Doe Updated" }).where(eq(Customer.id, 1));
 
-      // Update address
-      await trx
-        .update(Address)
-        .set({
-          street: "456 New St",
-        })
-        .where(eq(Address.customerId, 1));
-    })
-  ));
+        // Update address
+        await trx
+          .update(Address)
+          .set({
+            street: "456 New St",
+          })
+          .where(eq(Address.customerId, 1));
+      })
+    )
+  );
 
   /**
    * upsert
    */
-  results.push(await measure(
-    "drizzle-upsert",
-    db
-      .insert(Customer)
-      .values({
-        name: "John Doe",
-        email: "john.doe@example.com",
-        isActive: "false",
-      })
-      .onConflictDoUpdate({
-        target: Customer.id,
-        set: { name: "John Doe Upserted" },
-      })
-  ));
+  results.push(
+    await measure(
+      "drizzle-upsert",
+      db
+        .insert(Customer)
+        .values({
+          name: "John Doe",
+          email: "john.doe@example.com",
+          isActive: "false",
+        })
+        .onConflictDoUpdate({
+          target: Customer.id,
+          set: { name: "John Doe Upserted" },
+        })
+    )
+  );
 
   const nestedUpsert = db.transaction(async (trx) => {
     // Update customer name
@@ -230,10 +253,12 @@ export async function drizzlePg() {
 
   results.push(await measure("drizzle-delete", db.delete(Customer).where(eq(Customer.id, 1))));
 
-  await client.end(); // Close the database connection
-
-
   return results;
+}
+
+export async function closeDrizzlePg() {
+  console.log(`closing connection with Drizzle`);
+  await client.end(); // Close the database connection
 }
 
 // main()

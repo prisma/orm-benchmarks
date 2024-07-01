@@ -4,12 +4,20 @@ import measure from "./lib/measure";
 
 const prisma = new PrismaClient();
 
-console.log(`run prisma benchmarks`)
+console.log(`run prisma benchmarks`);
 
-export async function prismaPg() {
+export async function prismaPg(): Promise<
+  {
+    query: string;
+    time: number;
+  }[]
+> {
   // await prepare();
 
-  const results = [];
+  const results: {
+    query: string;
+    time: number;
+  }[] = [];
 
   /**
    * findMany
@@ -285,6 +293,11 @@ export async function prismaPg() {
   //     _all: true,
   //   },
   // }));
+}
+
+export async function closePrismaPg() {
+  console.log(`closing connection with Prisma`);
+  await prisma.$disconnect();
 }
 
 // main()

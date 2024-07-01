@@ -17,78 +17,98 @@ export const AppDataSource = new DataSource({
   }
 });
 
+export async function typeormPg(): Promise<
+  {
+    query: string;
+    time: number;
+  }[]
+> {
+  console.log(`run typeorm benchmarks against DB: `, connectionString);
 
-export async function typeormPg() {
-  
-  console.log(`run typeorm benchmarks against DB: `, connectionString)
-  
   await AppDataSource.initialize();
   // await prepare();
 
-  const results = [];
+  const results: {
+    query: string;
+    time: number;
+  }[] = [];
 
   /**
    * findMany
    */
   results.push(await measure("typeorm-findMany", AppDataSource.getRepository(Customer).find()));
 
-  results.push(await measure(
-    "typeorm-findMany-filter-paginate-order",
-    AppDataSource.getRepository(Customer).find({
-      where: { isActive: true },
-      order: { createdAt: "DESC" },
-      skip: 0,
-      take: 10,
-    })
-  ));
+  results.push(
+    await measure(
+      "typeorm-findMany-filter-paginate-order",
+      AppDataSource.getRepository(Customer).find({
+        where: { isActive: true },
+        order: { createdAt: "DESC" },
+        skip: 0,
+        take: 10,
+      })
+    )
+  );
 
-  results.push(await measure(
-    "typeorm-findMany-1-level-nesting",
-    AppDataSource.getRepository(Customer).find({ relations: ["orders"] })
-  ));
+  results.push(
+    await measure(
+      "typeorm-findMany-1-level-nesting",
+      AppDataSource.getRepository(Customer).find({ relations: ["orders"] })
+    )
+  );
 
   /**
    * findFirst
    */
-  results.push(await measure(
-    "typeorm-findFirst",
-    AppDataSource.getRepository(Customer).find({
-      take: 1,
-    })
-  ));
+  results.push(
+    await measure(
+      "typeorm-findFirst",
+      AppDataSource.getRepository(Customer).find({
+        take: 1,
+      })
+    )
+  );
 
-  results.push(await measure(
-    "typeorm-findFirst-1-level-nesting",
-    AppDataSource.getRepository(Customer).find({
-      take: 1,
-      relations: ["orders"],
-    })
-  ));
+  results.push(
+    await measure(
+      "typeorm-findFirst-1-level-nesting",
+      AppDataSource.getRepository(Customer).find({
+        take: 1,
+        relations: ["orders"],
+      })
+    )
+  );
 
   /**
    * findUnique
    */
-  results.push(await measure("typeorm-findUnique", AppDataSource.getRepository(Customer).findOne({ where: { id: 1 } })));
+  results.push(
+    await measure("typeorm-findUnique", AppDataSource.getRepository(Customer).findOne({ where: { id: 1 } }))
+  );
 
-  results.push(await measure(
-    "typeorm-findUnique-1-level-nesting",
-    AppDataSource.getRepository(Customer).findOne({
-      where: { id: 1 },
-      relations: ["orders"],
-    })
-  ));
+  results.push(
+    await measure(
+      "typeorm-findUnique-1-level-nesting",
+      AppDataSource.getRepository(Customer).findOne({
+        where: { id: 1 },
+        relations: ["orders"],
+      })
+    )
+  );
 
   /**
    * create
    */
-  results.push(await measure(
-    "typeorm-create",
-    AppDataSource.getRepository(Customer).save({
-      name: "John Doe",
-      email: new Date() + "@example.com",
-      isActive: false,
-    })
-  ));
+  results.push(
+    await measure(
+      "typeorm-create",
+      AppDataSource.getRepository(Customer).save({
+        name: "John Doe",
+        email: new Date() + "@example.com",
+        isActive: false,
+      })
+    )
+  );
 
   const nestedCreate = AppDataSource.transaction(async (transactionalEntityManager) => {
     // Insert customer
@@ -121,34 +141,40 @@ export async function typeormPg() {
   /**
    * update
    */
-  results.push(await measure(
-    "typeorm-update",
-    AppDataSource.getRepository(Customer).update({ id: 1 }, { name: "John Doe Updated" })
-  ));
+  results.push(
+    await measure(
+      "typeorm-update",
+      AppDataSource.getRepository(Customer).update({ id: 1 }, { name: "John Doe Updated" })
+    )
+  );
 
-  results.push(await measure(
-    "typeorm-nested-update",
-    AppDataSource.transaction(async (transactionalEntityManager) => {
-      // Update customer name
-      await transactionalEntityManager.update(Customer, { id: 1 }, { name: "John Doe Updated" });
+  results.push(
+    await measure(
+      "typeorm-nested-update",
+      AppDataSource.transaction(async (transactionalEntityManager) => {
+        // Update customer name
+        await transactionalEntityManager.update(Customer, { id: 1 }, { name: "John Doe Updated" });
 
-      // Update address
-      await transactionalEntityManager.update(Address, { customer: { id: 1 } }, { street: "456 New St" });
-    })
-  ));
+        // Update address
+        await transactionalEntityManager.update(Address, { customer: { id: 1 } }, { street: "456 New St" });
+      })
+    )
+  );
 
   /**
    * upsert
    */
-  results.push(await measure(
-    "typeorm-upsert",
-    AppDataSource.getRepository(Customer).save({
-      id: 1,
-      name: "John Doe Upserted",
-      email: "john.doe@example.com",
-      isActive: false,
-    })
-  ));
+  results.push(
+    await measure(
+      "typeorm-upsert",
+      AppDataSource.getRepository(Customer).save({
+        id: 1,
+        name: "John Doe Upserted",
+        email: "john.doe@example.com",
+        isActive: false,
+      })
+    )
+  );
 
   // Nested upsert operation using transaction
   const nestedUpsert = AppDataSource.transaction(async (transactionalEntityManager) => {
@@ -182,4 +208,8 @@ export async function typeormPg() {
   return results;
 }
 
+export async function closeTypeORMPg() {
+  console.log(`closing connection with TypeORM`);
+  await AppDataSource.destroy();
+}
 // main().catch((error) => console.log(error));

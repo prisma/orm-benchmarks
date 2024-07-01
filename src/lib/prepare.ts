@@ -3,6 +3,8 @@ import { faker } from '@faker-js/faker';
 
 const prisma = new PrismaClient();
 
+const NUMBER_OF_RECORDS = 10
+
 export default async function prepare() {
 
   console.log(`Preparing DB ...`)
@@ -33,8 +35,6 @@ export default async function prepare() {
   await prisma.customer.deleteMany();
   await prisma.$executeRaw`ALTER SEQUENCE "Customer_id_seq" RESTART WITH 1`;
 
-
-  const NUMBER_OF_RECORDS = 100
 
   console.log(`Seeding data ...`)
   // Seed Customers
