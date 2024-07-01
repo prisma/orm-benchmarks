@@ -12,9 +12,9 @@ export const AppDataSource = new DataSource({
   url: connectionString,
   logging: false,
   entities: [Customer, Order, Address, Product],
-  // ssl: {
-  //   rejectUnauthorized: false
-  // }
+  ssl: {
+    rejectUnauthorized: false
+  }
 });
 
 

@@ -2,7 +2,6 @@ import prepare from "./lib/prepare";
 import { prismaPg } from "./prisma-postgres";
 import { typeormPg } from "./typeorm-postgres";
 import { drizzlePg } from "./drizzle-postgres";
-import * as fs from "fs";
 
 const ITERATIONS = 2
 
