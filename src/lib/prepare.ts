@@ -38,7 +38,7 @@ export default async function prepare() {
 
   console.log(`Seeding data ...`)
   // Seed Customers
-  console.log(`Customers with orders ...`)
+  // console.log(`Customers with orders ...`)
   for (let i = 0; i < NUMBER_OF_RECORDS; i++) {
     const customer = await prisma.customer.create({
       data: {
@@ -69,7 +69,7 @@ export default async function prepare() {
   }
 
   // Seed Products
-  console.log(`Products ...`)
+  // console.log(`Products ...`)
   for (let i = 0; i < NUMBER_OF_RECORDS; i++) {
     await prisma.product.create({
       data: {
@@ -82,7 +82,7 @@ export default async function prepare() {
   }
 
   // Associate Products with Orders
-  console.log(`Connect products with orders ...`)
+  // console.log(`Connect products with orders ...`)
   const orders = await prisma.order.findMany();
   const products = await prisma.product.findMany();
 
