@@ -14,12 +14,15 @@ import postgres from "postgres";
 // const sqlite = new Database("./prisma/dev.db");
 // export const db = drizzle(sqlite, { schema: { ...schema, ...relations } });
 
+
 const connectionString = process.env.DATABASE_URL || "postgresql://nikolasburk:nikolasburk@localhost:5432/benchmark";
-console.log(`connect to: `, connectionString)
 const client = postgres(connectionString,{
   // timezone: 'UTC' // or use 'Europe/Berlin', '+02:00', etc.
 });
 const db = drizzle(client, { schema: { ...schema, ...relations } });
+
+console.log(`run drizzle benchmarks against DB: `, connectionString)
+
 
 export async function drizzlePg() {
   // await prepare();

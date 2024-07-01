@@ -3,22 +3,22 @@ import { Customer } from "./typeorm/Customer";
 import { Order } from "./typeorm/Order";
 import { Address } from "./typeorm/Address";
 import { Product } from "./typeorm/Product";
-// import prepare from "./lib/prepare";
 import measure from "./lib/measure";
 
+const connectionString = process.env.DATABASE_URL || "postgresql://nikolasburk:nikolasburk@localhost:5432/benchmark";
 
 export const AppDataSource = new DataSource({
   type: "postgres",
-  url: process.env.DATABASE_URL || "postgresql://nikolasburk:nikolasburk@localhost:5432/benchmark",
+  url: connectionString,
   logging: false,
   entities: [Customer, Order, Address, Product],
 });
 
+console.log(`run typeorm benchmarks against DB: `, connectionString)
+
 export async function typeormPg() {
   await AppDataSource.initialize();
-  console.log(`typeorm benchmark`);
   // await prepare();
-  console.log(`done preparing`);
 
   const results = [];
 

@@ -4,6 +4,8 @@ import measure from "./lib/measure";
 
 const prisma = new PrismaClient();
 
+console.log(`run prisma benchmarks`)
+
 export async function prismaPg() {
   // await prepare();
 
