@@ -21,12 +21,12 @@ const client = postgres(connectionString,{
 });
 const db = drizzle(client, { schema: { ...schema, ...relations } });
 
-console.log(`run drizzle benchmarks against DB: `, connectionString)
 
 
 export async function drizzlePg() {
   // await prepare();
-
+  
+  console.log(`run drizzle benchmarks against DB: `, connectionString)
 
   const results = [];
 

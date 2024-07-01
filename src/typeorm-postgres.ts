@@ -14,9 +14,11 @@ export const AppDataSource = new DataSource({
   entities: [Customer, Order, Address, Product],
 });
 
-console.log(`run typeorm benchmarks against DB: `, connectionString)
 
 export async function typeormPg() {
+  
+  console.log(`run typeorm benchmarks against DB: `, connectionString)
+  
   await AppDataSource.initialize();
   // await prepare();
 
