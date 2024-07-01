@@ -9,14 +9,14 @@ async function runBenchmarks() {
   console.log(`db ready`);
   const prismaResults = await prismaPg();
 
-  // await prepare();
-  // const drizzleResults = await drizzlePg();
+  await prepare();
+  const drizzleResults = await drizzlePg();
 
   await prepare();
   const typeormResults = await typeormPg();
 
-  // const results: any = { prisma: prismaResults, drizzle: drizzleResults, typeorm: typeormResults };
-  const results: any = { prisma: prismaResults, typeorm: typeormResults };
+  const results: any = { prisma: prismaResults, drizzle: drizzleResults, typeorm: typeormResults };
+  // const results: any = { prisma: prismaResults, typeorm: typeormResults };
 
   writeResults(results);
 }

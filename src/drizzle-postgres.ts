@@ -18,6 +18,9 @@ import postgres from "postgres";
 const connectionString = process.env.DATABASE_URL || "postgresql://nikolasburk:nikolasburk@localhost:5432/benchmark";
 const client = postgres(connectionString,{
   // timezone: 'UTC' // or use 'Europe/Berlin', '+02:00', etc.
+  ssl: {
+    rejectUnauthorized: false
+  }
 });
 const db = drizzle(client, { schema: { ...schema, ...relations } });
 
