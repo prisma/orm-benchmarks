@@ -5,7 +5,7 @@ import { drizzlePg, closeDrizzlePg } from "./drizzle-postgres";
 import * as fs from 'fs';
 
 
-const ITERATIONS = 2;
+const ITERATIONS = 10;
 
 type ORM = "prisma" | "drizzle" | "typeorm";
 type ORMResults = {
