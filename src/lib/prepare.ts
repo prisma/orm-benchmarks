@@ -3,7 +3,7 @@ import { faker } from '@faker-js/faker';
 
 const prisma = new PrismaClient();
 
-const NUMBER_OF_RECORDS = 5000
+const NUMBER_OF_RECORDS = 500
 const FAKER_SEED = 42
 
 export default async function prepare() {
