@@ -1,18 +1,11 @@
-// import { drizzle } from "drizzle-orm/better-sqlite3";
-// import Database from "better-sqlite3";
-
 import { drizzle } from "drizzle-orm/postgres-js";
 
 import { Customer, Order, Address } from "./drizzle/schema-postgres";
 import * as schema from "./drizzle/schema-postgres";
 import * as relations from "./drizzle/relations-postgres";
 import { eq, desc } from "drizzle-orm";
-// import prepare from "./lib/prepare";
 import measure from "./lib/measure";
 import postgres from "postgres";
-
-// const sqlite = new Database("./prisma/dev.db");
-// export const db = drizzle(sqlite, { schema: { ...schema, ...relations } });
 
 const connectionString = process.env.DATABASE_URL || "postgresql://nikolasburk:nikolasburk@localhost:5432/benchmark";
 const client = postgres(connectionString, {
@@ -26,15 +19,16 @@ export async function drizzlePg(): Promise<
   {
     query: string;
     time: number;
+    data: any;
   }[]
 > {
-  // await prepare();
 
   console.log(`run drizzle benchmarks against DB: `, connectionString);
 
   const results: {
     query: string;
     time: number;
+    data: any;
   }[] = [];
 
   /**
@@ -260,5 +254,3 @@ export async function closeDrizzlePg() {
   console.log(`closing connection with Drizzle`);
   await client.end(); // Close the database connection
 }
-
-// main()

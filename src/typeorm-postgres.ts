@@ -12,15 +12,16 @@ export const AppDataSource = new DataSource({
   url: connectionString,
   logging: false,
   entities: [Customer, Order, Address, Product],
-  ssl: {
-    rejectUnauthorized: false
-  }
+  // ssl: {
+  //   rejectUnauthorized: false
+  // }
 });
 
 export async function typeormPg(): Promise<
   {
     query: string;
     time: number;
+    data: any;
   }[]
 > {
   console.log(`run typeorm benchmarks against DB: `, connectionString);
@@ -31,6 +32,7 @@ export async function typeormPg(): Promise<
   const results: {
     query: string;
     time: number;
+    data: any;
   }[] = [];
 
   /**

@@ -10,6 +10,7 @@ export async function prismaPg(): Promise<
   {
     query: string;
     time: number;
+    data: any;
   }[]
 > {
   // await prepare();
@@ -17,6 +18,7 @@ export async function prismaPg(): Promise<
   const results: {
     query: string;
     time: number;
+    data: any;
   }[] = [];
 
   /**

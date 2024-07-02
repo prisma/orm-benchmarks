@@ -5,16 +5,17 @@ import { drizzlePg, closeDrizzlePg } from "./drizzle-postgres";
 import * as fs from 'fs';
 
 
-const ITERATIONS = 10;
+const ITERATIONS = 3;
 
 type ORM = "prisma" | "drizzle" | "typeorm";
-type QueryWithTime = {
+type QueryResult = {
   query: string;
   time: number;
+  data: any;
 };
-
-type SingleBenchmarkRunResults = QueryWithTime[];
-type MultipleBenchmarkRunResults = SingleBenchmarkRunResults[];
+type SingleBenchmarkRunResult = QueryResult[];
+type MultipleBenchmarkRunResults = SingleBenchmarkRunResult[];
+type AllResults = { [key in ORM]: MultipleBenchmarkRunResults }
 
 async function runBenchmarks() {
   const prismaResults: MultipleBenchmarkRunResults = [];
@@ -38,6 +39,13 @@ async function runBenchmarks() {
     typeormResults.push(await typeormPg());
   }
   writeResults("typeorm", typeormResults);
+
+  compareResults({
+    prisma: prismaResults,
+    drizzle: drizzleResults,
+    typeorm: typeormResults,
+
+  })
 }
 
 runBenchmarks();
@@ -49,7 +57,7 @@ function writeResults(orm: ORM, results: MultipleBenchmarkRunResults) {
   const headers = Array.from(new Set(results.flatMap((batch) => batch.map((item) => item.query))));
   console.log(`headers`, headers)
 
-  // Extract rows of times
+  // Extract rows
   const rows = results.map((batch) => {
     const row: { [key: string]: number | string } = {};
     batch.forEach((item) => {
@@ -78,18 +86,15 @@ function writeResults(orm: ORM, results: MultipleBenchmarkRunResults) {
 
   console.log(`results for ${orm} written to: ${filename}`);
 
-  // const header = [""].concat(results["prisma"].map((item: { query: any }) => item.query));
+}
 
-  // OLD
-  // const rows = [];
+function compareResults(allResults: AllResults) {
 
-  // for (const key in results) {
-  //   const row = [key].concat(results[key].map((item: { time: any }) => item.time));
-  //   rows.push(row);
-  // }
+  const orms: ORM[] = ["prisma", "drizzle", "typeorm"];
 
-  // const csvContent = [header, ...rows].map((row) => row.join(",")).join("\n");
-  // console.log(csvContent);
+   // Assuming each ORM has the same set of queries in the same order
+   const numberOfRuns = allResults[orms[0]].length;
 
-  // fs.writeFileSync(`./results/results-${Date.now()}.csv`, csvContent);
+   console.log(numberOfRuns)
+
 }

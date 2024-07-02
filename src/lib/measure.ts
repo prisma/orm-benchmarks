@@ -1,9 +1,6 @@
-import * as fs from 'fs';
-
-
 export default async function measure(label: string, query: any) {
   const startTime = performance.now();
-  await query;
+  const result = await query;
   const endTime = performance.now();
   
   // Calculate the elapsed time
@@ -13,6 +10,7 @@ export default async function measure(label: string, query: any) {
 
   return {
     query: label,
-    time: elapsedTime
+    time: elapsedTime,
+    data: result
   };
 }
