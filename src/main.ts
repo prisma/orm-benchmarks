@@ -8,9 +8,6 @@ import * as fs from 'fs';
 const ITERATIONS = 10;
 
 type ORM = "prisma" | "drizzle" | "typeorm";
-type ORMResults = {
-  [key in ORM]: MultipleBenchmarkRunResults;
-};
 type QueryWithTime = {
   query: string;
   time: number;
@@ -25,6 +22,7 @@ async function runBenchmarks() {
     await prepare();
     prismaResults.push(await prismaPg());
   }
+  writeResults("prisma", prismaResults);
 
   const drizzleResults: MultipleBenchmarkRunResults = [];
   for (let i = 0; i < ITERATIONS; i++) {
@@ -32,15 +30,13 @@ async function runBenchmarks() {
     drizzleResults.push(await drizzlePg());
   }
   await closeDrizzlePg();
+  writeResults("drizzle", drizzleResults);
 
   const typeormResults: MultipleBenchmarkRunResults = [];
   for (let i = 0; i < ITERATIONS; i++) {
     await prepare();
     typeormResults.push(await typeormPg());
   }
-
-  writeResults("prisma", prismaResults);
-  writeResults("drizzle", drizzleResults);
   writeResults("typeorm", typeormResults);
 }
 
