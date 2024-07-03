@@ -6,30 +6,18 @@ import * as relations from "./drizzle/relations-postgres";
 import { eq, desc } from "drizzle-orm";
 import measure from "./lib/measure";
 import postgres from "postgres";
+import { QueryResult } from "./lib/types";
 
-const connectionString = process.env.DATABASE_URL || "postgresql://nikolasburk:nikolasburk@localhost:5432/benchmark";
-const client = postgres(connectionString, {
-  ssl: {
-    rejectUnauthorized: false
-  }
-});
-const db = drizzle(client, { schema: { ...schema, ...relations } });
+export async function drizzlePg(databaseUrl: string): Promise<QueryResult[]> {
+  const client = postgres(databaseUrl, {
+    // ssl: {
+    //   rejectUnauthorized: false
+    // }
+  });
+  const db = drizzle(client, { schema: { ...schema, ...relations } });
+  console.log(`run drizzle benchmarks: `, databaseUrl);
 
-export async function drizzlePg(): Promise<
-  {
-    query: string;
-    time: number;
-    data: any;
-  }[]
-> {
-
-  console.log(`run drizzle benchmarks against DB: `, connectionString);
-
-  const results: {
-    query: string;
-    time: number;
-    data: any;
-  }[] = [];
+  const results: QueryResult[] = [];
 
   /**
    * findMany
@@ -41,8 +29,9 @@ export async function drizzlePg(): Promise<
     await measure(
       "drizzle-findMany-filter-paginate-order",
       db.query.Customer.findMany({
-        where: eq(Customer.isActive, "1"),
-        orderBy: [desc(Customer.createdAt)],
+        where: eq(Customer.isActive, true),
+        // orderBy: [desc(Customer.createdAt)],
+        orderBy: [desc(Customer.id)],
         offset: 0,
         limit: 10,
       })
@@ -54,7 +43,7 @@ export async function drizzlePg(): Promise<
       "drizzle-findMany-1-level-nesting",
       db.query.Customer.findMany({
         with: {
-          Orders: true,
+          orders: true,
         },
       })
     )
@@ -71,7 +60,7 @@ export async function drizzlePg(): Promise<
       "drizzle-findFirst-1-level-nesting",
       db.query.Customer.findFirst({
         with: {
-          Orders: true,
+          orders: true,
         },
       })
     )
@@ -96,7 +85,7 @@ export async function drizzlePg(): Promise<
       db.query.Customer.findFirst({
         where: eq(Customer.id, 1),
         with: {
-          Orders: true,
+          orders: true,
         },
       })
     )
@@ -114,7 +103,7 @@ export async function drizzlePg(): Promise<
         .values({
           name: "John Doe",
           email: "john.doe@example.com",
-          isActive: "false",
+          isActive: false,
         })
         .returning()
     )
@@ -127,7 +116,7 @@ export async function drizzlePg(): Promise<
       .values({
         name: "John Doe",
         email: "john.doe@example.com",
-        isActive: "false",
+        isActive: false,
       })
       .returning();
 
@@ -141,7 +130,7 @@ export async function drizzlePg(): Promise<
         // sqlite
         // date: `${new Date()}`,
         // postgres
-        date: `${new Date().toISOString()}`,
+        // date: `${new Date().toISOString()}`,
         totalAmount: "100.5",
       })
       .returning();
@@ -199,7 +188,7 @@ export async function drizzlePg(): Promise<
         .values({
           name: "John Doe",
           email: "john.doe@example.com",
-          isActive: "false",
+          isActive: false,
         })
         .onConflictDoUpdate({
           target: Customer.id,
@@ -215,7 +204,7 @@ export async function drizzlePg(): Promise<
       .values({
         name: "John Doe",
         email: "john.doe@example.com",
-        isActive: "false",
+        isActive: false,
       })
       .onConflictDoUpdate({
         target: Customer.id,
@@ -247,10 +236,11 @@ export async function drizzlePg(): Promise<
 
   results.push(await measure("drizzle-delete", db.delete(Customer).where(eq(Customer.id, 1))));
 
+  await client.end(); // Close the database connection
+
   return results;
 }
 
-export async function closeDrizzlePg() {
-  console.log(`closing connection with Drizzle`);
-  await client.end(); // Close the database connection
-}
+// export async function closeDrizzlePg() {
+//   console.log(`closing connection with Drizzle`);
+// }

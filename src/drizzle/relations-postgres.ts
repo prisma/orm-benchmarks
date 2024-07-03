@@ -2,31 +2,31 @@ import { relations } from "drizzle-orm/relations";
 import { Customer, Address, Order, Product, _OrderProducts } from "./schema-postgres";
 
 export const AddressRelations = relations(Address, ({one}) => ({
-	Customer: one(Customer, {
+	customer: one(Customer, {
 		fields: [Address.customerId],
 		references: [Customer.id]
 	}),
 }));
 
 export const CustomerRelations = relations(Customer, ({many}) => ({
-	Addresses: many(Address),
-	Orders: many(Order),
+	addresses: many(Address),
+	orders: many(Order),
 }));
 
 export const OrderRelations = relations(Order, ({one, many}) => ({
-	Customer: one(Customer, {
+	customer: one(Customer, {
 		fields: [Order.customerId],
 		references: [Customer.id]
 	}),
-	_OrderProducts: many(_OrderProducts),
+	_orderProducts: many(_OrderProducts),
 }));
 
 export const _OrderProductsRelations = relations(_OrderProducts, ({one}) => ({
-	Product: one(Product, {
+ product: one(Product, {
 		fields: [_OrderProducts.B],
 		references: [Product.id]
 	}),
-	Order: one(Order, {
+	order: one(Order, {
 		fields: [_OrderProducts.A],
 		references: [Order.id]
 	}),

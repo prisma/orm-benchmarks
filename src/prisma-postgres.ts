@@ -1,19 +1,20 @@
 import { PrismaClient } from "@prisma/client";
-// import prepare from "./lib/prepare";
 import measure from "./lib/measure";
 
-const prisma = new PrismaClient();
-
-console.log(`run prisma benchmarks`);
-
-export async function prismaPg(): Promise<
+export async function prismaPg(databaseUrl: string): Promise<
   {
     query: string;
     time: number;
     data: any;
   }[]
 > {
-  // await prepare();
+  console.log(`run prisma benchmarks: `, databaseUrl);
+
+  const prisma = new PrismaClient({
+    datasourceUrl: databaseUrl
+  });
+
+  await prisma.$connect();
 
   const results: {
     query: string;
@@ -35,7 +36,7 @@ export async function prismaPg(): Promise<
           isActive: true,
         },
         orderBy: {
-          createdAt: "desc",
+          id: "desc",
         },
         skip: 0,
         take: 10,
@@ -121,7 +122,7 @@ export async function prismaPg(): Promise<
           email: "john.doe@example.com",
           orders: {
             create: {
-              date: new Date(),
+              // date: new Date(),
               totalAmount: 100.5,
               products: {
                 connect: [{ id: 1 }, { id: 2 }], // Assuming products with IDs 1 and 2 already exist
@@ -228,6 +229,8 @@ export async function prismaPg(): Promise<
     )
   );
 
+  await prisma.$disconnect();
+
   return results;
 
   // /**
@@ -297,10 +300,10 @@ export async function prismaPg(): Promise<
   // }));
 }
 
-export async function closePrismaPg() {
-  console.log(`closing connection with Prisma`);
-  await prisma.$disconnect();
-}
+// export async function closePrismaPg() {
+//   console.log(`closing connection with Prisma`);
+//   await prisma.$disconnect();
+// }
 
 // main()
 //   .then(async () => {

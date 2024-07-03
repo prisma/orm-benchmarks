@@ -2,7 +2,7 @@
 // import { pgTable, AnySQLiteColumn, text, numeric, integer, uniqueIndex, foreignKey, real, index } from "drizzle-orm/sqlite-core"
 
 // PostgreSQL
-import { pgTable, AnyPgColumn, text, numeric, serial, integer, uniqueIndex, foreignKey, real, index } from "drizzle-orm/pg-core"
+import { pgTable, boolean, text, numeric, serial, integer, uniqueIndex, foreignKey, real, index, date } from "drizzle-orm/pg-core"
 
 import { sql } from "drizzle-orm"
 
@@ -19,10 +19,10 @@ export const _prisma_migrations = pgTable("_prisma_migrations", {
 
 export const Customer = pgTable("Customer", {
 	id: serial("id").primaryKey().notNull(),
-	createdAt: numeric("createdAt").default(sql`(CURRENT_TIMESTAMP)`).notNull(),
+	// createdAt: date("createdAt").default(sql`(CURRENT_TIMESTAMP)`).notNull(),
 	name: text("name"),
 	email: text("email").notNull(),
-	isActive: numeric("isActive").notNull(),
+	isActive: boolean("isActive").notNull(),
 });
 
 export const Address = pgTable("Address", {
@@ -41,7 +41,7 @@ export const Address = pgTable("Address", {
 
 export const Order = pgTable("Order", {
 	id: serial("id").primaryKey().notNull(),
-	date: numeric("date").notNull(),
+	// date: date("date").notNull(),
 	totalAmount: numeric("totalAmount").notNull(),
 	customerId: serial("customerId").notNull().references(() => Customer.id, { onDelete: "cascade", onUpdate: "cascade" } ),
 });

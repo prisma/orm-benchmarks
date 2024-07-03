@@ -1,27 +1,20 @@
 import { PrismaClient } from '@prisma/client';
 import { faker } from '@faker-js/faker';
 
-const prisma = new PrismaClient();
-
-const NUMBER_OF_RECORDS = 500
+const NUMBER_OF_RECORDS = process.env.SIZE ? Number(process.env.SIZE) : 100
+const NUMBER_OF_RELATED_RECORDS = 10
 const FAKER_SEED = 42
 
-export default async function prepare() {
+export default async function prepare(databaseUrl: string) {
 
-  console.log(`Preparing DB ...`)
+  const prisma = new PrismaClient({
+    datasourceUrl: databaseUrl
+  });
+
+  console.log(`Preparing DB ...`, databaseUrl)
 
   // Clean tables
   console.log(`Clearing tables ...`)
-
-  // SQLite
-  // await prisma.address.deleteMany()
-  // await prisma.$executeRaw`DELETE FROM sqlite_sequence WHERE name='Address';`
-  // await prisma.order.deleteMany()
-  // await prisma.$executeRaw`DELETE FROM sqlite_sequence WHERE name='Order';`
-  // await prisma.product.deleteMany()
-  // await prisma.$executeRaw`DELETE FROM sqlite_sequence WHERE name='Product';`
-  // await prisma.customer.deleteMany()
-  // await prisma.$executeRaw`DELETE FROM sqlite_sequence WHERE name='Customer';`
 
   // Postgres
   await prisma.address.deleteMany();
@@ -59,10 +52,10 @@ export default async function prepare() {
     });
 
     // Seed Orders for each Customer
-    for (let j = 0; j < 10; j++) {
+    for (let j = 0; j < NUMBER_OF_RELATED_RECORDS; j++) {
       await prisma.order.create({
         data: {
-          date: faker.date.past(),
+          // date: faker.date.past(),
           totalAmount: faker.number.int({ min: 10, max: 1000 }),
           customerId: customer.id,
         },

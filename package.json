@@ -2,10 +2,7 @@
   "name": "script",
   "license": "MIT",
   "scripts": {
-    "prisma:pg": "ts-node ./src/prisma-postgres.ts",
-    "drizzle:pg": "ts-node ./src/drizzle-postgres.ts",
-    "typeorm:pg": "ts-node ./src/typeorm-postgres.ts",
-    "run:all": "ts-node ./src/main.ts"
+    "start": "ts-node ./src/main.ts"
   },
   "dependencies": {
     "@prisma/client": "5.15.0",

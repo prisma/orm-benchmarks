@@ -5,26 +5,27 @@ import { Address } from "./typeorm/Address";
 import { Product } from "./typeorm/Product";
 import measure from "./lib/measure";
 
-const connectionString = process.env.DATABASE_URL || "postgresql://nikolasburk:nikolasburk@localhost:5432/benchmark";
 
-export const AppDataSource = new DataSource({
-  type: "postgres",
-  url: connectionString,
-  logging: false,
-  entities: [Customer, Order, Address, Product],
-  // ssl: {
-  //   rejectUnauthorized: false
-  // }
-});
-
-export async function typeormPg(): Promise<
+export async function typeormPg(databaseUrl: string): Promise<
   {
     query: string;
     time: number;
     data: any;
   }[]
 > {
-  console.log(`run typeorm benchmarks against DB: `, connectionString);
+
+  const AppDataSource = new DataSource({
+    type: "postgres",
+    url: databaseUrl,
+    logging: false,
+    entities: [Customer, Order, Address, Product],
+    // ssl: {
+    //   rejectUnauthorized: false
+    // }
+  });
+  
+
+  console.log(`run typeorm benchmarks: `, databaseUrl);
 
   await AppDataSource.initialize();
   // await prepare();
@@ -45,7 +46,7 @@ export async function typeormPg(): Promise<
       "typeorm-findMany-filter-paginate-order",
       AppDataSource.getRepository(Customer).find({
         where: { isActive: true },
-        order: { createdAt: "DESC" },
+        order: { id: "DESC" },
         skip: 0,
         take: 10,
       })
@@ -62,6 +63,10 @@ export async function typeormPg(): Promise<
   /**
    * findFirst
    */
+  // const c = await AppDataSource.getRepository(Customer).find({
+  //   take: 1,
+  // })
+  // console.log(`TYPEORM findFIRST`, c)
   results.push(
     await measure(
       "typeorm-findFirst",
@@ -210,8 +215,8 @@ export async function typeormPg(): Promise<
   return results;
 }
 
-export async function closeTypeORMPg() {
-  console.log(`closing connection with TypeORM`);
-  await AppDataSource.destroy();
-}
+// export async function closeTypeORMPg() {
+//   console.log(`closing connection with TypeORM`);
+//   await AppDataSource.destroy();
+// }
 // main().catch((error) => console.log(error));
