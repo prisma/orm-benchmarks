@@ -11,8 +11,8 @@ export class Order {
   // sqlite
   // @Column({ type: 'datetime' })
   // postgres
-  // @Column({ type: "timestamptz" })
-  // date: Date;
+  @Column({ type: "timestamptz" })
+  date: Date;
 
   @Column({ name: "totalAmount", type: "decimal" })
   totalAmount: number;

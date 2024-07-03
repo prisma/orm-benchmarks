@@ -11,8 +11,8 @@ export class Customer {
     // sqlite
     // @Column({ type: 'datetime', default: () => 'CURRENT_TIMESTAMP' })
     // postgres
-    // @Column({ name: "createdAt", type: 'timestamptz', default: () => "CURRENT_TIMESTAMP" })
-    // createdAt: Date;
+    @Column({ name: "createdAt", type: 'timestamptz', default: () => "CURRENT_TIMESTAMP" })
+    createdAt: Date;
 
     @Column({ nullable: true })
     name: string;

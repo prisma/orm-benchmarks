@@ -25,7 +25,7 @@ CREATE TABLE "Address" (
 CREATE TABLE "Order" (
     "id" SERIAL NOT NULL,
     "date" TIMESTAMP(3) NOT NULL,
-    "totalAmount" DECIMAL(65,30) NOT NULL,
+    "totalAmount" DOUBLE PRECISION NOT NULL,
     "customerId" INTEGER NOT NULL,
 
     CONSTRAINT "Order_pkey" PRIMARY KEY ("id")

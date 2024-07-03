@@ -9,7 +9,7 @@ datasource db {
 
 model Customer {
   id          Int       @id @default(autoincrement())
-  // createdAt   DateTime  @default(now())
+  createdAt   DateTime  @default(now())
   name        String?
   email       String    // @unique
   address     Address?
@@ -30,7 +30,7 @@ model Address {
 
 model Order {
   id          Int       @id @default(autoincrement())
-  // date        DateTime  
+  date        DateTime  
   totalAmount Float
   customerId  Int
   customer    Customer  @relation(fields: [customerId], references: [id], onDelete: Cascade)

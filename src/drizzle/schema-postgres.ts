@@ -19,7 +19,7 @@ export const _prisma_migrations = pgTable("_prisma_migrations", {
 
 export const Customer = pgTable("Customer", {
 	id: serial("id").primaryKey().notNull(),
-	// createdAt: date("createdAt").default(sql`(CURRENT_TIMESTAMP)`).notNull(),
+	createdAt: date("createdAt").default(sql`(CURRENT_TIMESTAMP)`).notNull(),
 	name: text("name"),
 	email: text("email").notNull(),
 	isActive: boolean("isActive").notNull(),
@@ -41,7 +41,7 @@ export const Address = pgTable("Address", {
 
 export const Order = pgTable("Order", {
 	id: serial("id").primaryKey().notNull(),
-	// date: date("date").notNull(),
+	date: date("date").notNull(),
 	totalAmount: numeric("totalAmount").notNull(),
 	customerId: serial("customerId").notNull().references(() => Customer.id, { onDelete: "cascade", onUpdate: "cascade" } ),
 });
