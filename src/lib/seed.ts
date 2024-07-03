@@ -39,7 +39,7 @@ export async function seedPg(databaseUrl: string) {
   const connectionDetails = extractConnectionDetailsFromUrl(databaseUrl);
   console.log(`seeding with connection details: `, connectionDetails);
   const { host, user, db, password } = connectionDetails;
-  const command = `pg_restore -h ${host} -U ${user} -d ${db} -v --clean ./data/postgres.sql`;
+  const command = `pg_restore -h ${host} -U ${user} -d ${db} --no-owner -v --clean ./data/postgres.sql`;
   console.log(`seed command: `, command)
   try {
     await executeCommand(command, { PGPASSWORD: password });
