@@ -24,7 +24,7 @@ export default async function runBenchmarksPg(options: { databaseUrl: string; it
     const results = await drizzlePg(databaseUrl);
     // discard the initial run "warmup" run
     // if (i > 0)
-    prismaResults.push(results);
+    drizzleResults.push(results);
   }
   writeResults("drizzle", drizzleResults);
 
@@ -33,7 +33,7 @@ export default async function runBenchmarksPg(options: { databaseUrl: string; it
     await prepare(databaseUrl);
     const results = await typeormPg(databaseUrl);
     // if (i > 0)
-    prismaResults.push(results);
+    typeormResults.push(results);
   }
   writeResults("typeorm", typeormResults);
 }
