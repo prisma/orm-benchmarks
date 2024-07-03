@@ -119,7 +119,7 @@ preparePg("postgresql://nikolasburk:nikolasburk@localhost:5432/seed")
 // // import { Product } from "./src/typeorm/Product";
 // import mysql from "mysql2/promise";
 
-// const connectionString = process.env.DATABASE_URL || "mysql://tqttan7abnayxa983h48:pscale_pw_o3h7yg0GjZbVhAlML9L0PHQUEriayuZ0GZu5BT9pmrF@aws.connect.psdb.cloud/orm-benchmarks?sslaccept=strict";
+// const connectionString = process.env.DATABASE_URL || "";
 
 // // Prisma
 // // const prisma = new PrismaClient();
