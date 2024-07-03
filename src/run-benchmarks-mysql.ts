@@ -1,9 +1,9 @@
-import prepare from "./prepare-pg";
-import { prismaPg } from "../prisma-postgres";
-import { typeormPg } from "../typeorm-postgres";
-import { drizzlePg } from "../drizzle-postgres";
 import * as fs from "fs";
-import { MultipleBenchmarkRunResults, ORM } from "./types";
+import prepare from "./lib/prepare-pg";
+import { prismaPg } from "./prisma/prisma-postgres";
+import { typeormPg } from "./typeorm/typeorm-postgres";
+import { drizzlePg } from "./drizzle/drizzle-postgres";
+import { MultipleBenchmarkRunResults, ORM } from "./lib/types";
 
 export default async function runBenchmarksPg(options: { databaseUrl: string; iterations: number }) {
   const { databaseUrl, iterations } = options;

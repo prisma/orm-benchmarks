@@ -1,21 +1,6 @@
-// SQLite
-// import { pgTable, AnySQLiteColumn, text, numeric, integer, uniqueIndex, foreignKey, real, index } from "drizzle-orm/sqlite-core"
-
-// PostgreSQL
-import { pgTable, boolean, text, numeric, serial, integer, uniqueIndex, foreignKey, real, index, date } from "drizzle-orm/pg-core"
+import { pgTable, boolean, text, numeric, serial, integer, uniqueIndex, real, index, date } from "drizzle-orm/pg-core"
 
 import { sql } from "drizzle-orm"
-
-export const _prisma_migrations = pgTable("_prisma_migrations", {
-	id: text("id").primaryKey().notNull(),
-	checksum: text("checksum").notNull(),
-	finished_at: numeric("finished_at"),
-	migration_name: text("migration_name").notNull(),
-	logs: text("logs"),
-	rolled_back_at: numeric("rolled_back_at"),
-	started_at: numeric("started_at").default(sql`(current_timestamp)`).notNull(),
-	applied_steps_count: integer("applied_steps_count").default(0).notNull(),
-});
 
 export const Customer = pgTable("Customer", {
 	id: serial("id").primaryKey().notNull(),

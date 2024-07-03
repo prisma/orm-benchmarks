@@ -1,23 +1,18 @@
 import { DataSource } from "typeorm";
-import { Customer } from "./typeorm/Customer";
-import { Order } from "./typeorm/Order";
-import { Address } from "./typeorm/Address";
-import { Product } from "./typeorm/Product";
-import measure from "./lib/measure";
+import { Customer } from "./entities/Customer";
+import { Order } from "./entities/Order";
+import { Address } from "./entities/Address";
+import { Product } from "./entities/Product";
+import measure from "../lib/measure";
+import { QueryResult } from "../lib/types";
 
-export async function typeormPg(databaseUrl: string): Promise<
-  {
-    query: string;
-    time: number;
-    data: any;
-  }[]
-> {
+export async function typeormPg(databaseUrl: string): Promise<QueryResult[]> {
   const AppDataSource = new DataSource({
     type: "postgres",
     url: databaseUrl,
     logging: false,
     entities: [Customer, Order, Address, Product],
-    ssl: databaseUrl.includes("localhost") ? undefined : {rejectUnauthorized: false}
+    ssl: databaseUrl.includes("localhost") ? undefined : { rejectUnauthorized: false },
   });
 
   console.log(`run typeorm benchmarks: `, databaseUrl);
@@ -25,11 +20,7 @@ export async function typeormPg(databaseUrl: string): Promise<
   await AppDataSource.initialize();
   // await prepare();
 
-  const results: {
-    query: string;
-    time: number;
-    data: any;
-  }[] = [];
+  const results: QueryResult[] = [];
 
   /**
    * findMany

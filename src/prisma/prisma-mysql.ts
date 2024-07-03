@@ -1,26 +1,17 @@
 import { PrismaClient } from "@prisma/client";
-import measure from "./lib/measure";
+import measure from "../lib/measure";
+import { QueryResult } from "../lib/types";
 
-export async function prismaPg(databaseUrl: string): Promise<
-  {
-    query: string;
-    time: number;
-    data: any;
-  }[]
-> {
+export async function prismaMySQL(databaseUrl: string): Promise<QueryResult[]> {
   console.log(`run prisma benchmarks: `, databaseUrl);
 
   const prisma = new PrismaClient({
-    datasourceUrl: databaseUrl
+    datasourceUrl: databaseUrl,
   });
 
   await prisma.$connect();
 
-  const results: {
-    query: string;
-    time: number;
-    data: any;
-  }[] = [];
+  const results: QueryResult[] = [];
 
   /**
    * findMany
@@ -232,85 +223,4 @@ export async function prismaPg(databaseUrl: string): Promise<
   await prisma.$disconnect();
 
   return results;
-
-  // /**
-  //  * createMany
-  //  */
-
-  // const _customersToCreate: Prisma.CustomerCreateInput[] = [];
-
-  // for (let i = 0; i < 1000; i++) {
-  //   _customersToCreate.push({
-  //     name: `Customer ${i}`,
-  //     email: `customer${i}@example.com`,
-  //   });
-  // }
-
-  // await measure('prisma-createMany', prisma.customer.createMany({
-  //   data: _customersToCreate,
-  // }));
-
-  // /**
-  //  * createManyAndReturn
-  //  */
-
-  // await measure('prisma-createManyAndReturn', prisma.customer.createManyAndReturn({
-  //   data: _customersToCreate,
-  // }));
-
-  // /**
-  //  * updateMany
-  //  */
-
-  // await measure('prisma-updateMany', prisma.customer.updateMany({
-  //   where: { isActive: false },
-  //   data: { isActive: true },
-  // }));
-
-  // /**
-  //  * deleteMany
-  //  */
-
-  // await measure('prisma-deleteMany', prisma.customer.deleteMany({
-  //   where: { isActive: false },
-  // }));
-
-  // /**
-  //  * aggregate
-  //  */
-
-  // await measure('prisma-aggregate', prisma.order.aggregate({
-  //   _sum: {
-  //     totalAmount: true,
-  //   },
-  // }));
-
-  // /**
-  //  * groupBy
-  //  */
-
-  // await measure('prisma-groupBy', prisma.order.groupBy({
-  //   by: ["customerId"],
-  //   _sum: {
-  //     totalAmount: true,
-  //   },
-  //   _count: {
-  //     _all: true,
-  //   },
-  // }));
 }
-
-// export async function closePrismaPg() {
-//   console.log(`closing connection with Prisma`);
-//   await prisma.$disconnect();
-// }
-
-// main()
-//   .then(async () => {
-//     await prisma.$disconnect();
-//   })
-//   .catch(async (e) => {
-//     console.error(e);
-//     await prisma.$disconnect();
-//     process.exit(1);
-//   });

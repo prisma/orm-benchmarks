@@ -1,12 +1,12 @@
 import { drizzle } from "drizzle-orm/postgres-js";
 
-import { Customer, Order, Address } from "./drizzle/schema-postgres";
-import * as schema from "./drizzle/schema-postgres";
-import * as relations from "./drizzle/relations-postgres";
+// import { Customer, Order, Address } from "./schema/schema-postgres";
+import * as schema from "./schema/schema-postgres";
+import * as relations from "./schema/relations-postgres";
 import { eq, desc } from "drizzle-orm";
-import measure from "./lib/measure";
+import measure from "../lib/measure";
 import postgres from "postgres";
-import { QueryResult } from "./lib/types";
+import { QueryResult } from "../lib/types";
 
 export async function drizzlePg(databaseUrl: string): Promise<QueryResult[]> {
   const client = postgres(databaseUrl, {
@@ -27,8 +27,8 @@ export async function drizzlePg(databaseUrl: string): Promise<QueryResult[]> {
     await measure(
       "drizzle-findMany-filter-paginate-order",
       db.query.Customer.findMany({
-        where: eq(Customer.isActive, true),
-        orderBy: [desc(Customer.createdAt)],
+        where: eq(schema.Customer.isActive, true),
+        orderBy: [desc(schema.Customer.createdAt)],
         offset: 0,
         limit: 10,
       })
@@ -71,7 +71,7 @@ export async function drizzlePg(databaseUrl: string): Promise<QueryResult[]> {
     await measure(
       "drizzle-findUnique",
       db.query.Customer.findFirst({
-        where: eq(Customer.id, 1),
+        where: eq(schema.Customer.id, 1),
       })
     )
   );
@@ -80,7 +80,7 @@ export async function drizzlePg(databaseUrl: string): Promise<QueryResult[]> {
     await measure(
       "drizzle-findUnique-1-level-nesting",
       db.query.Customer.findFirst({
-        where: eq(Customer.id, 1),
+        where: eq(schema.Customer.id, 1),
         with: {
           orders: true,
         },
@@ -96,7 +96,7 @@ export async function drizzlePg(databaseUrl: string): Promise<QueryResult[]> {
     await measure(
       "drizzle-create",
       db
-        .insert(Customer)
+        .insert(schema.Customer)
         .values({
           name: "John Doe",
           email: "john.doe@example.com",
@@ -109,7 +109,7 @@ export async function drizzlePg(databaseUrl: string): Promise<QueryResult[]> {
   const nestedCreate = db.transaction(async (trx) => {
     // Insert customer
     const customer = await trx
-      .insert(Customer)
+      .insert(schema.Customer)
       .values({
         name: "John Doe",
         email: "john.doe@example.com",
@@ -121,7 +121,7 @@ export async function drizzlePg(databaseUrl: string): Promise<QueryResult[]> {
 
     // Insert order with the associated customerId
     const insertedOrder = await trx
-      .insert(Order)
+      .insert(schema.Order)
       .values({
         customerId: customerId,
         // sqlite
@@ -153,7 +153,7 @@ export async function drizzlePg(databaseUrl: string): Promise<QueryResult[]> {
    */
 
   results.push(
-    await measure("drizzle-update", db.update(Customer).set({ name: "John Doe Updated" }).where(eq(Customer.id, 1)))
+    await measure("drizzle-update", db.update(schema.Customer).set({ name: "John Doe Updated" }).where(eq(schema.Customer.id, 1)))
   );
 
   results.push(
@@ -161,15 +161,15 @@ export async function drizzlePg(databaseUrl: string): Promise<QueryResult[]> {
       "drizzle-nested-update",
       db.transaction(async (trx) => {
         // Update customer name
-        await trx.update(Customer).set({ name: "John Doe Updated" }).where(eq(Customer.id, 1));
+        await trx.update(schema.Customer).set({ name: "John Doe Updated" }).where(eq(schema.Customer.id, 1));
 
         // Update address
         await trx
-          .update(Address)
+          .update(schema.Address)
           .set({
             street: "456 New St",
           })
-          .where(eq(Address.customerId, 1));
+          .where(eq(schema.Address.customerId, 1));
       })
     )
   );
@@ -181,14 +181,14 @@ export async function drizzlePg(databaseUrl: string): Promise<QueryResult[]> {
     await measure(
       "drizzle-upsert",
       db
-        .insert(Customer)
+        .insert(schema.Customer)
         .values({
           name: "John Doe",
           email: "john.doe@example.com",
           isActive: false,
         })
         .onConflictDoUpdate({
-          target: Customer.id,
+          target: schema.Customer.id,
           set: { name: "John Doe Upserted" },
         })
     )
@@ -197,14 +197,14 @@ export async function drizzlePg(databaseUrl: string): Promise<QueryResult[]> {
   const nestedUpsert = db.transaction(async (trx) => {
     // Update customer name
     const customer = await trx
-      .insert(Customer)
+      .insert(schema.Customer)
       .values({
         name: "John Doe",
         email: "john.doe@example.com",
         isActive: false,
       })
       .onConflictDoUpdate({
-        target: Customer.id,
+        target: schema.Customer.id,
         set: { name: "John Doe Upserted" },
       })
       .returning();
@@ -212,7 +212,7 @@ export async function drizzlePg(databaseUrl: string): Promise<QueryResult[]> {
 
     // Update address
     await trx
-      .insert(Address)
+      .insert(schema.Address)
       .values({
         street: "456 New St",
         city: "Anytown",
@@ -221,7 +221,7 @@ export async function drizzlePg(databaseUrl: string): Promise<QueryResult[]> {
         customerId: customerId,
       })
       .onConflictDoUpdate({
-        target: Address.id,
+        target: schema.Address.id,
         set: { street: "456 New St" },
       });
   });
@@ -231,7 +231,7 @@ export async function drizzlePg(databaseUrl: string): Promise<QueryResult[]> {
    * delete
    */
 
-  results.push(await measure("drizzle-delete", db.delete(Customer).where(eq(Customer.id, 1))));
+  results.push(await measure("drizzle-delete", db.delete(schema.Customer).where(eq(schema.Customer.id, 1))));
 
   await client.end(); // Close the database connection
 
