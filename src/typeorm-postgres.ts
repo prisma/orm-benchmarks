@@ -19,9 +19,9 @@ export async function typeormPg(databaseUrl: string): Promise<
     url: databaseUrl,
     logging: false,
     entities: [Customer, Order, Address, Product],
-    // ssl: {
-    //   rejectUnauthorized: false
-    // }
+    ssl: {
+      rejectUnauthorized: databaseUrl.includes('localhost')
+    }
   });
   
 

@@ -10,9 +10,9 @@ import { QueryResult } from "./lib/types";
 
 export async function drizzlePg(databaseUrl: string): Promise<QueryResult[]> {
   const client = postgres(databaseUrl, {
-    // ssl: {
-    //   rejectUnauthorized: false
-    // }
+    ssl: {
+      rejectUnauthorized: databaseUrl.includes('localhost')
+    }
   });
   const db = drizzle(client, { schema: { ...schema, ...relations } });
   console.log(`run drizzle benchmarks: `, databaseUrl);
