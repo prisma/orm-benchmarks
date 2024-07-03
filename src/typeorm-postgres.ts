@@ -19,7 +19,7 @@ export async function typeormPg(databaseUrl: string): Promise<
     url: databaseUrl,
     logging: false,
     entities: [Customer, Order, Address, Product],
-    ssl: { rejectUnauthorized: true }, // required on remote machine
+    ssl: { rejectUnauthorized: false }, // required on remote machine
   });
 
   console.log(`run typeorm benchmarks: `, databaseUrl);
