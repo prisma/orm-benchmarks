@@ -9,9 +9,6 @@ import postgres from "postgres";
 import { QueryResult } from "./lib/types";
 
 export async function drizzlePg(databaseUrl: string): Promise<QueryResult[]> {
-  // const client = postgres(databaseUrl, { 
-  //   ssl: { rejectUnauthorized: true } // required on remote machine
-  // });
   const client = postgres(databaseUrl, {
     ssl: {
       rejectUnauthorized: false
