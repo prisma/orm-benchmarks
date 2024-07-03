@@ -29,7 +29,7 @@ run_benchmark() {
 # Default number of iterations
 iterations=2
 size=50
-database_url="postgresql://nikolasburk:nikolasburk@localhost:5432/benchmark"
+# database_url="postgresql://nikolasburk:nikolasburk@localhost:5432/benchmark"
 
 # Parse command-line arguments
 while [[ "$#" -gt 0 ]]; do
