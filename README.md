@@ -1,5 +1,17 @@
 # ORM benchmarks
 
+## Setup
+
+Clone the repo, install dependecies and run migration:
+
+```
+git clone ...
+npm install --legacy-peer-deps
+npx prisma migrate dev
+```
+
+> **Note**: `--legacy-peer-deps` because of the some ORMs requiring differing version of database drivers.
+
 ## Usage
 
 You can execute the benchmarks by running the [`benchmark.sh`](./benchmark.sh):

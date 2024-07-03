@@ -42,7 +42,11 @@ while [[ "$#" -gt 0 ]]; do
   shift
 done
 
-echo "Running benchmark iteration $i with size $size and database URL $database_url"
+echo "Running benchmarks"
+echo "Iterations: $i"
+echo "Size: $size"
+echo "Database URL: $database_url"
+
 export ITERATIONS=$iterations
 export SIZE=$size
 export DATABASE_URL=$database_url
