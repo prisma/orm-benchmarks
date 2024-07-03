@@ -2,21 +2,21 @@
 
 # Function to restart PostgreSQL
 # restart_postgres() {
-#   sudo systemctl restart postgresql
+#   # TODO
 # }
 
 # Function to clear OS cache
-# clear_os_cache() {
-#   sudo sync
-#   sudo sysctl -w vm.drop_caches=3
-# }
+clear_os_cache() {
+  sudo sync
+  sudo sysctl -w vm.drop_caches=3
+}
 
 
 # # Function to perform a benchmark run
 run_benchmark() {
   # Clear caches
   # restart_postgres
-  # clear_os_cache
+  clear_os_cache
 
   npm start
 }
