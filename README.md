@@ -2,15 +2,21 @@
 
 ## Setup
 
-Clone the repo, install dependecies and run migration:
+Clone the repo, install dependecies:
 
 ```
 git clone ...
 npm install --legacy-peer-deps
-npx prisma migrate dev
 ```
 
 > **Note**: `--legacy-peer-deps` because of the some ORMs requiring differing version of database drivers.
+
+Set the databse URL and run a migration:
+
+```
+export DATABASE_URL=postgresql://user:password@host:port/db
+npx prisma migrate dev
+```
 
 ## Usage
 

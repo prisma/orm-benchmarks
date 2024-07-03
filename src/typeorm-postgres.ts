@@ -13,13 +13,13 @@ export async function typeormPg(databaseUrl: string): Promise<
   }[]
 > {
   const ssl = databaseUrl.includes("localhost") ? undefined : { rejectUnauthorized: true };
-  console.log(`ssl`, ssl)
+  console.log(`ssl`, ssl);
   const AppDataSource = new DataSource({
     type: "postgres",
     url: databaseUrl,
     logging: false,
     entities: [Customer, Order, Address, Product],
-    ssl,
+    ssl: { rejectUnauthorized: true }, // required on remote machine
   });
 
   console.log(`run typeorm benchmarks: `, databaseUrl);
