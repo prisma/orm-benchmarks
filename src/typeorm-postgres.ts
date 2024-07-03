@@ -13,6 +13,7 @@ export async function typeormPg(databaseUrl: string): Promise<
   }[]
 > {
   const ssl = databaseUrl.includes("localhost") ? undefined : { rejectUnauthorized: true };
+  console.log(`ssl`, ssl)
   const AppDataSource = new DataSource({
     type: "postgres",
     url: databaseUrl,
