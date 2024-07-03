@@ -1,0 +1,49 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/prisma/client-mysql"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+  // shadowDatabaseUrl = env("SHADOW_DATABASE_URL")
+}
+
+model Customer {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  name      String?
+  email     String // @unique
+  address   Address?
+  isActive  Boolean  @default(false)
+  // extraInfo   Json?
+  orders    Order[]
+}
+
+model Address {
+  id         Int      @id @default(autoincrement())
+  street     String?
+  city       String?
+  postalCode String?
+  country    String?
+  customerId Int      @unique
+  customer   Customer @relation(fields: [customerId], references: [id], onDelete: Cascade)
+}
+
+model Order {
+  id          Int       @id @default(autoincrement())
+  date        DateTime
+  totalAmount Float
+  customerId  Int
+  customer    Customer  @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  products    Product[] @relation("OrderProducts")
+}
+
+model Product {
+  id          Int     @id @default(autoincrement())
+  name        String
+  price       Float
+  quantity    Int
+  description String?
+  orders      Order[] @relation("OrderProducts")
+}

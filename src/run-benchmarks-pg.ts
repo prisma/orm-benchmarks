@@ -1,4 +1,4 @@
-import { preparePg } from "./lib/prepare";
+import { seedPg } from "./lib/seed";
 import writeResults from "./lib/write-results";
 import { prismaPg } from "./prisma/prisma-postgres";
 import { typeormPg } from "./typeorm/typeorm-postgres";
@@ -10,7 +10,7 @@ export default async function runBenchmarksPg(options: { databaseUrl: string; it
 
   const prismaResults: MultipleBenchmarkRunResults = [];
   for (let i = 0; i < iterations; i++) {
-    await preparePg(databaseUrl);
+    await seedPg(databaseUrl);
     const results = await prismaPg(databaseUrl);
     // discard the initial run "warmup" run
     // if (i > 0)
@@ -20,7 +20,7 @@ export default async function runBenchmarksPg(options: { databaseUrl: string; it
 
   const drizzleResults: MultipleBenchmarkRunResults = [];
   for (let i = 0; i < iterations; i++) {
-    await preparePg(databaseUrl);
+    await seedPg(databaseUrl);
     const results = await drizzlePg(databaseUrl);
     // discard the initial run "warmup" run
     // if (i > 0)
@@ -30,7 +30,7 @@ export default async function runBenchmarksPg(options: { databaseUrl: string; it
 
   const typeormResults: MultipleBenchmarkRunResults = [];
   for (let i = 0; i < iterations; i++) {
-    await preparePg(databaseUrl);
+    await seedPg(databaseUrl);
     const results = await typeormPg(databaseUrl);
     // if (i > 0)
     typeormResults.push(results);

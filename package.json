@@ -2,23 +2,23 @@
   "name": "script",
   "license": "MIT",
   "scripts": {
-    "start": "ts-node ./src/main.ts"
+    "start": "ts-node ./src/main.ts",
+    "prisma:gen:pg": "prisma generate --schema prisma-postgres/schema-postgres.prisma",
+    "prisma:gen:mysql": "prisma generate --schema prisma-mysql/schema-mysql.prisma",
+    "prisma:gen:all": "npm run prisma:gen:pg && npm run prisma:gen:mysql"
   },
   "dependencies": {
     "@prisma/client": "5.15.0",
-    "better-sqlite3": "^11.0.0",
     "drizzle-orm": "^0.31.2",
     "fast-csv": "^5.0.1",
     "mysql2": "^3.10.2",
     "pg": "^8.12.0",
     "postgres": "^3.4.4",
     "reflect-metadata": "^0.2.2",
-    "sqlite3": "^5.1.7",
     "typeorm": "^0.3.20"
   },
   "devDependencies": {
     "@faker-js/faker": "^8.4.1",
-    "@types/better-sqlite3": "^7.6.10",
     "@types/faker": "^6.6.9",
     "@types/node": "20.14.7",
     "drizzle-kit": "^0.22.7",
