@@ -1,5 +1,5 @@
 export type ORM = "prisma" | "drizzle" | "typeorm";
-export type Database = "PostgreSQL" | "MySQL"
+export type Database = "postgresql" | "mysql"
 export type QueryResult = {
   query: string;
   time: number;

@@ -1,4 +1,4 @@
-import { PrismaClient } from "@prisma/client";
+import { PrismaClient } from "./client";
 import measure from "../lib/measure";
 import { QueryResult } from "../lib/types";
 

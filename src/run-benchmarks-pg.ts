@@ -1,76 +1,41 @@
-import * as fs from "fs";
-import prepare from "./lib/prepare-pg";
+import { preparePg } from "./lib/prepare";
+import writeResults from "./lib/write-results";
 import { prismaPg } from "./prisma/prisma-postgres";
 import { typeormPg } from "./typeorm/typeorm-postgres";
 import { drizzlePg } from "./drizzle/drizzle-postgres";
-import { MultipleBenchmarkRunResults, ORM } from "./lib/types";
+import { MultipleBenchmarkRunResults } from "./lib/types";
 
 export default async function runBenchmarksPg(options: { databaseUrl: string; iterations: number }) {
   const { databaseUrl, iterations } = options;
 
   const prismaResults: MultipleBenchmarkRunResults = [];
   for (let i = 0; i < iterations; i++) {
-    await prepare(databaseUrl);
+    await preparePg(databaseUrl);
     const results = await prismaPg(databaseUrl);
     // discard the initial run "warmup" run
     // if (i > 0)
     prismaResults.push(results);
   }
-  writeResults("prisma", prismaResults);
+  writeResults("prisma", "postgresql", prismaResults);
 
   const drizzleResults: MultipleBenchmarkRunResults = [];
   for (let i = 0; i < iterations; i++) {
-    await prepare(databaseUrl);
+    await preparePg(databaseUrl);
     const results = await drizzlePg(databaseUrl);
     // discard the initial run "warmup" run
     // if (i > 0)
     drizzleResults.push(results);
   }
-  writeResults("drizzle", drizzleResults);
+  writeResults("drizzle", "postgresql", drizzleResults);
 
   const typeormResults: MultipleBenchmarkRunResults = [];
   for (let i = 0; i < iterations; i++) {
-    await prepare(databaseUrl);
+    await preparePg(databaseUrl);
     const results = await typeormPg(databaseUrl);
     // if (i > 0)
     typeormResults.push(results);
   }
-  writeResults("typeorm", typeormResults);
-}
-
-function writeResults(orm: ORM, results: MultipleBenchmarkRunResults) {
-  console.log(`write results for ${orm}:`);
-
-  // Extract headers
-  const headers = Array.from(new Set(results.flatMap((batch) => batch.map((item) => item.query))));
-
-  // Extract rows
-  const rows = results.map((batch) => {
-    const row: { [key: string]: number | string } = {};
-    batch.forEach((item) => {
-      row[item.query] = item.time;
-    });
-    // Ensure all headers are included in each row, even if they are missing in the batch
-    headers.forEach((header) => {
-      if (!(header in row)) {
-        row[header] = "";
-      }
-    });
-    return headers.map((header) => row[header]);
-  });
-
-  // Write to CSV
-  const filename = `./results/${orm}-results-${Date.now()}.csv`;
-  const csvStream = fs.createWriteStream(filename);
-
-  csvStream.write(headers.join(",") + "\n");
-  rows.forEach((row) => {
-    csvStream.write(row.join(",") + "\n");
-  });
-
-  csvStream.end();
-
-  console.log(`results for ${orm} written to: ${filename}`);
+  writeResults("typeorm", "postgresql", typeormResults);
 }
 
 // function extractIds(data: any, collectedIds: Set<any> = new Set()): Set<any> {

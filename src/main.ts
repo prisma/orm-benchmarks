@@ -8,13 +8,13 @@ const iterations = Number(process.env.ITERATIONS) || 1;
 async function main() {
   const database = extractDatabase(databaseUrl);
 
-  if (database === "PostgreSQL") {
+  if (database === "postgresql") {
     console.log(`Running benchmarks on ${databaseUrl}.`);
     await runBenchmarksPg({ databaseUrl, iterations });
   }
-  else if (database === "MySQL") {
+  else if (database === "mysql") {
     console.log(`Running benchmarks on ${databaseUrl}.`);
-    // await runBenchmarksPg({ databaseUrl, iterations });
+    await runBenchmarksMySQL({ databaseUrl, iterations });
   } else {
     console.log(`${database} is not yet available.`);
   }
