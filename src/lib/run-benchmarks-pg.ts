@@ -9,28 +9,31 @@ export default async function runBenchmarksPg(options: { databaseUrl: string; it
   const { databaseUrl, iterations } = options;
 
   const prismaResults: MultipleBenchmarkRunResults = [];
-  for (let i = 0; i < iterations + 1; i++) {
+  for (let i = 0; i < iterations; i++) {
     await prepare(databaseUrl);
     const results = await prismaPg(databaseUrl);
     // discard the initial run "warmup" run
-    if (i > 0) prismaResults.push(results);
+    // if (i > 0)
+    prismaResults.push(results);
   }
   writeResults("prisma", prismaResults);
 
   const drizzleResults: MultipleBenchmarkRunResults = [];
-  for (let i = 0; i < iterations + 1; i++) {
+  for (let i = 0; i < iterations; i++) {
     await prepare(databaseUrl);
     const results = await drizzlePg(databaseUrl);
     // discard the initial run "warmup" run
-    if (i > 0) prismaResults.push(results);
+    // if (i > 0)
+    prismaResults.push(results);
   }
   writeResults("drizzle", drizzleResults);
 
   const typeormResults: MultipleBenchmarkRunResults = [];
-  for (let i = 0; i < iterations + 1; i++) {
+  for (let i = 0; i < iterations; i++) {
     await prepare(databaseUrl);
     const results = await typeormPg(databaseUrl);
-    if (i > 0) prismaResults.push(results);
+    // if (i > 0)
+    prismaResults.push(results);
   }
   writeResults("typeorm", typeormResults);
 }
