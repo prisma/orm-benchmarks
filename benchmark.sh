@@ -43,7 +43,7 @@ while [[ "$#" -gt 0 ]]; do
 done
 
 echo "Running benchmarks"
-echo "Iterations: $i"
+echo "Iterations: $iterations"
 echo "Size: $size"
 echo "Database URL: $database_url"
 
