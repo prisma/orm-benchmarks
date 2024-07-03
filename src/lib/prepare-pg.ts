@@ -1,20 +1,19 @@
-import { PrismaClient } from '@prisma/client';
-import { faker } from '@faker-js/faker';
+import { PrismaClient } from "@prisma/client";
+import { faker } from "@faker-js/faker";
 
-const NUMBER_OF_RECORDS = process.env.SIZE ? Number(process.env.SIZE) : 100
-const NUMBER_OF_RELATED_RECORDS = 10
-const FAKER_SEED = 42
+const NUMBER_OF_RECORDS = process.env.SIZE ? Number(process.env.SIZE) : 100;
+const NUMBER_OF_RELATED_RECORDS = 10;
+const FAKER_SEED = 42;
 
 export default async function prepare(databaseUrl: string) {
-
   const prisma = new PrismaClient({
-    datasourceUrl: databaseUrl
+    datasourceUrl: databaseUrl,
   });
 
-  console.log(`Preparing DB ...`, databaseUrl)
+  console.log(`Preparing DB ...`, databaseUrl);
 
   // Clean tables
-  console.log(`Clearing tables ...`)
+  console.log(`Clearing tables ...`);
 
   // Postgres
   await prisma.address.deleteMany();
@@ -29,9 +28,9 @@ export default async function prepare(databaseUrl: string) {
   await prisma.customer.deleteMany();
   await prisma.$executeRaw`ALTER SEQUENCE "Customer_id_seq" RESTART WITH 1`;
 
-  faker.seed(FAKER_SEED)
+  faker.seed(FAKER_SEED);
 
-  console.log(`Seeding data ...`)
+  console.log(`Seeding data ...`);
   // Seed Customers
   // console.log(`Customers with orders ...`)
   for (let i = 0; i < NUMBER_OF_RECORDS; i++) {
@@ -99,6 +98,9 @@ export default async function prepare(databaseUrl: string) {
   const productsCount = await prisma.product.count();
   const addressesCount = await prisma.address.count();
   const customersCount = await prisma.customer.count();
-  console.log(`Created: \n${ordersCount} orders\n${productsCount} products\n${addressesCount} addresses\n${customersCount} customers`)
+  console.log(
+    `Created: \n${ordersCount} orders\n${productsCount} products\n${addressesCount} addresses\n${customersCount} customers`
+  );
 
+  await prisma.$disconnect();
 }
