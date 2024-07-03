@@ -55,7 +55,7 @@ export default async function prepare(databaseUrl: string) {
     for (let j = 0; j < NUMBER_OF_RELATED_RECORDS; j++) {
       await prisma.order.create({
         data: {
-          // date: faker.date.past(),
+          date: faker.date.past(),
           totalAmount: faker.number.int({ min: 10, max: 1000 }),
           customerId: customer.id,
         },

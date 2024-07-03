@@ -36,7 +36,7 @@ export async function prismaPg(databaseUrl: string): Promise<
           isActive: true,
         },
         orderBy: {
-          id: "desc",
+          createdAt: "desc",
         },
         skip: 0,
         take: 10,
@@ -122,7 +122,7 @@ export async function prismaPg(databaseUrl: string): Promise<
           email: "john.doe@example.com",
           orders: {
             create: {
-              // date: new Date(),
+              date: new Date(),
               totalAmount: 100.5,
               products: {
                 connect: [{ id: 1 }, { id: 2 }], // Assuming products with IDs 1 and 2 already exist

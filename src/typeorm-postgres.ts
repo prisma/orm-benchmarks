@@ -46,7 +46,7 @@ export async function typeormPg(databaseUrl: string): Promise<
       "typeorm-findMany-filter-paginate-order",
       AppDataSource.getRepository(Customer).find({
         where: { isActive: true },
-        order: { id: "DESC" },
+        order: { createdAt: "DESC" },
         skip: 0,
         take: 10,
       })
@@ -133,6 +133,7 @@ export async function typeormPg(databaseUrl: string): Promise<
     });
 
     // Insert products with the associated orderId
+    // TODO
     // await transactionalEntityManager
     //   .createQueryBuilder()
     //   .insert()

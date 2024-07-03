@@ -30,8 +30,7 @@ export async function drizzlePg(databaseUrl: string): Promise<QueryResult[]> {
       "drizzle-findMany-filter-paginate-order",
       db.query.Customer.findMany({
         where: eq(Customer.isActive, true),
-        // orderBy: [desc(Customer.createdAt)],
-        orderBy: [desc(Customer.id)],
+        orderBy: [desc(Customer.createdAt)],
         offset: 0,
         limit: 10,
       })
@@ -130,7 +129,7 @@ export async function drizzlePg(databaseUrl: string): Promise<QueryResult[]> {
         // sqlite
         // date: `${new Date()}`,
         // postgres
-        // date: `${new Date().toISOString()}`,
+        date: `${new Date().toISOString()}`,
         totalAmount: "100.5",
       })
       .returning();
