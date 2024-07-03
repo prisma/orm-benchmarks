@@ -5,7 +5,6 @@ import { Address } from "./typeorm/Address";
 import { Product } from "./typeorm/Product";
 import measure from "./lib/measure";
 
-
 export async function typeormPg(databaseUrl: string): Promise<
   {
     query: string;
@@ -13,17 +12,14 @@ export async function typeormPg(databaseUrl: string): Promise<
     data: any;
   }[]
 > {
-
+  const ssl = databaseUrl.includes("localhost") ? undefined : { rejectUnauthorized: true };
   const AppDataSource = new DataSource({
     type: "postgres",
     url: databaseUrl,
     logging: false,
     entities: [Customer, Order, Address, Product],
-    ssl: {
-      rejectUnauthorized: databaseUrl.includes('localhost')
-    }
+    ssl,
   });
-  
 
   console.log(`run typeorm benchmarks: `, databaseUrl);
 
