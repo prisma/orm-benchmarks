@@ -16,7 +16,7 @@ clear_os_cache() {
 run_benchmark() {
   # Clear caches
   # restart_postgres
-  clear_os_cache
+  # clear_os_cache
 
   npm start
 }
@@ -50,4 +50,5 @@ echo "Database URL: $database_url"
 export ITERATIONS=$iterations
 export SIZE=$size
 export DATABASE_URL=$database_url
+
 run_benchmark
