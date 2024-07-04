@@ -1,39 +1,38 @@
 import { preparePg } from "./lib/prepare";
 import writeResults from "./lib/write-results";
-import { MultipleBenchmarkRunResults } from "./lib/types";
+import { BenchmarkOptions, MultipleBenchmarkRunResults } from "./lib/types";
 import { prismaPg } from "./prisma/prisma-postgres";
 import { typeormPg } from "./typeorm/typeorm-postgres";
 import { drizzlePg } from "./drizzle/drizzle-postgres";
 
 export default async function runBenchmarksPg(
-  options: {
-    databaseUrl: string; iterations: number, size: number, fakerSeed: number;
-  }) {
-  const { databaseUrl, iterations, size, fakerSeed } = options;
+  benchmarkOptions: BenchmarkOptions
+) {
+  const { databaseUrl, iterations, size, fakerSeed } = benchmarkOptions;
 
   const prismaResults: MultipleBenchmarkRunResults = [];
   for (let i = 0; i < iterations; i++) {
-    await preparePg({ databaseUrl, size, fakerSeed});
+    await preparePg({ databaseUrl, size, fakerSeed });
     const results = await prismaPg(databaseUrl);
     prismaResults.push(results);
   }
-  writeResults("prisma", "postgresql", prismaResults);
+  writeResults("prisma", "postgresql", prismaResults, benchmarkOptions);
 
   const drizzleResults: MultipleBenchmarkRunResults = [];
   for (let i = 0; i < iterations; i++) {
-    await preparePg({ databaseUrl, size, fakerSeed});
+    await preparePg({ databaseUrl, size, fakerSeed });
     const results = await drizzlePg(databaseUrl);
     drizzleResults.push(results);
   }
-  writeResults("drizzle", "postgresql", drizzleResults);
+  writeResults("drizzle", "postgresql", drizzleResults, benchmarkOptions);
 
   const typeormResults: MultipleBenchmarkRunResults = [];
   for (let i = 0; i < iterations; i++) {
-    await preparePg({ databaseUrl, size, fakerSeed});
+    await preparePg({ databaseUrl, size, fakerSeed });
     const results = await typeormPg(databaseUrl);
     typeormResults.push(results);
   }
-  writeResults("typeorm", "postgresql", typeormResults);
+  writeResults("typeorm", "postgresql", typeormResults, benchmarkOptions);
 }
 
 // function extractIds(data: any, collectedIds: Set<any> = new Set()): Set<any> {

@@ -1,5 +1,5 @@
 export type ORM = "prisma" | "drizzle" | "typeorm";
-export type Database = "postgresql" | "mysql"
+export type Database = "postgresql" | "mysql";
 export type QueryResult = {
   query: string;
   time: number;
@@ -15,4 +15,11 @@ export type ConnectionDetails = {
   host: string;
   port: string;
   db: string;
+};
+
+export type BenchmarkOptions = {
+  databaseUrl: string; 
+  iterations: number;
+  size: number;
+  fakerSeed: number;
 };
