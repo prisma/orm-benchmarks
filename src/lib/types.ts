@@ -8,3 +8,11 @@ export type QueryResult = {
 export type SingleBenchmarkRunResult = QueryResult[];
 export type MultipleBenchmarkRunResults = SingleBenchmarkRunResult[];
 export type AllResults = { [key in ORM]: MultipleBenchmarkRunResults };
+
+export type ConnectionDetails = {
+  user: string;
+  password: string;
+  host: string;
+  port: string;
+  db: string;
+};

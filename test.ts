@@ -1,33 +1,35 @@
-import { PrismaClient} from './src/prisma/client-postgresql'
-import { seedPg } from './src/lib/seed'
+import { PrismaClient } from "./src/prisma/client-postgresql";
+import { seedPg } from "./src/lib/prepare";
+import { createDataSet } from "./src/lib/create-dataset";
 
-const dbUrl = 'postgresql://nikolasburk:nikolasburk@localhost:5432/benchmark'
+const dbUrl = "postgresql://nikolasburk:nikolasburk@localhost:5432/benchmark";
 
-const prisma = new PrismaClient({
-  datasourceUrl: dbUrl,
-});
+// const prisma = new PrismaClient({
+//   datasourceUrl: dbUrl,
+// });
 
 async function test() {
 
-    await seedPg(dbUrl)
-
-      const ordersCount = await prisma.order.count();
-  const productsCount = await prisma.product.count();
-  const addressesCount = await prisma.address.count();
-  const customersCount = await prisma.customer.count();
-  console.log(
-    `Created: \n${ordersCount} orders\n${productsCount} products\n${addressesCount} addresses\n${customersCount} customers`
-  );
+  createDataSet(
+    dbUrl,
+    100,
+    42,
+    'test'
+  )
 
 
+  // await seedPg(dbUrl);
+
+  // const ordersCount = await prisma.order.count();
+  // const productsCount = await prisma.product.count();
+  // const addressesCount = await prisma.address.count();
+  // const customersCount = await prisma.customer.count();
+  // console.log(
+  //   `Created: \n${ordersCount} orders\n${productsCount} products\n${addressesCount} addresses\n${customersCount} customers`
+  // );
 }
 
-test()
-
-
-
-
-
+test();
 
 // import { PrismaClient } from "@prisma/client";
 // import { faker } from "@faker-js/faker";

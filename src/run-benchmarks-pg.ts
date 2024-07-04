@@ -1,38 +1,36 @@
-import { seedPg } from "./lib/seed";
+import { preparePg } from "./lib/prepare";
 import writeResults from "./lib/write-results";
+import { MultipleBenchmarkRunResults } from "./lib/types";
 import { prismaPg } from "./prisma/prisma-postgres";
 import { typeormPg } from "./typeorm/typeorm-postgres";
 import { drizzlePg } from "./drizzle/drizzle-postgres";
-import { MultipleBenchmarkRunResults } from "./lib/types";
 
-export default async function runBenchmarksPg(options: { databaseUrl: string; iterations: number }) {
-  const { databaseUrl, iterations } = options;
+export default async function runBenchmarksPg(
+  options: {
+    databaseUrl: string; iterations: number, size: number, fakerSeed: number;
+  }) {
+  const { databaseUrl, iterations, size, fakerSeed } = options;
 
   const prismaResults: MultipleBenchmarkRunResults = [];
   for (let i = 0; i < iterations; i++) {
-    await seedPg(databaseUrl);
+    await preparePg({ databaseUrl, size, fakerSeed});
     const results = await prismaPg(databaseUrl);
-    // discard the initial run "warmup" run
-    // if (i > 0)
     prismaResults.push(results);
   }
   writeResults("prisma", "postgresql", prismaResults);
 
   const drizzleResults: MultipleBenchmarkRunResults = [];
   for (let i = 0; i < iterations; i++) {
-    await seedPg(databaseUrl);
+    await preparePg({ databaseUrl, size, fakerSeed});
     const results = await drizzlePg(databaseUrl);
-    // discard the initial run "warmup" run
-    // if (i > 0)
     drizzleResults.push(results);
   }
   writeResults("drizzle", "postgresql", drizzleResults);
 
   const typeormResults: MultipleBenchmarkRunResults = [];
   for (let i = 0; i < iterations; i++) {
-    await seedPg(databaseUrl);
+    await preparePg({ databaseUrl, size, fakerSeed});
     const results = await typeormPg(databaseUrl);
-    // if (i > 0)
     typeormResults.push(results);
   }
   writeResults("typeorm", "postgresql", typeormResults);

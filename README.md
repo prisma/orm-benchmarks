@@ -20,6 +20,13 @@ npx prisma migrate dev
 
 ## Usage
 
+### Creating datasets
+
+This benchmark repo offers a way to create data sets in a deterministic way using [faker.js]().
+
+### Executing the benchmarks
+
+
 You can execute the benchmarks by running the [`benchmark.sh`](./benchmark.sh):
 
 ```
