@@ -3,8 +3,8 @@ import runBenchmarksPg from "./run-benchmarks-pg";
 // import runBenchmarksMySQL from "./run-benchmarks-mysql";
 
 const databaseUrl = process.env.DATABASE_URL || "postgresql://nikolasburk:nikolasburk@localhost:5432/benchmark";
-const iterations = Number(process.env.ITERATIONS) || 1;
-const size = Number(process.env.ITERATIONS) || 1000
+const iterations = Number(process.env.ITERATIONS) || 5;
+const size = Number(process.env.SIZE) || 1000
 const fakerSeed = Number (process.env.SEED) || 42
 
 async function main() {

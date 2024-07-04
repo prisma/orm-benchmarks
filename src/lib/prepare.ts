@@ -11,6 +11,16 @@ export async function preparePg(
   const NUMBER_OF_RELATED_RECORDS = 10;
   const FAKER_SEED = options.fakerSeed || 42;
 
+  const filePath = `./data/data-${NUMBER_OF_RECORDS}-${FAKER_SEED}.sql`;
+  if (await fileExists(filePath)) {
+    console.log(`Use SQL dump: ${filePath}`);
+    await restoreFromSQLDump(options.databaseUrl, filePath);
+    return;
+  }
+
+  console.log(`${filePath} doesn't exist yet, creating SQL dump ...`);
+
+
   const prisma = new PrismaClient({
     datasourceUrl: options.databaseUrl,
   });
@@ -109,16 +119,12 @@ export async function preparePg(
 
   await prisma.$disconnect();
 
-  const filePath = `./data/data-${NUMBER_OF_RECORDS}-${FAKER_SEED}.sql`;
-  if (!fileExists(filePath)) {
-    createSQLDumpPg(options.databaseUrl, filePath);
-  }
-
+  await createSQLDumpPg(options.databaseUrl, filePath);
 }
 
-export async function createSQLDumpPg(databaseUrl: string, filePath?: string) {
+async function createSQLDumpPg(databaseUrl: string, filePath?: string) {
   const connectionDetails = extractConnectionDetailsFromUrl(databaseUrl);
-  console.log(`Dumping dataset with connection details: `, connectionDetails);
+  // console.log(`Dumping dataset with connection details: `, connectionDetails);
   const { host, user, db, password } = connectionDetails;
   const command = `pg_dump -h ${host} -U ${user} -d ${db} --no-owner -F c -b -v -f ${filePath}`;
   console.log(`SQL dump command: `, command);
@@ -127,6 +133,21 @@ export async function createSQLDumpPg(databaseUrl: string, filePath?: string) {
     console.log(`Sucessfully stored SQL dump in ${filePath}`);
   } catch (error) {
     console.error("Failed to execute pg_dump command.");
+    console.error(error);
+  }
+}
+
+async function restoreFromSQLDump(databaseUrl: string, filePath: string) {
+  const connectionDetails = extractConnectionDetailsFromUrl(databaseUrl);
+  // console.log(`Restoring dataset with connection details: `, connectionDetails);
+  const { host, user, db, password } = connectionDetails;
+  const command = `pg_restore -h ${host} -U ${user} -d ${db} --no-owner -v --clean ${filePath}`;
+  console.log(`SQL restore command: `, command);
+  try {
+    await executeCommand(command, { PGPASSWORD: password });
+    console.log(`Sucessfully restored SQL dump from ${filePath}`);
+  } catch (error) {
+    console.error("Failed to execute pg_restore command.");
     console.error(error);
   }
 }

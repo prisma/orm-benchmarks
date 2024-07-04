@@ -124,9 +124,9 @@ export async function createSQLDump(databaseUrl: string, filePath?: string) {
   console.log(`dump command: `, command);
   try {
     await executeCommand(command, { PGPASSWORD: password });
-    console.log("pg_restore command executed successfully.");
+    console.log("pg_dump command executed successfully.");
   } catch (error) {
-    console.error("Failed to execute pg_restore command.");
+    console.error("Failed to execute pg_dump command.");
   }
 }
 
