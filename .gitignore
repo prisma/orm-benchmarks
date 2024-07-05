@@ -4,3 +4,5 @@ dist/
 .DS_Store
 results
 test.ts
+src/prisma/client-mysql
+src/prisma/client-postgresql
