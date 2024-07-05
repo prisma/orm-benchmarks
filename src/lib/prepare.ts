@@ -11,7 +11,7 @@ export async function preparePg(
   const NUMBER_OF_RELATED_RECORDS = 10;
   const FAKER_SEED = options.fakerSeed || 42;
 
-  const filePath = `./data/data-${NUMBER_OF_RECORDS}-${FAKER_SEED}.sql`;
+  const filePath = `./data/data-pg-${NUMBER_OF_RECORDS}-${FAKER_SEED}.sql`;
   if (await fileExists(filePath)) {
     console.log(`Use SQL dump: ${filePath}`);
     await restoreFromSQLDump(options.databaseUrl, filePath);
