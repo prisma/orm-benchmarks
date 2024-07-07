@@ -14,7 +14,7 @@ export async function preparePg(
   const filePath = `./data/data-pg-${NUMBER_OF_RECORDS}-${FAKER_SEED}.sql`;
   if (await fileExists(filePath)) {
     console.log(`Use SQL dump: ${filePath}`);
-    await restoreFromSQLDump(options.databaseUrl, filePath);
+    await restoreFromSQLDumpPg(options.databaseUrl, filePath);
     return;
   }
 
@@ -137,7 +137,7 @@ async function createSQLDumpPg(databaseUrl: string, filePath?: string) {
   }
 }
 
-async function restoreFromSQLDump(databaseUrl: string, filePath: string) {
+async function restoreFromSQLDumpPg(databaseUrl: string, filePath: string) {
   const connectionDetails = extractConnectionDetailsFromUrl(databaseUrl);
   // console.log(`Restoring dataset with connection details: `, connectionDetails);
   const { host, user, db, password } = connectionDetails;

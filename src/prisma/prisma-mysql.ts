@@ -1,4 +1,4 @@
-import { PrismaClient } from "./client";
+import { PrismaClient } from "./client-mysql";
 import measure from "../lib/measure";
 import { QueryResult } from "../lib/types";
 

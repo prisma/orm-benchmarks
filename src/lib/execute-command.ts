@@ -12,10 +12,10 @@ export function executeCommand(command: string, envVars: NodeJS.ProcessEnv) {
       }
 
       if (stderr) {
-        console.error(`stderr: ${stderr}`);
+        // console.error(`stderr: ${stderr}`);
       }
   
-      console.log(`stdout: ${stdout}`);
+      // console.log(`stdout: ${stdout}`);
       resolve();
     });
 
@@ -26,20 +26,23 @@ export function executeCommand(command: string, envVars: NodeJS.ProcessEnv) {
 }
 
 export function extractConnectionDetailsFromUrl(databaseUrl: string): ConnectionDetails {
-  const regex = /postgresql:\/\/([^:]+):([^@]+)@([^:]+):(\d+)\/(.+)/;
+  // const regex = /postgresql:\/\/([^:]+):([^@]+)@([^:]+):(\d+)\/(.+)/;
+  console.log(`Extract DB URL: `, databaseUrl)
+  // const regex = /mysql:\/\/([^:]+):([^@]+)@([^:]+):(\d+)\/(.+)/;
+  const regex = /^mysql:\/\/([^:]+):([^@]+)@([^\/]+)\/([^?]+).*/;
   const match = databaseUrl.match(regex);
 
   if (!match) {
     throw new Error('Invalid database URL');
   }
 
-  const [_, user, password, host, port, db] = match;
+  console.log(`regex: `, match)
+  const [_, user, password, host, dbname] = match;
 
   return {
     user,
     password,
     host,
-    port,
-    db
+    db: dbname
   };
 }

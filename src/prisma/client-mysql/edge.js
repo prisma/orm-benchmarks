@@ -147,7 +147,7 @@ const config = {
       "value": "prisma-client-js"
     },
     "output": {
-      "value": "/Users/nikolasburk/Desktop/benchmark/src/prisma/client-mysql",
+      "value": "/Users/nikolasburk/Desktop/bench/src/prisma/client-mysql",
       "fromEnvVar": null
     },
     "config": {
@@ -164,7 +164,7 @@ const config = {
     "isCustomOutput": true
   },
   "relativeEnvPaths": {
-    "rootEnvPath": "../../../.env",
+    "rootEnvPath": null,
     "schemaEnvPath": "../../../.env"
   },
   "relativePath": "../../../prisma-mysql",

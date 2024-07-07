@@ -13,7 +13,7 @@ export type ConnectionDetails = {
   user: string;
   password: string;
   host: string;
-  port: string;
+  port?: string;
   db: string;
 };
 
