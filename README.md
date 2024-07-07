@@ -2,27 +2,14 @@
 
 ## Setup
 
-Clone the repo, install dependecies:
-
-```
-git clone ...
-npm install --legacy-peer-deps
-```
-
-> **Note**: `--legacy-peer-deps` because of the some ORMs requiring differing version of database drivers.
-
-Set the databse URL and run a migration:
-
-```
-export DATABASE_URL=postgresql://user:password@host:port/db
-npx prisma migrate dev
-```
+1. Clone repo
+1. Set DB connection
+1. Migrate DB
+1. Generate Prisma Client
+1. Create `data` and `results` folders
+1. Run benchmarks
 
 ## Usage
-
-### Creating datasets
-
-This benchmark repo offers a way to create data sets in a deterministic way using [faker.js]().
 
 ### Executing the benchmarks
 
