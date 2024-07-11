@@ -7,8 +7,6 @@ export async function preparePg(
   options: { databaseUrl: string, size: number, fakerSeed: number; }
 ) {
 
-  console.log(`NEW PREPARE`);
-
   const NUMBER_OF_RECORDS = options.size || 1000;
   const NUMBER_OF_RELATED_RECORDS = 10;
   const FAKER_SEED = options.fakerSeed || 42;
@@ -118,7 +116,6 @@ export async function preparePg(
       B: productId
     };
   });
-  console.log(`VALUES\n`, values);
 
   function transformArrayToString(arr: { A: number; B: number; }[]): string {
     return arr.map(item => `(${item.A}, ${item.B})`).join(', ');
