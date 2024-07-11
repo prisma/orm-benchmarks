@@ -1,4 +1,4 @@
-import { preparePg } from "./lib/prepare";
+import { preparePg } from "./lib/prepare-pg";
 import writeResults from "./lib/write-results";
 import { BenchmarkOptions, MultipleBenchmarkRunResults } from "./lib/types";
 import { prismaPg } from "./prisma/prisma-postgres";
@@ -33,30 +33,42 @@ export default async function runBenchmarksPg(
     typeormResults.push(results);
   }
   writeResults("typeorm", "postgresql", typeormResults, benchmarkOptions);
+
+
 }
 
-// function extractIds(data: any, collectedIds: Set<any> = new Set()): Set<any> {
-//   if (data === null || data === undefined) {
-//     return collectedIds;
-//   }
+function extractIds(data: any, collectedIds: Set<any> = new Set()): Set<any> {
+  if (data === null || data === undefined) {
+    return collectedIds;
+  }
 
-//   if (Array.isArray(data)) {
-//     for (const item of data) {
-//       extractIds(item, collectedIds);
-//     }
-//   } else if (typeof data === 'object') {
-//     if ('id' in data) {
-//       collectedIds.add(data.id);
-//     }
-//     for (const key in data) {
-//       if (typeof data[key] === 'object') {
-//         extractIds(data[key], collectedIds);
-//       }
-//     }
-//   }
+  if (Array.isArray(data)) {
+    for (const item of data) {
+      extractIds(item, collectedIds);
+    }
+  } else if (typeof data === 'object') {
+    if ('id' in data) {
+      collectedIds.add(data.id);
+    }
+    for (const key in data) {
+      if (typeof data[key] === 'object') {
+        extractIds(data[key], collectedIds);
+      }
+    }
+  }
 
-//   return collectedIds;
+  return collectedIds;
+}
+
+// function setsAreEqual(setA: Set<any>, setB: Set<any>): boolean {
+//   if (setA.size !== setB.size) return false;
+//   let isEqual = true;
+//   setA.forEach(item => {
+//     if (!setB.has(item)) isEqual = false;
+//   });
+//   return isEqual;
 // }
+
 
 // function compareResults(allResults: AllResults) {
 //   const orms: ORM[] = ["prisma", "drizzle", "typeorm"];
@@ -99,14 +111,6 @@ export default async function runBenchmarksPg(
 //   }
 // }
 
-// function setsAreEqual(setA: Set<any>, setB: Set<any>): boolean {
-//   if (setA.size !== setB.size) return false;
-//   let isEqual = true;
-//   setA.forEach(item => {
-//     if (!setB.has(item)) isEqual = false;
-//   });
-//   return isEqual;
-// }
 
 // function compareResults(allResults: AllResults) {
 //   console.log(`compare all results:`);
