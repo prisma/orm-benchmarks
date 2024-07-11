@@ -139,6 +139,10 @@ export async function preparePg(
 
 async function createSQLDumpPg(databaseUrl: string, filePath?: string) {
   const connectionDetails = extractConnectionDetailsFromUrl(databaseUrl);
+  if (!connectionDetails) {
+    console.log(`Error while creating SQL dump. DB URL not valid.`);
+    return;
+  }
   // console.log(`Dumping dataset with connection details: `, connectionDetails);
   const { host, user, db, password } = connectionDetails;
   const command = `pg_dump -h ${host} -U ${user} -d ${db} --no-owner -F c -b -v -f ${filePath}`;
@@ -155,6 +159,10 @@ async function createSQLDumpPg(databaseUrl: string, filePath?: string) {
 async function restoreFromSQLDumpPg(databaseUrl: string, filePath: string) {
   const connectionDetails = extractConnectionDetailsFromUrl(databaseUrl);
   // console.log(`Restoring dataset with connection details: `, connectionDetails);
+  if (!connectionDetails) {
+    console.log(`Error while creating SQL dump. DB URL not valid.`);
+    return;
+  }
   const { host, user, db, password } = connectionDetails;
   const command = `pg_restore -h ${host} -U ${user} -d ${db} --no-owner -v --clean ${filePath}`;
   console.log(`SQL restore command: `, command);

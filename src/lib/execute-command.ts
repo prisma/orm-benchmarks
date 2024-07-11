@@ -25,36 +25,48 @@ export function executeCommand(command: string, envVars: NodeJS.ProcessEnv) {
   });
 }
 
-export function extractConnectionDetailsFromUrl(databaseUrl: string): ConnectionDetails {
-  const regex = /postgresql:\/\/([^:]+):([^@]+)@([^:]+):(\d+)\/(.+)/;
-  // const regex = /^mysql:\/\/([^:]+):([^@]+)@([^\/]+)\/([^?]+).*/;
-  // console.log(`Extract DB URL: `, databaseUrl);
-  const match = databaseUrl.match(regex);
+export function extractConnectionDetailsFromUrl(databaseUrl: string): ConnectionDetails | null {
 
-  if (!match) {
-    throw new Error('Invalid database URL');
+  if (databaseUrl.startsWith('postgres')) {
+    // PostgreSQL
+    const regex = /postgresql:\/\/([^:]+):([^@]+)@([^:]+):(\d+)\/(.+)/;
+    // console.log(`Extract DB URL: `, databaseUrl);
+    const match = databaseUrl.match(regex);
+
+    if (!match) {
+      throw new Error('Invalid database URL');
+    }
+
+    // PostgreSQL
+    const [_, user, password, host, port, db] = match;
+
+    return {
+      user,
+      password,
+      host,
+      port,
+      db
+    };
+
+  } else if (databaseUrl.startsWith('mysql')) {
+    // MySQL
+    const regex = /^mysql:\/\/([^:]+):([^@]+)@([^\/]+)\/([^?]+).*/;
+    const match = databaseUrl.match(regex);
+
+    if (!match) {
+      throw new Error('Invalid database URL');
+    }
+
+    const [_, user, password, host, dbname] = match;
+
+    return {
+      user,
+      password,
+      host,
+      db: dbname
+    };
+
   }
 
-  // console.log(`regex: `, match);
-
-  // MySQL
-  // const [_, user, password, host, dbname] = match;
-
-  // return {
-  //   user,
-  //   password,
-  //   host,
-  //   db: dbname
-  // };
-
-  // PostgreSQL
-  const [_, user, password, host, port, db] = match;
-
-  return {
-    user,
-    password,
-    host,
-    port,
-    db
-  };
+  return null;
 }

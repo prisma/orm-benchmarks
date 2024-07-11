@@ -28,137 +28,123 @@ export async function prepareMySQL(
   // console.log(`Preparing DB ...`, databaseUrl);
 
   // Clean tables
-  // console.log(`Clearing tables ...`);
+  console.log(`Clearing tables ...`);
 
   // MySQL
-  // await prisma.address.deleteMany();
-  // await prisma.$executeRaw`ALTER TABLE Address AUTO_INCREMENT = 1;`;
+  await prisma.address.deleteMany();
+  await prisma.$executeRaw`ALTER TABLE Address AUTO_INCREMENT = 1;`;
 
-  // await prisma.order.deleteMany();
-  // await prisma.$executeRaw`ALTER TABLE Order AUTO_INCREMENT = 1;`;
+  await prisma.order.deleteMany();
+  await prisma.$executeRaw`ALTER TABLE \`Order\` AUTO_INCREMENT = 1;`;
 
-  // await prisma.product.deleteMany();
-  // await prisma.$executeRaw`ALTER TABLE Product AUTO_INCREMENT = 1;`;
+  await prisma.product.deleteMany();
+  await prisma.$executeRaw`ALTER TABLE Product AUTO_INCREMENT = 1;`;
 
-  // await prisma.customer.deleteMany();
-  // await prisma.$executeRaw`ALTER TABLE Customer AUTO_INCREMENT = 1;`;
+  await prisma.customer.deleteMany();
+  await prisma.$executeRaw`ALTER TABLE Customer AUTO_INCREMENT = 1;`;
 
   faker.seed(FAKER_SEED);
 
   console.log(`Seeding data ...`);
 
-  // const customerData: Prisma.CustomerCreateInput[] = [];
-  // const productDataArray: Prisma.ProductCreateInput[] = [];
-  // const orderDataArray: Prisma.OrderCreateInput[] = [];
-  // const addressDataArray: Prisma.AddressCreateInput[] = [];
+  const customerData: any[] = [];
+  const addressData: any[] = [];
+  const productData: any[] = [];
+  const orderData: any[] = [];
 
-  // Seed Customers
-  console.log(`Customers with orders ...`);
   for (let i = 0; i < NUMBER_OF_RECORDS; i++) {
-    // const customerInput: Prisma.CustomerCreateInput = {
-    //   name: faker.person.fullName(),
-    //   email: faker.internet.email(),
-    //   isActive: faker.datatype.boolean(),
-    //   address: {
-    //     create: {
-    //       street: faker.location.streetAddress(),
-    //       city: faker.location.city(),
-    //       postalCode: faker.location.zipCode(),
-    //       country: faker.location.country(),
-    //     },
-    //   },
-    // };
-    // customerData.push(customerInput);
 
-    const customer = await prisma.customer.create({
-      data: {
-        name: faker.person.fullName(),
-        email: faker.internet.email(),
-        isActive: faker.datatype.boolean(),
-        address: {
-          create: {
-            street: faker.location.streetAddress(),
-            city: faker.location.city(),
-            postalCode: faker.location.zipCode(),
-            country: faker.location.country(),
-          },
-        },
-      },
-    });
+    const customerRecord = {
+      email: faker.internet.email(),
+      name: faker.person.fullName(),
+      isActive: faker.datatype.boolean()
+    };
+    customerData.push(customerRecord);
 
-    // Seed Orders for each Customer
+    const addressRecord = {
+      street: faker.location.streetAddress(),
+      postalCode: faker.location.zipCode(),
+      city: faker.location.city(),
+      country: faker.location.country(),
+      customerId: i + 1
+    };
+    addressData.push(addressRecord);
+
+    const productRecord = {
+      name: faker.commerce.productName(),
+      description: faker.commerce.productDescription(),
+      price: parseFloat(faker.commerce.price()),
+      quantity: faker.number.int({ min: 1, max: 100 }),
+    };
+    productData.push(productRecord);
+
+
     for (let j = 0; j < NUMBER_OF_RELATED_RECORDS; j++) {
-      // const orderInput = {
-      //   date: faker.date.past(),
-      //   totalAmount: faker.number.int({ min: 10, max: 1000 }),
-      //   customerId: i + 1,
-      //   customer: {}
-      // };
-      // orderDataArray.push(orderInput);
-      // }
-      await prisma.order.create({
-        data: {
-          date: faker.date.past(),
-          totalAmount: faker.number.int({ min: 10, max: 1000 }),
-          customerId: customer.id,
-        },
-      });
+      const orderRecord = {
+        date: faker.date.anytime(),
+        totalAmount: parseFloat(faker.commerce.price({ min: 100, max: 100000 })),
+        customerId: i + 1,
+      };
+      orderData.push(orderRecord);
     }
-    // await prisma.customer.createMany({
-    //   data: customerData
-    // });
-
-
-    // Seed Products
-    console.log(`Products ...`);
-    for (let i = 0; i < NUMBER_OF_RECORDS; i++) {
-      await prisma.product.create({
-        data: {
-          name: faker.commerce.productName(),
-          price: parseFloat(faker.commerce.price()),
-          quantity: faker.number.int({ min: 1, max: 100 }),
-          description: faker.commerce.productDescription(),
-        },
-      });
-    }
-
-    // Associate Products with Orders
-    console.log(`Connect products with orders ...`);
-    const orders = await prisma.order.findMany();
-    const products = await prisma.product.findMany();
-
-    for (const order of orders) {
-      const randomProducts = faker.helpers.shuffle(products).slice(0, faker.number.int({ min: 1, max: 5 }));
-      for (const product of randomProducts) {
-        await prisma.order.update({
-          where: { id: order.id },
-          data: {
-            products: {
-              connect: { id: product.id },
-            },
-          },
-        });
-      }
-    }
-
-    const ordersCount = await prisma.order.count();
-    const productsCount = await prisma.product.count();
-    const addressesCount = await prisma.address.count();
-    const customersCount = await prisma.customer.count();
-    console.log(
-      `Created the following records: \n${ordersCount} orders\n${productsCount} products\n${addressesCount} addresses\n${customersCount} customers`
-    );
-
-
-    await createSQLDumpMySQL(options.databaseUrl, filePath);
-
-    await prisma.$disconnect();
   }
+
+  await prisma.customer.createMany({
+    data: customerData
+  });
+
+  await prisma.address.createMany({
+    data: addressData
+  });
+
+  await prisma.product.createMany({
+    data: productData
+  });
+
+  await prisma.order.createMany({
+    data: orderData,
+  });
+
+  // const productIds = Array.from({ length: NUMBER_OF_RECORDS }, (_, index) => index + 1);
+  const orderIds = Array.from({ length: NUMBER_OF_RECORDS * NUMBER_OF_RELATED_RECORDS }, (_, index) => index + 1);
+
+  const values = orderIds.map(orderId => {
+    const productId = faker.number.int({ min: 1, max: NUMBER_OF_RECORDS });
+    return {
+      A: orderId,
+      B: productId
+    };
+  });
+
+  function transformArrayToString(arr: { A: number; B: number; }[]): string {
+    return arr.map(item => `(${item.A}, ${item.B})`).join(', ');
+  }
+
+  const input = transformArrayToString(values);
+  await prisma.$queryRawUnsafe(`INSERT INTO _OrderProducts (A, B) VALUES ${input}`);
+
+
+  const ordersCount = await prisma.order.count();
+  const productsCount = await prisma.product.count();
+  const addressesCount = await prisma.address.count();
+  const customersCount = await prisma.customer.count();
+  console.log(
+    `Created the following records: \n${ordersCount} orders\n${productsCount} products\n${addressesCount} addresses\n${customersCount} customers`
+  );
+
+
+  await createSQLDumpMySQL(options.databaseUrl, filePath);
+
+  await prisma.$disconnect();
 }
 
 async function createSQLDumpMySQL(databaseUrl: string, filePath?: string) {
   const connectionDetails = extractConnectionDetailsFromUrl(databaseUrl);
   console.log(`Dumping dataset with connection details: `, connectionDetails);
+  if (!connectionDetails) {
+    console.log(`Error while creating SQL dump. DB URL not valid.`);
+    return;
+  }
   const { host, user, db, password } = connectionDetails;
   const command = `mysqldump -h ${host} -u ${user} -p${password} -B ${db} --single-transaction --routines --triggers --verbose --result-file=${filePath}`;
   console.log(`SQL dump command: `, command);
@@ -174,6 +160,10 @@ async function createSQLDumpMySQL(databaseUrl: string, filePath?: string) {
 async function restoreFromSQLDumpMySQL(databaseUrl: string, filePath: string) {
   const connectionDetails = extractConnectionDetailsFromUrl(databaseUrl);
   console.log(`Restoring dataset with connection details: `, connectionDetails);
+  if (!connectionDetails) {
+    console.log(`Error while creating SQL dump. DB URL not valid.`);
+    return;
+  }
   const { host, user, db, password } = connectionDetails;
   const command = `mysql -h ${host} -u ${user} -p${password} ${db} < ${filePath}`;
   console.log(`SQL restore command: `, command);
