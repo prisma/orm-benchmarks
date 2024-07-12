@@ -9,6 +9,7 @@ Clone the repo, navigate into it and install dependencies:
 ```
 git clone git@github.com:nikolasburk/bench.git
 cd bench
+npm install
 ```
 
 ### 2. Configure database connection
