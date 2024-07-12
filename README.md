@@ -19,8 +19,6 @@ Set the `DATABASE_URL` environment variable to your database connection string:
 export DATABASE_URL="postgresql://user:password@host:port/db"
 ```
 
-Alternatively, you can add set the `DATABASE_URL` in a `.env` file.
-
 <details><summary>Alternative: Set the <code>DATABASE_URL</code> in a <code>.env</code> file</summary>
 
 Alternatively, you can add set the `DATABASE_URL` in a `.env` file:
