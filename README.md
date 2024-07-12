@@ -7,21 +7,21 @@
 Clone the repo, navigate into it and install dependencies:
 
 ```
-git clone
-cd orm-benchmarks
+git clone git@github.com:nikolasburk/bench.git
+cd bench
 ```
 
 ### 2. Configure database connection
 
-Set the `DATABASE_URL` environment variable:
+Set the `DATABASE_URL` environment variable to your database connection string:
 
 ```bash
-export DATABASE_URL=""
+export DATABASE_URL="postgresql://user:password@host:port/db"
 ```
 
 Alternatively, you can add set the `DATABASE_URL` in a `.env` file.
 
-<details><summary>Alternative: Set the `DATABASE_URL` in a `.env` file</summary>
+<details><summary>Alternative: Set the <code>`DATABASE_URL`</code> in a `.env` file</summary>
 
 Alternatively, you can add set the `DATABASE_URL` in a `.env` file:
 
