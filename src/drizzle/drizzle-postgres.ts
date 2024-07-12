@@ -10,7 +10,7 @@ import { QueryResult } from "../lib/types";
 
 export async function drizzlePg(databaseUrl: string): Promise<QueryResult[]> {
   const client = postgres(databaseUrl, {
-    ssl: databaseUrl.includes("localhost") ? undefined : {rejectUnauthorized: false}
+    ssl: databaseUrl.includes("localhost") ? undefined : { rejectUnauthorized: false }
   });
   const db = drizzle(client, { schema: { ...schema, ...relations } });
   console.log(`run drizzle benchmarks: `, databaseUrl);
@@ -124,9 +124,6 @@ export async function drizzlePg(databaseUrl: string): Promise<QueryResult[]> {
       .insert(schema.Order)
       .values({
         customerId: customerId,
-        // sqlite
-        // date: `${new Date()}`,
-        // postgres
         date: `${new Date().toISOString()}`,
         totalAmount: "100.5",
       })
@@ -153,7 +150,12 @@ export async function drizzlePg(databaseUrl: string): Promise<QueryResult[]> {
    */
 
   results.push(
-    await measure("drizzle-update", db.update(schema.Customer).set({ name: "John Doe Updated" }).where(eq(schema.Customer.id, 1)))
+    await measure(
+      "drizzle-update",
+      db
+        .update(schema.Customer)
+        .set({ name: "John Doe Updated" })
+        .where(eq(schema.Customer.id, 1)))
   );
 
   results.push(
@@ -161,7 +163,10 @@ export async function drizzlePg(databaseUrl: string): Promise<QueryResult[]> {
       "drizzle-nested-update",
       db.transaction(async (trx) => {
         // Update customer name
-        await trx.update(schema.Customer).set({ name: "John Doe Updated" }).where(eq(schema.Customer.id, 1));
+        await trx
+        .update(schema.Customer)
+        .set({ name: "John Doe Updated" })
+        .where(eq(schema.Customer.id, 1));
 
         // Update address
         await trx
@@ -183,6 +188,7 @@ export async function drizzlePg(databaseUrl: string): Promise<QueryResult[]> {
       db
         .insert(schema.Customer)
         .values({
+          id: 1,
           name: "John Doe",
           email: "john.doe@example.com",
           isActive: false,
@@ -199,6 +205,7 @@ export async function drizzlePg(databaseUrl: string): Promise<QueryResult[]> {
     const customer = await trx
       .insert(schema.Customer)
       .values({
+        id: 1,
         name: "John Doe",
         email: "john.doe@example.com",
         isActive: false,
@@ -221,7 +228,7 @@ export async function drizzlePg(databaseUrl: string): Promise<QueryResult[]> {
         customerId: customerId,
       })
       .onConflictDoUpdate({
-        target: schema.Address.id,
+        target: schema.Address.customerId,
         set: { street: "456 New St" },
       });
   });
@@ -231,13 +238,14 @@ export async function drizzlePg(databaseUrl: string): Promise<QueryResult[]> {
    * delete
    */
 
-  results.push(await measure("drizzle-delete", db.delete(schema.Customer).where(eq(schema.Customer.id, 1))));
+  results.push(
+    await measure(
+      "drizzle-delete", 
+      db.delete(schema.Customer).where(eq(schema.Customer.id, 1))
+    )
+  );
 
   await client.end(); // Close the database connection
 
   return results;
 }
-
-// export async function closeDrizzlePg() {
-//   console.log(`closing connection with Drizzle`);
-// }

@@ -33,4 +33,11 @@ export default async function runBenchmarksMySQL(
   //   typeormResults.push(results);
   // }
   // writeResults("typeorm", "postgresql", typeormResults, benchmarkOptions);
+
+    // Optionally compare results
+  // compareResults({
+  //   prismaResults,
+  //   drizzleResults,
+  //   typeormResults
+  // });
 }

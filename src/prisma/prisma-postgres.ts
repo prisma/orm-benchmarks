@@ -23,12 +23,8 @@ export async function prismaPg(databaseUrl: string): Promise<QueryResult[]> {
     await measure(
       "prisma-findMany-filter-paginate-order",
       prisma.customer.findMany({
-        where: {
-          isActive: true,
-        },
-        orderBy: {
-          createdAt: "desc",
-        },
+        where: { isActive: true },
+        orderBy: { createdAt: "desc" },
         skip: 0,
         take: 10,
       })
@@ -98,7 +94,7 @@ export async function prismaPg(databaseUrl: string): Promise<QueryResult[]> {
       prisma.customer.create({
         data: {
           name: "John Doe",
-          email: new Date() + "@example.com",
+          email: "john.doe@example.com",
         },
       })
     )
@@ -111,6 +107,7 @@ export async function prismaPg(databaseUrl: string): Promise<QueryResult[]> {
         data: {
           name: "John Doe",
           email: "john.doe@example.com",
+          isActive: false,
           orders: {
             create: {
               date: new Date(),
@@ -196,7 +193,7 @@ export async function prismaPg(databaseUrl: string): Promise<QueryResult[]> {
           email: "john.doe@example.com",
           address: {
             create: {
-              street: "123 Main St",
+              street: "456 New St",
               city: "Anytown",
               postalCode: "12345",
               country: "Country",
@@ -223,85 +220,4 @@ export async function prismaPg(databaseUrl: string): Promise<QueryResult[]> {
   await prisma.$disconnect();
 
   return results;
-
-  // /**
-  //  * createMany
-  //  */
-
-  // const _customersToCreate: Prisma.CustomerCreateInput[] = [];
-
-  // for (let i = 0; i < 1000; i++) {
-  //   _customersToCreate.push({
-  //     name: `Customer ${i}`,
-  //     email: `customer${i}@example.com`,
-  //   });
-  // }
-
-  // await measure('prisma-createMany', prisma.customer.createMany({
-  //   data: _customersToCreate,
-  // }));
-
-  // /**
-  //  * createManyAndReturn
-  //  */
-
-  // await measure('prisma-createManyAndReturn', prisma.customer.createManyAndReturn({
-  //   data: _customersToCreate,
-  // }));
-
-  // /**
-  //  * updateMany
-  //  */
-
-  // await measure('prisma-updateMany', prisma.customer.updateMany({
-  //   where: { isActive: false },
-  //   data: { isActive: true },
-  // }));
-
-  // /**
-  //  * deleteMany
-  //  */
-
-  // await measure('prisma-deleteMany', prisma.customer.deleteMany({
-  //   where: { isActive: false },
-  // }));
-
-  // /**
-  //  * aggregate
-  //  */
-
-  // await measure('prisma-aggregate', prisma.order.aggregate({
-  //   _sum: {
-  //     totalAmount: true,
-  //   },
-  // }));
-
-  // /**
-  //  * groupBy
-  //  */
-
-  // await measure('prisma-groupBy', prisma.order.groupBy({
-  //   by: ["customerId"],
-  //   _sum: {
-  //     totalAmount: true,
-  //   },
-  //   _count: {
-  //     _all: true,
-  //   },
-  // }));
 }
-
-// export async function closePrismaPg() {
-//   console.log(`closing connection with Prisma`);
-//   await prisma.$disconnect();
-// }
-
-// main()
-//   .then(async () => {
-//     await prisma.$disconnect();
-//   })
-//   .catch(async (e) => {
-//     console.error(e);
-//     await prisma.$disconnect();
-//     process.exit(1);
-//   });

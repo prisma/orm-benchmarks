@@ -49,21 +49,22 @@ export async function typeormPg(databaseUrl: string): Promise<QueryResult[]> {
   /**
    * findFirst
    */
-  // const c = await AppDataSource.getRepository(Customer).find({
-  //   take: 1,
-  // })
-  // console.log(`TYPEORM findFIRST`, c)
+
   results.push(
     await measure(
+      // not using `findOne()` because of:
+      // Error: You must provide selection conditions in order to find a single row.
       "typeorm-findFirst",
       AppDataSource.getRepository(Customer).find({
-        take: 1,
+        take: 1
       })
     )
   );
 
   results.push(
     await measure(
+      // not using `findOne({ relations: ["orders"] })` because of:
+      // Error: You must provide selection conditions in order to find a single row.
       "typeorm-findFirst-1-level-nesting",
       AppDataSource.getRepository(Customer).find({
         take: 1,
@@ -97,7 +98,7 @@ export async function typeormPg(databaseUrl: string): Promise<QueryResult[]> {
       "typeorm-create",
       AppDataSource.getRepository(Customer).save({
         name: "John Doe",
-        email: new Date() + "@example.com",
+        email: "john.doe@example.com",
         isActive: false,
       })
     )
@@ -119,16 +120,15 @@ export async function typeormPg(databaseUrl: string): Promise<QueryResult[]> {
     });
 
     // Insert products with the associated orderId
-    // TODO
-    // await transactionalEntityManager
-    //   .createQueryBuilder()
-    //   .insert()
-    //   .into("_OrderProducts")
-    //   .values([
-    //     { A: order.id, B: 1 },
-    //     { A: order.id, B: 2 },
-    //   ])
-    //   .execute();
+    await transactionalEntityManager
+      .createQueryBuilder()
+      .insert()
+      .into("_OrderProducts")
+      .values([
+        { A: order.id, B: 1 },
+        { A: order.id, B: 2 },
+      ])
+      .execute();
   });
   results.push(await measure("typeorm-nested-create", nestedCreate));
 
@@ -138,7 +138,12 @@ export async function typeormPg(databaseUrl: string): Promise<QueryResult[]> {
   results.push(
     await measure(
       "typeorm-update",
-      AppDataSource.getRepository(Customer).update({ id: 1 }, { name: "John Doe Updated" })
+      AppDataSource
+        .getRepository(Customer)
+        .update(
+          { id: 1 }, 
+          { name: "John Doe Updated" }
+        )
     )
   );
 
@@ -147,10 +152,12 @@ export async function typeormPg(databaseUrl: string): Promise<QueryResult[]> {
       "typeorm-nested-update",
       AppDataSource.transaction(async (transactionalEntityManager) => {
         // Update customer name
-        await transactionalEntityManager.update(Customer, { id: 1 }, { name: "John Doe Updated" });
+        await transactionalEntityManager
+          .update(Customer, { id: 1 }, { name: "John Doe Updated" });
 
         // Update address
-        await transactionalEntityManager.update(Address, { customer: { id: 1 } }, { street: "456 New St" });
+        await transactionalEntityManager
+          .update(Address, { customer: { id: 1 } }, { street: "456 New St" });
       })
     )
   );
@@ -161,11 +168,13 @@ export async function typeormPg(databaseUrl: string): Promise<QueryResult[]> {
   results.push(
     await measure(
       "typeorm-upsert",
-      AppDataSource.getRepository(Customer).save({
-        id: 1,
-        name: "John Doe Upserted",
-        email: "john.doe@example.com",
-        isActive: false,
+      AppDataSource
+        .getRepository(Customer)
+        .save({
+          id: 1,
+          name: "John Doe Upserted",
+          email: "john.doe@example.com",
+          isActive: false,
       })
     )
   );
@@ -195,7 +204,10 @@ export async function typeormPg(databaseUrl: string): Promise<QueryResult[]> {
   /**
    * delete
    */
-  results.push(await measure("typeorm-delete", AppDataSource.getRepository(Customer).delete({ id: 1 })));
+  results.push(await measure(
+    "typeorm-delete", 
+    AppDataSource.getRepository(Customer).delete({ id: 1 }))
+  );
 
   await AppDataSource.destroy();
 

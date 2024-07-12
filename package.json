@@ -2,7 +2,7 @@
   "name": "script",
   "license": "MIT",
   "scripts": {
-    "start": "ts-node ./src/main.ts",
+    "start": "NODE_OPTIONS='--max-old-space-size=4096' ts-node ./src/main.ts",
     "prisma:gen:pg": "prisma generate --schema prisma-postgres/schema-postgres.prisma",
     "prisma:gen:mysql": "prisma generate --schema prisma-mysql/schema-mysql.prisma",
     "prisma:gen:all": "npm run prisma:gen:pg && npm run prisma:gen:mysql"
