@@ -12,6 +12,8 @@ export async function prepareMySQL(
   const FAKER_SEED = options.fakerSeed || 42;
 
   const filePath = `./data/data-mysql-${NUMBER_OF_RECORDS}-${FAKER_SEED}.sql`;
+  // TO INVESTIGATE:
+  // -- SET @@SESSION.SQL_LOG_BIN= 0; this line at the top of the SQL dump seems to cause issues during the re-import
   if (await fileExists(filePath)) {
     console.log(`Use SQL dump: ${filePath}`);
     await restoreFromSQLDumpMySQL(options.databaseUrl, filePath);
