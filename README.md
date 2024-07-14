@@ -101,3 +101,9 @@ sh ./benchmark.sh -i 30 -s 1000 --database-url postgresql://user:password@host:p
 ### Output
 
 The results of the benchmark runs are stored in a folder called `results`. Make sure this folder exists on your machine before running the benchmarks.
+
+## Debugging
+
+You can turn on two debug setting via the `DEBUG` environment variable:
+
+- `benchmarks:compare-results`: compare the results at the end of each benchmark run

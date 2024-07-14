@@ -52,9 +52,9 @@ export function compareResults(results: {
     queriesInRun.forEach((queryResult, queryIndex) => {
       const query = queryResult.query;
 
-      if (!query.includes('find')) {
-        return;
-      }
+      // if (!query.includes('find')) {
+      //   return;
+      // }
 
       const idSets: { [key in ORM]: Set<any> } = {
         prisma: extractIds(prismaResults[iterationIndex][queryIndex].data),

@@ -8,33 +8,11 @@ export default async function measure(label: string, query: any) {
 
   console.log(`${label}: ${elapsedTime}ms`);
 
-  // if (Array.isArray(result)) {
-  //   // is Array
-  //   result = result.map((obj: any) => {
-  //     deleteFieldIfExists(obj, "createdAt");
-  //     if (obj.hasOwnProperty("orders")) {
-  //       obj["orders"] = obj["orders"].map((order: any) => deleteFieldIfExists(order, "date"));
-  //     }
-  //   });
-  //   result = result.map((obj: any) => deleteFieldIfExists(obj, "date"));
-
-  // } else if (typeof result === "object" && result.hasOwnProperty("orders")) {
-  //   result["orders"].map((obj: any) => deleteFieldIfExists(obj, "date"));
-  // } else if (typeof result === "object") {
-  //   result = deleteFieldIfExists(result, "createdAt");
-  //   result = deleteFieldIfExists(result, "date");
-  // }
-
   return {
     query: label,
     time: elapsedTime,
-    data: result,
+    // only collect data if DEBUG mode is turned on
+    data: process.env.DEBUG === 'benchmarks:compare-results' ? result : null, 
   };
 }
 
-function deleteFieldIfExists(obj: any, field: string) {
-  if (Boolean(obj) && obj.hasOwnProperty(field)) {
-    delete obj[field];
-  }
-  return obj;
-}

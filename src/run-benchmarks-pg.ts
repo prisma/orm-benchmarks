@@ -15,6 +15,7 @@ export default async function runBenchmarksPg(
   for (let i = 0; i < iterations; i++) {
     await preparePg({ databaseUrl, size, fakerSeed });
     const results = await prismaPg(databaseUrl);
+    if (i === 0) console.log(`RTESULTS PRISMA`, results);
     prismaResults.push(results);
   }
   writeResults("prisma", "postgresql", prismaResults, benchmarkOptions);
@@ -36,10 +37,13 @@ export default async function runBenchmarksPg(
   writeResults("typeorm", "postgresql", typeormResults, benchmarkOptions);
 
   // Optionally compare results
-  // compareResults({
-  //   prismaResults,
-  //   drizzleResults,
-  //   typeormResults
-  // });
+  if (process.env.DEBUG === 'benchmarks:compare-results') {
+    compareResults({
+      prismaResults,
+      drizzleResults,
+      typeormResults
+    });
+
+  }
 
 }
