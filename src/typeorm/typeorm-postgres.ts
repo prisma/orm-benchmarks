@@ -18,7 +18,6 @@ export async function typeormPg(databaseUrl: string): Promise<QueryResult[]> {
   console.log(`Run typeorm benchmarks: `, databaseUrl);
 
   await AppDataSource.initialize();
-  // await prepare();
 
   const results: QueryResult[] = [];
 
