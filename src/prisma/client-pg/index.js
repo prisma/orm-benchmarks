@@ -153,7 +153,7 @@ const config = {
       "value": "prisma-client-js"
     },
     "output": {
-      "value": "/Users/nikolasburk/Desktop/bench/src/prisma/client-postgresql",
+      "value": "/Users/nikolasburk/Desktop/bench/src/prisma/client-pg",
       "fromEnvVar": null
     },
     "config": {
@@ -170,10 +170,10 @@ const config = {
     "isCustomOutput": true
   },
   "relativeEnvPaths": {
-    "rootEnvPath": null,
+    "rootEnvPath": "../../../.env",
     "schemaEnvPath": "../../../.env"
   },
-  "relativePath": "../../../prisma-postgres",
+  "relativePath": "../../../prisma-pg",
   "clientVersion": "5.15.0",
   "engineVersion": "12e25d8d06f6ea5a0252864dd9a03b1bb51f3022",
   "datasourceNames": [
@@ -189,8 +189,8 @@ const config = {
       }
     }
   },
-  "inlineSchema": "generator client {\n  provider = \"prisma-client-js\"\n  output   = \"../src/prisma/client-postgresql\"\n}\n\ndatasource db {\n  provider = \"postgresql\"\n  url      = env(\"DATABASE_URL\")\n}\n\nmodel Customer {\n  id        Int      @id @default(autoincrement())\n  createdAt DateTime @default(now())\n  name      String?\n  email     String // @unique\n  address   Address?\n  isActive  Boolean  @default(false)\n  // extraInfo   Json?\n  orders    Order[]\n}\n\nmodel Address {\n  id         Int      @id @default(autoincrement())\n  street     String?\n  city       String?\n  postalCode String?\n  country    String?\n  customerId Int      @unique\n  customer   Customer @relation(fields: [customerId], references: [id], onDelete: Cascade)\n}\n\nmodel Order {\n  id          Int       @id @default(autoincrement())\n  date        DateTime\n  totalAmount Float\n  customerId  Int\n  customer    Customer  @relation(fields: [customerId], references: [id], onDelete: Cascade)\n  products    Product[] @relation(\"OrderProducts\")\n}\n\nmodel Product {\n  id          Int     @id @default(autoincrement())\n  name        String\n  price       Float\n  quantity    Int\n  description String?\n  orders      Order[] @relation(\"OrderProducts\")\n}\n",
-  "inlineSchemaHash": "4203046076c3c541c25d56c6ba5725223dd265d8fe86b8937f4ed64123669f60",
+  "inlineSchema": "generator client {\n  provider = \"prisma-client-js\"\n  output   = \"../src/prisma/client-pg\"\n}\n\ndatasource db {\n  provider = \"postgresql\"\n  url      = env(\"DATABASE_URL\")\n}\n\nmodel Customer {\n  id        Int      @id @default(autoincrement())\n  createdAt DateTime @default(now())\n  name      String?\n  email     String // @unique\n  address   Address?\n  isActive  Boolean  @default(false)\n  // extraInfo   Json?\n  orders    Order[]\n}\n\nmodel Address {\n  id         Int      @id @default(autoincrement())\n  street     String?\n  city       String?\n  postalCode String?\n  country    String?\n  customerId Int      @unique\n  customer   Customer @relation(fields: [customerId], references: [id], onDelete: Cascade)\n}\n\nmodel Order {\n  id          Int       @id @default(autoincrement())\n  date        DateTime\n  totalAmount Float\n  customerId  Int\n  customer    Customer  @relation(fields: [customerId], references: [id], onDelete: Cascade)\n  products    Product[] @relation(\"OrderProducts\")\n}\n\nmodel Product {\n  id          Int     @id @default(autoincrement())\n  name        String\n  price       Float\n  quantity    Int\n  description String?\n  orders      Order[] @relation(\"OrderProducts\")\n}\n",
+  "inlineSchemaHash": "034621a130ad257520af372e2a0a254847c9c8d85fb033d99eadbe593e744736",
   "copyEngine": true
 }
 
@@ -199,8 +199,8 @@ const fs = require('fs')
 config.dirname = __dirname
 if (!fs.existsSync(path.join(__dirname, 'schema.prisma'))) {
   const alternativePaths = [
-    "src/prisma/client-postgresql",
-    "prisma/client-postgresql",
+    "src/prisma/client-pg",
+    "prisma/client-pg",
   ]
   
   const alternativePath = alternativePaths.find((altPath) => {
@@ -229,7 +229,7 @@ Object.assign(exports, Prisma)
 
 // file annotations for bundling tools to include these files
 path.join(__dirname, "libquery_engine-darwin.dylib.node");
-path.join(process.cwd(), "src/prisma/client-postgresql/libquery_engine-darwin.dylib.node")
+path.join(process.cwd(), "src/prisma/client-pg/libquery_engine-darwin.dylib.node")
 // file annotations for bundling tools to include these files
 path.join(__dirname, "schema.prisma");
-path.join(process.cwd(), "src/prisma/client-postgresql/schema.prisma")
+path.join(process.cwd(), "src/prisma/client-pg/schema.prisma")

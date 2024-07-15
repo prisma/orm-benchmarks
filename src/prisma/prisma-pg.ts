@@ -1,4 +1,4 @@
-import { PrismaClient } from "./client-postgresql";
+import { PrismaClient } from "./client-pg";
 import measure from "../lib/measure";
 import { QueryResult } from "../lib/types";
 

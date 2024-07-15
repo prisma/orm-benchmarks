@@ -1,4 +1,4 @@
-import { PrismaClient } from "../prisma/client-postgresql";
+import { PrismaClient } from "../prisma/client-pg";
 import { faker } from "@faker-js/faker";
 import { executeCommand, extractConnectionDetailsFromUrl } from "./execute-command";
 import * as path from 'path';
