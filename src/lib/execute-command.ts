@@ -29,7 +29,8 @@ export function extractConnectionDetailsFromUrl(databaseUrl: string): Connection
 
   if (databaseUrl.startsWith('postgres')) {
     // PostgreSQL
-    const regex = /postgresql:\/\/([^:]+):([^@]+)@([^:]+):(\d+)\/(.+)/;
+    // const regex = /postgresql:\/\/([^:]+):([^@]+)@([^:]+):(\d+)\/(.+)/;
+    const regex = /postgresql:\/\/([^:]+):([^@]+)@([^\/:]+)(?::(\d+))?\/([^?]+)(?:\?.*)?/;
     // console.log(`Extract DB URL: `, databaseUrl);
     const match = databaseUrl.match(regex);
 

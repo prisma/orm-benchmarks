@@ -31,7 +31,6 @@ export async function preparePg(
 
   console.log(`${filePath} doesn't exist yet, creating SQL dump ...`);
 
-
   const prisma = new PrismaClient({
     datasourceUrl: options.databaseUrl,
   });
