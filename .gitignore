@@ -7,3 +7,4 @@ data*
 test.ts
 src/prisma/client-mysql
 src/prisma/client-postgresql
+backup
