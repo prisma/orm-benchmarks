@@ -83,7 +83,8 @@ function convertCsvToDataStructure(prismaCsv: string, drizzleCsv: string, typeor
     const queries: { [key: string]: any; } = {};
     headers.forEach((header, index) => {
       const lineNumber = getLineNumber(source, header);
-      queries[header] = {
+      const strippedHeader = header.replace(`${orm}-`, '');
+      queries[strippedHeader] = {
         results: data.map(row => row[index]),
         code: {
           snippet: getSnippet(snippets, header),
