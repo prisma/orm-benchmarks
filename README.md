@@ -14,15 +14,9 @@ npm install
 
 ### 2. Configure database connection
 
-Set the `DATABASE_URL` environment variable to your database connection string:
+Set the `DATABASE_URL` environment variable to your database connection string in a `.env` file.
 
-```bash
-export DATABASE_URL="postgresql://user:password@host:port/db"
-```
-
-<details><summary>Alternative: Set the <code>DATABASE_URL</code> in a <code>.env</code> file</summary>
-
-Alternatively, you can add set the `DATABASE_URL` in a `.env` file:
+First, create a `.env` file:
 
 ```bash
 touch .env
@@ -31,7 +25,21 @@ touch .env
 Then open the `.env` file and add the following line:
 
 ```bash
-DATABASE_URL=""
+DATABASE_URL="your-database-url"
+```
+
+For example:
+
+```bash
+DATABASE_URL="postgresql://user:password@host:port/db"
+```
+
+<details><summary>Alternative: Set the <code>DATABASE_URL</code> in the terminal</summary>
+
+Alternatively, you can set the `DATABASE_URL` in the terminal:
+
+```bash
+export DATABASE_URL="postgresql://user:password@host:port/db"
 ```
 
 </details>
@@ -48,7 +56,6 @@ If you use PostgreSQL, run:
 npx prisma migrate dev --name init --schema ./prisma-postgres/schema-postgres.prisma
 ```
 
-
 #### MySQL
 
 If you use MySQL, run:
@@ -57,14 +64,7 @@ If you use MySQL, run:
 npx prisma migrate dev --name init --schema ./prisma-mysql/schema-mysql.prisma
 ```
 
-### 4. Prepare the `data` and `results` folders
-
-```
-mkdir data
-mkdir results
-```
-
-### 5. Run the benchmarks
+### 4. Run the benchmarks
 
 ```
 sh ./benchmark.sh -i 30 -s 1000 --database-url postgresql://user:password@host:port/db
@@ -90,7 +90,7 @@ You can provide the following options to the script:
 | ---------------- | ----- | ------- | -------------------------------------------------- | -------- |
 | `--iterations`   | `-i`  | 10      | Number of times to execute the benchmarks          | No       |
 | `--size`         | `-s`  | 50      | Size of the data set (number of records per table) | No       |
-| `--database-url` | `-d`  | n/a     | Database connection string                         | Yes      |
+| `--database-url` | `-d`  | n/a     | Database connection string                         | No       |
 
 For example:
 
