@@ -72,6 +72,16 @@ sh ./benchmark.sh -i 30 -s 1000 --database-url postgresql://user:password@host:p
 
 See below for the different options you can provide to any benchmark runs.
 
+The results of the benchmark run will be stored in a folder called `results/DB-SIZE-ITERATIONS-TIMESTAMP`, e.g. `results/postgresql-50-3-1721027353940`. This folder will have one `.csv` file per ORM, e.g.:
+
+```
+results/postgresql-50-3-1721027353940
+├── drizzle.csv
+├── prisma.csv
+└── typeorm.csv
+```
+
+
 ## Usage
 
 ### Executing the benchmarks
