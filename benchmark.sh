@@ -24,10 +24,14 @@ done
 echo "Running benchmarks"
 echo "Iterations: $iterations"
 echo "Size: $size"
-echo "Database URL: $database_url"
 
 export ITERATIONS=$iterations
 export SIZE=$size
-export DATABASE_URL=$database_url
+if [ -n "$database_url" ]; then
+  echo "Database URL: $database_url"
+  export DATABASE_URL=$database_url
+else
+  echo "No database URL provided via command line, reading from .env ..."
+fi
 
 run_benchmark

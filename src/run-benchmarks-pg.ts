@@ -10,10 +10,8 @@ export default async function runBenchmarksPg(
   benchmarkOptions: BenchmarkOptions
 ) {
   const { databaseUrl, iterations, size, fakerSeed } = benchmarkOptions;
-  console.log(`run benchmarks pg`, benchmarkOptions)
 
   const resultsDirectoryTimestamp = Date.now().toString();
-  console.log(`resultsDirectoryTimestamp`, resultsDirectoryTimestamp)
 
   const prismaResults: MultipleBenchmarkRunResults = [];
   for (let i = 0; i < iterations; i++) {

@@ -3,7 +3,7 @@ import measure from "../lib/measure";
 import { QueryResult } from "../lib/types";
 
 export async function prismaPg(databaseUrl: string): Promise<QueryResult[]> {
-  console.log(`run prisma benchmarks: `, databaseUrl);
+  console.log(`Run prisma benchmarks: `, databaseUrl);
 
   const prisma = new PrismaClient({
     datasourceUrl: databaseUrl,

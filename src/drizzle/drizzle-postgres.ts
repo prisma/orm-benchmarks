@@ -13,7 +13,7 @@ export async function drizzlePg(databaseUrl: string): Promise<QueryResult[]> {
     ssl: databaseUrl.includes("localhost") ? undefined : { rejectUnauthorized: false }
   });
   const db = drizzle(client, { schema: { ...schema, ...relations } });
-  console.log(`run drizzle benchmarks: `, databaseUrl);
+  console.log(`Run drizzle benchmarks: `, databaseUrl);
 
   const results: QueryResult[] = [];
 

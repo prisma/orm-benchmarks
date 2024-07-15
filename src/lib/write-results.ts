@@ -15,11 +15,11 @@ export default function writeResults(
 
   if (!fs.existsSync(resultsDir)) {
     fs.mkdirSync(resultsDir);
-    console.log(`results directory didn't exist, created directory: ${resultsDir}`);
+    console.log(`Results directory didn't exist, created directory: ${resultsDir}`);
   }
 
   const filePath = path.join(resultsDir, `${orm}.csv`);
-  console.log(`write results to ${filePath}.`);
+  console.log(`Write results to ${filePath}.`);
 
   // Extract headers
   const headers = Array.from(new Set(results.flatMap((batch) => batch.map((item) => item.query))));
@@ -50,5 +50,5 @@ export default function writeResults(
 
   csvStream.end();
 
-  console.log(`results for ${orm} written to: ${filePath}`);
+  console.log(`Results for ${orm} written to: ${filePath}`);
 }

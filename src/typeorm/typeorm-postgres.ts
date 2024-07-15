@@ -15,7 +15,7 @@ export async function typeormPg(databaseUrl: string): Promise<QueryResult[]> {
     ssl: databaseUrl.includes("localhost") ? undefined : { rejectUnauthorized: false },
   });
 
-  console.log(`run typeorm benchmarks: `, databaseUrl);
+  console.log(`Run typeorm benchmarks: `, databaseUrl);
 
   await AppDataSource.initialize();
   // await prepare();
