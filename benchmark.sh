@@ -1,35 +1,14 @@
 #!/bin/bash
 
-# Function to restart PostgreSQL
-# restart_postgres() {
-#   # TODO
-# }
-
-# Function to clear OS cache
-clear_os_cache() {
-  sudo sync
-  sudo sysctl -w vm.drop_caches=3
-}
-
-
-# # Function to perform a benchmark run
-run_benchmark() {
-  # Clear caches
-  # restart_postgres
-  # clear_os_cache
-
-  npm start
-}
 
 # Function to perform a benchmark run
-# run_benchmark() {
-#   npm start
-# }
+run_benchmark() {
+  npm start
+}
 
 # Default number of iterations
 iterations=2
 size=50
-# database_url="postgresql://nikolasburk:nikolasburk@localhost:5432/benchmark"
 
 # Parse command-line arguments
 while [[ "$#" -gt 0 ]]; do

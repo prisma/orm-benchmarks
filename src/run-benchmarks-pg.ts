@@ -1,6 +1,6 @@
 import { preparePg } from "./lib/prepare-pg";
 import writeResults from "./lib/write-results";
-import { BenchmarkOptions, MultipleBenchmarkRunResults, SingleBenchmarkRunResult, QueryResult, ORM } from "./lib/types";
+import { BenchmarkOptions, MultipleBenchmarkRunResults,} from "./lib/types";
 import { prismaPg } from "./prisma/prisma-postgres";
 import { typeormPg } from "./typeorm/typeorm-postgres";
 import { drizzlePg } from "./drizzle/drizzle-postgres";
@@ -13,7 +13,7 @@ export default async function runBenchmarksPg(
   console.log(`run benchmarks pg`, benchmarkOptions)
 
   const resultsDirectoryTimestamp = Date.now().toString();
-  console.log(`rresultsDirectoryTimestamp`, resultsDirectoryTimestamp)
+  console.log(`resultsDirectoryTimestamp`, resultsDirectoryTimestamp)
 
   const prismaResults: MultipleBenchmarkRunResults = [];
   for (let i = 0; i < iterations; i++) {
