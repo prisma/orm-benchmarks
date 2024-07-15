@@ -1,7 +1,9 @@
 import { PrismaClient } from "../prisma/client-postgresql";
 import { faker } from "@faker-js/faker";
 import { executeCommand, extractConnectionDetailsFromUrl } from "./execute-command";
-import { promises as fs } from 'fs';
+import * as path from 'path';
+import * as fs from 'fs';
+import { promises as fsPromises } from 'fs';
 
 export async function preparePg(
   options: { databaseUrl: string, size: number, fakerSeed: number; }
@@ -11,7 +13,16 @@ export async function preparePg(
   const NUMBER_OF_RELATED_RECORDS = 10;
   const FAKER_SEED = options.fakerSeed || 42;
 
-  const filePath = `./data/data-pg-${NUMBER_OF_RECORDS}-${FAKER_SEED}.sql`;
+  const dataDir = path.join('.', 'data');
+
+  if (!fs.existsSync(dataDir)) {
+    fs.mkdirSync(dataDir);
+    console.log(`data directory didn't exist, created directory: ${dataDir}`);
+  }
+
+
+  // const filePath = `./data/data-pg-${NUMBER_OF_RECORDS}-${FAKER_SEED}.sql`;
+  const filePath = path.join('./data', `/data-pg-${NUMBER_OF_RECORDS}-${FAKER_SEED}.sql`);
   if (await fileExists(filePath)) {
     console.log(`Use SQL dump: ${filePath}`);
     await restoreFromSQLDumpPg(options.databaseUrl, filePath);
@@ -177,7 +188,7 @@ async function restoreFromSQLDumpPg(databaseUrl: string, filePath: string) {
 
 async function fileExists(filePath: string): Promise<boolean> {
   try {
-    await fs.access(filePath);
+    await fsPromises.access(filePath);
     return true;
   } catch {
     return false;

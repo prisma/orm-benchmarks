@@ -10,15 +10,18 @@ export default async function runBenchmarksPg(
   benchmarkOptions: BenchmarkOptions
 ) {
   const { databaseUrl, iterations, size, fakerSeed } = benchmarkOptions;
+  console.log(`run benchmarks pg`, benchmarkOptions)
+
+  const resultsDirectoryTimestamp = Date.now().toString();
+  console.log(`rresultsDirectoryTimestamp`, resultsDirectoryTimestamp)
 
   const prismaResults: MultipleBenchmarkRunResults = [];
   for (let i = 0; i < iterations; i++) {
     await preparePg({ databaseUrl, size, fakerSeed });
     const results = await prismaPg(databaseUrl);
-    if (i === 0) console.log(`RTESULTS PRISMA`, results);
     prismaResults.push(results);
   }
-  writeResults("prisma", "postgresql", prismaResults, benchmarkOptions);
+  writeResults("prisma", "postgresql", prismaResults, benchmarkOptions, resultsDirectoryTimestamp);
 
   const drizzleResults: MultipleBenchmarkRunResults = [];
   for (let i = 0; i < iterations; i++) {
@@ -26,7 +29,7 @@ export default async function runBenchmarksPg(
     const results = await drizzlePg(databaseUrl);
     drizzleResults.push(results);
   }
-  writeResults("drizzle", "postgresql", drizzleResults, benchmarkOptions);
+  writeResults("drizzle", "postgresql", drizzleResults, benchmarkOptions, resultsDirectoryTimestamp);
 
   const typeormResults: MultipleBenchmarkRunResults = [];
   for (let i = 0; i < iterations; i++) {
@@ -34,7 +37,7 @@ export default async function runBenchmarksPg(
     const results = await typeormPg(databaseUrl);
     typeormResults.push(results);
   }
-  writeResults("typeorm", "postgresql", typeormResults, benchmarkOptions);
+  writeResults("typeorm", "postgresql", typeormResults, benchmarkOptions, resultsDirectoryTimestamp);
 
   // Optionally compare results
   if (process.env.DEBUG === 'benchmarks:compare-results') {

@@ -1,8 +1,24 @@
 import { MultipleBenchmarkRunResults, ORM, Database, BenchmarkOptions } from "./types";
 import * as fs from "fs";
+import * as path from 'path';
 
-export default function writeResults(orm: ORM, db: Database, results: MultipleBenchmarkRunResults, benchmarkOptions: BenchmarkOptions) {
-  const filePath = `./results/results-${orm}-${db}-${benchmarkOptions.size}-${benchmarkOptions.fakerSeed}-${Date.now()}.csv`
+export default function writeResults(
+  orm: ORM,
+  db: Database,
+  results: MultipleBenchmarkRunResults,
+  benchmarkOptions: BenchmarkOptions,
+  resultsDirectoryTimestamp: string
+) {
+
+  // Create dedicated results directory for this benchmark run
+  const resultsDir = path.join('.', `results/${db}-${benchmarkOptions.size}-${benchmarkOptions.iterations}-${resultsDirectoryTimestamp}`);
+
+  if (!fs.existsSync(resultsDir)) {
+    fs.mkdirSync(resultsDir);
+    console.log(`results directory didn't exist, created directory: ${resultsDir}`);
+  }
+
+  const filePath = path.join(resultsDir, `${orm}.csv`);
   console.log(`write results to ${filePath}.`);
 
   // Extract headers
@@ -10,7 +26,7 @@ export default function writeResults(orm: ORM, db: Database, results: MultipleBe
 
   // Extract rows
   const rows = results.map((batch) => {
-    const row: { [key: string]: number | string } = {};
+    const row: { [key: string]: number | string; } = {};
     batch.forEach((item) => {
       row[item.query] = item.time;
     });
