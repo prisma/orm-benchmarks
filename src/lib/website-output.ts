@@ -76,8 +76,8 @@ function convertCsvToDataStructure(prismaCsv: string, drizzleCsv: string, typeor
 
   // Read the source files
   const prismaSource = readFileSync(path.join(__dirname, '../prisma/prisma-pg.ts'), 'utf8');
-  const drizzleSource = readFileSync(path.join(__dirname, '../drizzle/drizzle-postgres.ts'), 'utf8');
-  const typeormSource = readFileSync(path.join(__dirname, '../typeorm/typeorm-postgres.ts'), 'utf8');
+  const drizzleSource = readFileSync(path.join(__dirname, '../drizzle/drizzle-pg.ts'), 'utf8');
+  const typeormSource = readFileSync(path.join(__dirname, '../typeorm/typeorm-pg.ts'), 'utf8');
 
   const createQueriesObject = (headers: string[], data: number[][], snippets: { [key: string]: string }, source: string, orm: string) => {
     const queries: { [key: string]: any; } = {};
