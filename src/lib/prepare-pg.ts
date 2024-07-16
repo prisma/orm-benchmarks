@@ -155,9 +155,9 @@ async function createSQLDumpPg(databaseUrl: string, filePath?: string) {
   }
   // console.log(`Dumping dataset with connection details: `, connectionDetails);
   const { host, user, db, password } = connectionDetails;
-  // const command = `pg_dump -h ${host} -U ${user} -d ${db} --no-owner -F c -b -v -f ${filePath}`;
+  const command = `pg_dump -h ${host} -U ${user} -d ${db} --no-owner -F c -b -v -f ${filePath}`;
   // Other options for Xata
-  const command = `pg_dump -h ${host} -U ${user} -d ${db} --no-acl --no-owner --no-table-access-method -F c -b -v -f ${filePath}`;
+  // const command = `pg_dump -h ${host} -U ${user} -d ${db} --no-acl --no-owner --no-table-access-method -F c -b -v -f ${filePath}`;
   console.log(`SQL dump command: `, command);
   try {
     await executeCommand(command, { PGPASSWORD: password });
