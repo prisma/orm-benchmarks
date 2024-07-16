@@ -34,4 +34,21 @@ else
   echo "No database URL provided via command line, reading from .env ..."
 fi
 
+
+# Capture the start time
+start_time=$(date +%s)
+
 run_benchmark
+
+# Capture the end time
+end_time=$(date +%s)
+
+# Calculate elapsed time in seconds
+elapsed_time=$((end_time - start_time))
+
+# Convert elapsed time to minutes and seconds
+elapsed_minutes=$((elapsed_time / 60))
+elapsed_seconds=$((elapsed_time % 60))
+
+# Print the elapsed time
+echo "Benchmark completed in $elapsed_minutes minutes and $elapsed_seconds seconds."
