@@ -177,7 +177,7 @@ async function restoreFromSQLDumpPg(databaseUrl: string, filePath: string) {
   }
   const { host, user, db, password } = connectionDetails;
   const commandTruncate = `psql -h ${host} -U ${user} -d ${db} -c 'DROP SCHEMA public CASCADE; CREATE SCHEMA public;'`;
-  console.log(`truncate command: `, commandTruncate);
+  console.log(`Truncate command: `, commandTruncate);
   try {
     await executeCommand(commandTruncate, { PGPASSWORD: password });
     console.log("psql command executed successfully.");
