@@ -50,7 +50,7 @@ export DATABASE_URL="postgresql://user:password@host:port/db"
 
 ### 3. Run database migration
 
-To create the database and the schema, run the `prisma migrate dev` command by pointing it to the schema of your database.
+To create the database and the schema, run the `prisma db push` command by pointing it to the schema of your database.
 
 #### PostgreSQL
 
