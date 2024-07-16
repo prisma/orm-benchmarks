@@ -75,7 +75,7 @@ function convertCsvToDataStructure(prismaCsv: string, drizzleCsv: string, typeor
   const typeormData = parseCsvToArray(typeormCsv);
 
   // Read the source files
-  const prismaSource = readFileSync(path.join(__dirname, '../prisma/prisma-postgres.ts'), 'utf8');
+  const prismaSource = readFileSync(path.join(__dirname, '../prisma/prisma-pg.ts'), 'utf8');
   const drizzleSource = readFileSync(path.join(__dirname, '../drizzle/drizzle-postgres.ts'), 'utf8');
   const typeormSource = readFileSync(path.join(__dirname, '../typeorm/typeorm-postgres.ts'), 'utf8');
 

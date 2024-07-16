@@ -57,7 +57,7 @@ To create the database and the schema, run the `prisma migrate dev` command by p
 If you use PostgreSQL, run:
 
 ```
-npx prisma migrate dev --name init --schema ./prisma-postgres/schema-postgres.prisma
+npx prisma db push --schema ./prisma-pg/schema.prisma
 ```
 
 #### MySQL
@@ -65,7 +65,7 @@ npx prisma migrate dev --name init --schema ./prisma-postgres/schema-postgres.pr
 If you use MySQL, run:
 
 ```
-npx prisma migrate dev --name init --schema ./prisma-mysql/schema-mysql.prisma
+npx prisma db push --schema ./prisma-mysql/schema.prisma
 ```
 
 ### 4. Run the benchmarks
