@@ -155,7 +155,9 @@ async function createSQLDumpPg(databaseUrl: string, filePath?: string) {
   }
   // console.log(`Dumping dataset with connection details: `, connectionDetails);
   const { host, user, db, password } = connectionDetails;
-  const command = `pg_dump -h ${host} -U ${user} -d ${db} --no-owner -F c -b -v -f ${filePath}`;
+  // const command = `pg_dump -h ${host} -U ${user} -d ${db} --no-owner -F c -b -v -f ${filePath}`;
+  // Other options for Xata
+  const command = `pg_dump -h ${host} -U ${user} -d ${db} --no-acl --no-owner --no-table-access-method -F c -b -v -f ${filePath}`;
   console.log(`SQL dump command: `, command);
   try {
     await executeCommand(command, { PGPASSWORD: password });
@@ -174,7 +176,15 @@ async function restoreFromSQLDumpPg(databaseUrl: string, filePath: string) {
     return;
   }
   const { host, user, db, password } = connectionDetails;
-  const command = `pg_restore -h ${host} -U ${user} -d ${db} --no-owner -v --clean ${filePath}`;
+  const commandTruncate = `psql -h ${host} -U ${user} -d ${db} -c 'DROP SCHEMA public CASCADE; CREATE SCHEMA public;'`;
+  console.log(`truncate command: `, commandTruncate);
+  try {
+    await executeCommand(commandTruncate, { PGPASSWORD: password });
+    console.log("psql command executed successfully.");
+  } catch (error) {
+    console.error("Failed to execute psql command.");
+  }
+  const command = `pg_restore -h ${host} -U ${user} -d ${db} --no-owner -v ${filePath}`;
   console.log(`SQL restore command: `, command);
   try {
     await executeCommand(command, { PGPASSWORD: password });
