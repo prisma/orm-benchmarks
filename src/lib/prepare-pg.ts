@@ -13,23 +13,22 @@ export async function preparePg(
   const NUMBER_OF_RELATED_RECORDS = 10;
   const FAKER_SEED = options.fakerSeed || 42;
 
-  const dataDir = path.join('.', 'data');
+  // const dataDir = path.join('.', 'data');
 
-  if (!fs.existsSync(dataDir)) {
-    fs.mkdirSync(dataDir);
-    console.log(`data directory didn't exist, created directory: ${dataDir}`);
-  }
-
+  // if (!fs.existsSync(dataDir)) {
+  //   fs.mkdirSync(dataDir);
+  //   console.log(`data directory didn't exist, created directory: ${dataDir}`);
+  // }
 
   // const filePath = `./data/data-pg-${NUMBER_OF_RECORDS}-${FAKER_SEED}.sql`;
-  const filePath = path.join('./data', `/data-pg-${NUMBER_OF_RECORDS}-${FAKER_SEED}.sql`);
-  if (await fileExists(filePath)) {
-    console.log(`Use SQL dump: ${filePath}`);
-    await restoreFromSQLDumpPg(options.databaseUrl, filePath);
-    return;
-  }
+  // const filePath = path.join('./data', `/data-pg-${NUMBER_OF_RECORDS}-${FAKER_SEED}.sql`);
+  // if (await fileExists(filePath)) {
+  //   console.log(`Use SQL dump: ${filePath}`);
+  //   await restoreFromSQLDumpPg(options.databaseUrl, filePath);
+  //   return;
+  // }
 
-  console.log(`${filePath} doesn't exist yet, creating SQL dump ...`);
+  // console.log(`${filePath} doesn't exist yet, creating SQL dump ...`);
 
   const prisma = new PrismaClient({
     datasourceUrl: options.databaseUrl,
@@ -144,7 +143,7 @@ export async function preparePg(
 
   await prisma.$disconnect();
 
-  await createSQLDumpPg(options.databaseUrl, filePath);
+  // await createSQLDumpPg(options.databaseUrl, filePath);
 }
 
 async function createSQLDumpPg(databaseUrl: string, filePath?: string) {
