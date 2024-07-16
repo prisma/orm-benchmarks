@@ -5,7 +5,8 @@
     "start": "NODE_OPTIONS='--max-old-space-size=4096' ts-node ./src/main.ts",
     "prisma:gen:pg": "prisma generate --schema prisma-pg/schema.prisma",
     "prisma:gen:mysql": "prisma generate --schema prisma-mysql/schema.prisma",
-    "prisma:gen:all": "npm run prisma:gen:pg && npm run prisma:gen:mysql"
+    "prisma:gen:all": "npm run prisma:gen:pg && npm run prisma:gen:mysql",
+    "website:output": "npx ts-node ./src/lib/website-output --results-directory"
   },
   "dependencies": {
     "@prisma/client": "5.15.0",

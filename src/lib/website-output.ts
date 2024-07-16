@@ -68,7 +68,6 @@ function getLineNumber(source: string, queryName: string): number {
 }
 
 
-
 function convertCsvToDataStructure(prismaCsv: string, drizzleCsv: string, typeormCsv: string) {
   const prismaData = parseCsvToArray(prismaCsv);
   const drizzleData = parseCsvToArray(drizzleCsv);
