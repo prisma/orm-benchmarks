@@ -7,8 +7,6 @@
   <span>&nbsp;&nbsp;•&nbsp;&nbsp;</span>
   <a href="https://www.prisma.io/blog/performance-benchmarks-comparing-query-latency-across-typescript-orms-and-databases">Blog post</a>
   <span>&nbsp;&nbsp;•&nbsp;&nbsp;</span>
-  <a href="https://www.prisma.io/docs/">Prisma docs</a>
-  <span>&nbsp;&nbsp;•&nbsp;&nbsp;</span>
   <a href="https://pris.ly/discord">Discord</a>
   <span>&nbsp;&nbsp;•&nbsp;&nbsp;</span>
   <a href="https://twitter.com/prisma">Twitter</a>
