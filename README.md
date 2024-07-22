@@ -1,4 +1,4 @@
-![./header.png]
+![](./header.png)
 
 # ORM Benchmarks
 
