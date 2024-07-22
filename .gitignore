@@ -2,7 +2,7 @@ node_modules/
 dist/
 *.env*
 .DS_Store
-results*
+results
 data*
 test.ts
 src/prisma/client-mysql
