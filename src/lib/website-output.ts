@@ -24,11 +24,11 @@ const parseArgs = (args: string[]) => {
 const parsedArgs = parseArgs(args);
 
 // Output the parsed arguments
-console.log('Parsed Arguments:', parsedArgs);
+// console.log('Parsed Arguments:', parsedArgs);
 
 // Example: Accessing a specific argument
 const resultsDirectory = parsedArgs['results-directory'];
-console.log('resultsDirectory:', resultsDirectory);
+// console.log('resultsDirectory:', resultsDirectory);
 
 generateWebsiteOutput(resultsDirectory);
 
@@ -54,18 +54,18 @@ function parseCsvToArray(csvString: string) {
 }
 
 function getSnippet(snippets: { [key: string]: string }, queryName: string): string {
-  return snippets[queryName] || '';
+  return snippets[queryName].trimStart() || '';
 }
 
-function getLineNumber(source: string, queryName: string): number {
-  const regex = new RegExp(`await measure\\("${queryName}",`, 'g');
-  const match = regex.exec(source);
-  if (match) {
-    const linesUpToMatch = source.substring(0, match.index).split('\n');
-    return linesUpToMatch.length;
-  }
-  return 1;  // Default to line 1 if not found
-}
+// function getLineNumber(source: string, queryName: string): number {
+//   const regex = new RegExp(`await measure\\("${queryName}",`, 'g');
+//   const match = regex.exec(source);
+//   if (match) {
+//     const linesUpToMatch = source.substring(0, match.index).split('\n');
+//     return linesUpToMatch.length;
+//   }
+//   return 1;  // Default to line 1 if not found
+// }
 
 
 function convertCsvToDataStructure(prismaCsv: string, drizzleCsv: string, typeormCsv: string) {
@@ -81,13 +81,12 @@ function convertCsvToDataStructure(prismaCsv: string, drizzleCsv: string, typeor
   const createQueriesObject = (headers: string[], data: number[][], snippets: { [key: string]: string }, source: string, orm: string) => {
     const queries: { [key: string]: any; } = {};
     headers.forEach((header, index) => {
-      const lineNumber = getLineNumber(source, header);
       const strippedHeader = header.replace(`${orm}-`, '');
       queries[strippedHeader] = {
         results: data.map(row => row[index]),
         code: {
           snippet: getSnippet(snippets, header),
-          url: `https://github.com/prisma/benchmarks/.../src/prisma.ts#L${lineNumber}`
+          url: `https://github.com/prisma/orm-benchmarks/blob/main/src/${orm}/${orm}-pg.ts`
         }
       };
     });

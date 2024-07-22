@@ -1,8 +1,6 @@
 # ORM benchmarks
 
-## Methodology
-
-TBD
+This repo contains the app that was used to collect the data for [ORM benchmarks](https://benchmarks.prisma.io).
 
 ## Setup
 
