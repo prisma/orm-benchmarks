@@ -2,7 +2,7 @@
 
 <div align="center">
   <h1>ORM Benchmarks</h1>
-  <br />
+  <!-- <br />
   <a href="https://benchmarks.prisma.io">Results</a>
   <span>&nbsp;&nbsp;•&nbsp;&nbsp;</span>
   <a href="https://www.prisma.io/blog/performance-benchmarks-comparing-query-latency-across-typescript-orms-and-databases">Blog post</a>
@@ -11,7 +11,7 @@
   <span>&nbsp;&nbsp;•&nbsp;&nbsp;</span>
   <a href="https://twitter.com/prisma">Twitter</a>
   <br />
-  <hr />
+  <hr /> -->
 </div>
 
 This repo contains the app that was used to collect the data for [ORM benchmarks](https://benchmarks.prisma.io). You can learn more about the benchmark methodology and results in this blog post: [Performance Benchmarks: Comparing Query Latency across TypeScript ORMs & Databases](https://www.prisma.io/blog/performance-benchmarks-comparing-query-latency-across-typescript-orms-and-databases).
