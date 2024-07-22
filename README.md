@@ -1,6 +1,8 @@
-# ORM benchmarks
+![./header.png]
 
-This repo contains the app that was used to collect the data for [ORM benchmarks](https://benchmarks.prisma.io).
+# ORM Benchmarks
+
+This repo contains the app that was used to collect the data for [ORM benchmarks](https://benchmarks.prisma.io). You can learn more about the benchmark methodology and results in this blog post: [Performance Benchmarks: Comparing Query Latency across TypeScript ORMs & Databases](https://www.prisma.io/blog/performance-benchmarks-comparing-query-latency-across-typescript-orms-and-databases).
 
 ## Setup
 
@@ -58,21 +60,17 @@ If you use PostgreSQL, run:
 npx prisma db push --schema ./prisma-pg/schema.prisma
 ```
 
-#### MySQL
-
-If you use MySQL, run:
-
-```
-npx prisma db push --schema ./prisma-mysql/schema.prisma
-```
+> **Note**: We may add more databases in the future.
 
 ### 4. Run the benchmarks
 
+> **Note for PostgreSQL**: Since the data preparation/seeding relies on `pg_dump` and `pg_restore`, the PostgreSQL versions of the machine that's executing the script must match the version of the target PostgreSQL server.
+
 ```
-sh ./benchmark.sh -i 30 -s 1000 --database-url postgresql://user:password@host:port/db
+sh ./benchmark.sh -i 500 -s 1000 
 ```
 
-See below for the different options you can provide to any benchmark runs.
+This executes the benchmark scripts with 500 iterations and a sample size of 1000 records per table. See below for the different options you can provide to any benchmark runs.
 
 The results of the benchmark run will be stored in a folder called `results/DB-SIZE-ITERATIONS-TIMESTAMP`, e.g. `results/postgresql-50-3-1721027353940`. This folder will have one `.csv` file per ORM, e.g.:
 
@@ -82,7 +80,6 @@ results/postgresql-50-3-1721027353940
 ├── prisma.csv
 └── typeorm.csv
 ```
-
 
 ## Usage
 
@@ -107,7 +104,7 @@ You can provide the following options to the script:
 For example:
 
 ```
-sh ./benchmark.sh -i 30 -s 1000 --database-url postgresql://user:password@host:port/db
+sh ./benchmark.sh -i 500 -s 1000 --database-url postgresql://user:password@host:port/db
 ```
 
 ## Debugging
