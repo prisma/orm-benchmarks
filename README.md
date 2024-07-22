@@ -14,7 +14,9 @@
   <hr /> -->
 </div>
 
-This repo contains the app that was used to collect the data for [ORM benchmarks](https://benchmarks.prisma.io). You can learn more about the benchmark methodology and results in this blog post: [Performance Benchmarks: Comparing Query Latency across TypeScript ORMs & Databases](https://www.prisma.io/blog/performance-benchmarks-comparing-query-latency-across-typescript-orms-and-databases).
+This repo contains the app that was used to collect the data for [ORM benchmarks](https://benchmarks.prisma.io). 
+
+You can learn more about the benchmark methodology and results in this blog post: [Performance Benchmarks: Comparing Query Latency across TypeScript ORMs & Databases](https://www.prisma.io/blog/performance-benchmarks-comparing-query-latency-across-typescript-orms-and-databases).
 
 ## Setup
 
