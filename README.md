@@ -120,5 +120,5 @@ You can turn on two debug setting via the `DEBUG` environment variable:
 ## Notes
 
 - This repo contains an unfinished MySQL implementation.
-- The final results that are published on [`https://benchmarks.prisma.io`](https://benchmarks.prisma.io) are based on the data in [`./results-website`](./results-website).
-- The script in [`./src/lib/website-output.ts`](./src/lib/website-output.ts) is used to generate the JSON structures that are the basis for the result visualisation in [`https://benchmarks.prisma.io`](https://benchmarks.prisma.io).
+- The final results that are published on [`benchmarks.prisma.io`](https://benchmarks.prisma.io) are based on the data in [`./results-website`](./results-website).
+- The script in [`./src/lib/website-output.ts`](./src/lib/website-output.ts) is used to generate the JSON structures that are the basis for the result visualisation in [`benchmarks.prisma.io`](https://benchmarks.prisma.io).
