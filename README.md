@@ -2,16 +2,6 @@
 
 <div align="center">
   <h1>ORM Benchmarks</h1>
-  <!-- <br />
-  <a href="https://benchmarks.prisma.io">Results</a>
-  <span>&nbsp;&nbsp;•&nbsp;&nbsp;</span>
-  <a href="https://www.prisma.io/blog/performance-benchmarks-comparing-query-latency-across-typescript-orms-and-databases">Blog post</a>
-  <span>&nbsp;&nbsp;•&nbsp;&nbsp;</span>
-  <a href="https://pris.ly/discord">Discord</a>
-  <span>&nbsp;&nbsp;•&nbsp;&nbsp;</span>
-  <a href="https://twitter.com/prisma">Twitter</a>
-  <br />
-  <hr /> -->
 </div>
 
 This repo contains the app that was used to collect the data for [ORM benchmarks](https://benchmarks.prisma.io). 
@@ -25,8 +15,8 @@ You can learn more about the benchmark methodology and results in this blog post
 Clone the repo, navigate into it and install dependencies:
 
 ```
-git clone git@github.com:nikolasburk/bench.git
-cd bench
+git clone git@github.com:prisma/orm-benchmarks.git
+cd orm-benchmarks
 npm install
 ```
 
