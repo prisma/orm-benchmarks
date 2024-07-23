@@ -111,7 +111,7 @@ You can provide the following options to the script:
 
 | Name             | Short | Default | Description                                        | Required |
 | ---------------- | ----- | ------- | -------------------------------------------------- | -------- |
-| `--iterations`   | `-i`  | 10      | Number of times to execute the benchmarks          | No       |
+| `--iterations`   | `-i`  | 2       | Number of times to execute the benchmarks          | No       |
 | `--size`         | `-s`  | 50      | Size of the data set (number of records per table) | No       |
 | `--database-url` | `-d`  | n/a     | Database connection string                         | No       |
 
@@ -126,3 +126,9 @@ sh ./benchmark.sh -i 500 -s 1000 --database-url postgresql://user:password@host:
 You can turn on two debug setting via the `DEBUG` environment variable:
 
 - `benchmarks:compare-results`: Compare the results at the end of each benchmark run. Note that this approach will consume more memory because the results of all executed queries are collected.
+
+## Notes
+
+- This repo contains an unfinished MySQL implementation.
+- The final results that are published on [`https://benchmarks.prisma.io`](https://benchmarks.prisma.io) are based on the data in [`./results-website`](./results-website).
+- The script in [`./src/lib/website-output.ts`](./src/lib/website-output.ts) is used to generate the JSON structures that are the basis for the result visualisation in [`https://benchmarks.prisma.io`](https://benchmarks.prisma.io).
