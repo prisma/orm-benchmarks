@@ -169,15 +169,17 @@ export async function drizzleMySQL(databaseUrl: string): Promise<QueryResult[]> 
       "drizzle-nested-update",
       db.transaction(async (trx) => {
         // Update customer name
-        await trx.update(schema.Customer).set({ name: "John Doe Updated" }).where(eq(schema.Customer.id, 1));
+        const customerUpdate = trx.update(schema.Customer).set({ name: "John Doe Updated" }).where(eq(schema.Customer.id, 1));
 
         // Update address
-        await trx
+        const addressUpdate = trx
           .update(schema.Address)
           .set({
             street: "456 New St",
           })
           .where(eq(schema.Address.customerId, 1));
+
+        await Promise.all([customerUpdate, addressUpdate]);
       })
     )
   );
