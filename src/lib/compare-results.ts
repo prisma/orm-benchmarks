@@ -36,11 +36,12 @@ function setsAreEqual(setA: Set<any>, setB: Set<any>): boolean {
 export function compareResults(results: {
   prismaResults: MultipleBenchmarkRunResults,
   drizzleResults: MultipleBenchmarkRunResults,
+  drizzleSelectResults: MultipleBenchmarkRunResults,
   typeormResults: MultipleBenchmarkRunResults;
 }) {
 
   const orms: ORM[] = ['prisma', 'drizzle', 'typeorm'];
-  const { prismaResults, typeormResults, drizzleResults } = results;
+  const { prismaResults, typeormResults, drizzleResults, drizzleSelectResults } = results;
 
   // Assuming each ORM has the same set of queries in the same order
   const numberOfQueries = prismaResults[0].length;
@@ -59,6 +60,7 @@ export function compareResults(results: {
       const idSets: { [key in ORM]: Set<any> } = {
         prisma: extractIds(prismaResults[iterationIndex][queryIndex].data),
         drizzle: extractIds(drizzleResults[iterationIndex][queryIndex].data),
+        "drizzle-select": extractIds(drizzleSelectResults[iterationIndex][queryIndex].data),
         typeorm: extractIds(typeormResults[iterationIndex][queryIndex].data),
       };
 

@@ -1,7 +1,7 @@
 import { readFileSync } from 'fs';
 import * as path from 'path';
 import { prismaSnippets } from '../prisma/prisma-snippets';
-import { drizzleSnippets } from '../drizzle/drizzle-snippets';
+import { drizzleSelectSnippets, drizzleSnippets } from '../drizzle/drizzle-snippets';
 import { typeormSnippets } from '../typeorm/typeorm-snippets';
 // Access the command-line arguments
 const args = process.argv.slice(2);
@@ -36,13 +36,15 @@ export default function generateWebsiteOutput(resultsDirectory: string) {
 
   const prismaFilePath = path.join(resultsDirectory, 'prisma.csv');
   const drizzleFilePath = path.join(resultsDirectory, 'drizzle.csv');
+  const drizzleSelectFilePath = path.join(resultsDirectory, 'drizzle-select.csv');
   const typeormFilePath = path.join(resultsDirectory, 'typeorm.csv');
 
   const prismaCsv = readFileSync(prismaFilePath, 'utf8');
   const drizzleCsv = readFileSync(drizzleFilePath, 'utf8');
+  const drizzleSelectCsv = readFileSync(drizzleSelectFilePath, 'utf8');
   const typeormCsv = readFileSync(typeormFilePath, 'utf8');
 
-  const data = convertCsvToDataStructure(prismaCsv, drizzleCsv, typeormCsv);
+  const data = convertCsvToDataStructure(prismaCsv, drizzleCsv, drizzleSelectCsv, typeormCsv);
   console.log(JSON.stringify(data, null, 2));
 }
 
@@ -68,14 +70,16 @@ function getSnippet(snippets: { [key: string]: string }, queryName: string): str
 // }
 
 
-function convertCsvToDataStructure(prismaCsv: string, drizzleCsv: string, typeormCsv: string) {
+function convertCsvToDataStructure(prismaCsv: string, drizzleCsv: string, drizzleSelectCsv: string, typeormCsv: string) {
   const prismaData = parseCsvToArray(prismaCsv);
   const drizzleData = parseCsvToArray(drizzleCsv);
+  const drizzleSelectData = parseCsvToArray(drizzleSelectCsv);
   const typeormData = parseCsvToArray(typeormCsv);
 
   // Read the source files
   const prismaSource = readFileSync(path.join(__dirname, '../prisma/prisma-pg.ts'), 'utf8');
   const drizzleSource = readFileSync(path.join(__dirname, '../drizzle/drizzle-pg.ts'), 'utf8');
+  const drizzleSelectSource = readFileSync(path.join(__dirname, '../drizzle/drizzle-select-pg.ts'), 'utf8');
   const typeormSource = readFileSync(path.join(__dirname, '../typeorm/typeorm-pg.ts'), 'utf8');
 
   const createQueriesObject = (headers: string[], data: number[][], snippets: { [key: string]: string }, source: string, orm: string) => {
@@ -99,6 +103,9 @@ function convertCsvToDataStructure(prismaCsv: string, drizzleCsv: string, typeor
     },
     drizzle: {
       queries: createQueriesObject(drizzleData.headers, drizzleData.data, drizzleSnippets, drizzleSource, 'drizzle')
+    },
+    "drizzle-select": {
+      queries: createQueriesObject(drizzleSelectData.headers, drizzleSelectData.data, drizzleSelectSnippets, drizzleSelectSource, 'drizzle-select')
     },
     typeorm: {
       queries: createQueriesObject(typeormData.headers, typeormData.data, typeormSnippets, typeormSource, 'typeorm')
