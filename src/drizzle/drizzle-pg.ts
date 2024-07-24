@@ -3,7 +3,7 @@ import { drizzle } from "drizzle-orm/postgres-js";
 // import { Customer, Order, Address } from "./schema/schema-postgres";
 import * as schema from "./schema/schema-postgres";
 import * as relations from "./schema/relations-postgres";
-import { eq, desc } from "drizzle-orm";
+import { eq, desc, sql } from "drizzle-orm";
 import measure from "../lib/measure";
 import postgres from "postgres";
 import { QueryResult } from "../lib/types";
@@ -13,6 +13,8 @@ export async function drizzlePg(databaseUrl: string): Promise<QueryResult[]> {
     ssl: databaseUrl.includes("localhost") ? undefined : { rejectUnauthorized: false }
   });
   const db = drizzle(client, { schema: { ...schema, ...relations } });
+  // connect
+  await db.execute(sql`select 1`);
   console.log(`Run drizzle benchmarks: `, databaseUrl);
 
   const results: QueryResult[] = [];

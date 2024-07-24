@@ -1,7 +1,7 @@
 import { drizzle } from "drizzle-orm/mysql2";
 import * as schema from "./schema/schema-mysql";
 import * as relations from "./schema/relations-mysql";
-import { eq, desc } from "drizzle-orm";
+import { eq, desc, sql } from "drizzle-orm";
 import measure from "../lib/measure";
 import mysql from "mysql2/promise";
 import { QueryResult } from "../lib/types";
@@ -18,6 +18,8 @@ export async function drizzleMySQL(databaseUrl: string): Promise<QueryResult[]> 
     schema: { ...schema, ...relations },
     mode: "default",
   });
+   // connect
+   await db.execute(sql`select 1`);
 
   console.log(`run drizzle benchmarks: `, databaseUrl);
 
