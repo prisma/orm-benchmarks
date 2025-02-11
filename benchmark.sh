@@ -1,5 +1,7 @@
 #!/bin/bash
 
+# Create results directory
+mkdir -p results
 
 # Function to perform a benchmark run
 run_benchmark() {
