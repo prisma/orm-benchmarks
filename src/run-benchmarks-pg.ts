@@ -2,6 +2,7 @@ import { preparePg } from "./lib/prepare-pg";
 import writeResults from "./lib/write-results";
 import { BenchmarkOptions, MultipleBenchmarkRunResults,} from "./lib/types";
 import { prismaPg } from "./prisma/prisma-pg";
+import { prismaPgQueryCompiler } from "./prisma/prisma-pg-query-compiler";
 import { typeormPg } from "./typeorm/typeorm-pg";
 import { drizzlePg } from "./drizzle/drizzle-pg";
 import { compareResults } from "./lib/compare-results";
@@ -20,6 +21,14 @@ export default async function runBenchmarksPg(
     prismaResults.push(results);
   }
   writeResults("prisma", "postgresql", prismaResults, benchmarkOptions, resultsDirectoryTimestamp);
+
+  const prismaQueryCompilerResults: MultipleBenchmarkRunResults = [];
+  for (let i = 0; i < iterations; i++) {
+    await preparePg({ databaseUrl, size, fakerSeed });
+    const results = await prismaPgQueryCompiler(databaseUrl);
+    prismaQueryCompilerResults.push(results);
+  }
+  writeResults("prismaQueryCompiler", "postgresql", prismaQueryCompilerResults, benchmarkOptions, resultsDirectoryTimestamp);
 
   const drizzleResults: MultipleBenchmarkRunResults = [];
   for (let i = 0; i < iterations; i++) {
@@ -41,6 +50,7 @@ export default async function runBenchmarksPg(
   if (process.env.DEBUG === 'benchmarks:compare-results') {
     compareResults({
       prismaResults,
+      prismaQueryCompilerResults,
       drizzleResults,
       typeormResults
     });

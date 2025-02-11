@@ -1,4 +1,4 @@
-export type ORM = "prisma" | "drizzle" | "typeorm";
+export type ORM = "prisma" | "prismaQueryCompiler" | "drizzle" | "typeorm";
 export type Database = "postgresql" | "mysql";
 export type QueryResult = {
   query: string;

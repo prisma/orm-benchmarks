@@ -9,12 +9,13 @@
     "website:output": "npx ts-node ./src/lib/website-output --results-directory"
   },
   "dependencies": {
-    "@prisma/client": "5.15.0",
+    "@prisma/adapter-pg": "6.4.0-dev.34",
+    "@prisma/client": "6.4.0-dev.34",
     "dotenv": "^16.4.5",
     "drizzle-orm": "^0.31.2",
     "fast-csv": "^5.0.1",
     "mysql2": "^3.10.2",
-    "pg": "^8.12.0",
+    "pg": "^8.13.1",
     "postgres": "^3.4.4",
     "reflect-metadata": "^0.2.2",
     "typeorm": "^0.3.20"
@@ -23,8 +24,9 @@
     "@faker-js/faker": "^8.4.1",
     "@types/faker": "^6.6.9",
     "@types/node": "20.14.7",
+    "@types/pg": "^8.11.11",
     "drizzle-kit": "^0.22.7",
-    "prisma": "5.15.0",
+    "prisma": "6.4.0-dev.34",
     "ts-node": "10.9.2",
     "typescript": "5.5.2"
   }

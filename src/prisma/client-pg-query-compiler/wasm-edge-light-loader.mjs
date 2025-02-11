@@ -1,0 +1,1 @@
+export default import('./query_compiler_bg.wasm?module')
