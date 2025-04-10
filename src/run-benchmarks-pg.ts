@@ -5,6 +5,7 @@ import { prismaPg } from "./prisma/prisma-pg";
 import { typeormPg } from "./typeorm/typeorm-pg";
 import { drizzlePg } from "./drizzle/drizzle-pg";
 import { compareResults } from "./lib/compare-results";
+import { drizzleSelectPg } from "./drizzle/drizzle-select-pg";
 
 export default async function runBenchmarksPg(
   benchmarkOptions: BenchmarkOptions
@@ -29,6 +30,14 @@ export default async function runBenchmarksPg(
   }
   writeResults("drizzle", "postgresql", drizzleResults, benchmarkOptions, resultsDirectoryTimestamp);
 
+  const drizzleSelectResults: MultipleBenchmarkRunResults = [];
+  for (let i = 0; i < iterations; i++) {
+    await preparePg({ databaseUrl, size, fakerSeed });
+    const results = await drizzleSelectPg(databaseUrl);
+    drizzleSelectResults.push(results);
+  }
+  writeResults("drizzle-select", "postgresql", drizzleSelectResults, benchmarkOptions, resultsDirectoryTimestamp);
+
   const typeormResults: MultipleBenchmarkRunResults = [];
   for (let i = 0; i < iterations; i++) {
     await preparePg({ databaseUrl, size, fakerSeed });
@@ -42,6 +51,7 @@ export default async function runBenchmarksPg(
     compareResults({
       prismaResults,
       drizzleResults,
+      drizzleSelectResults,
       typeormResults
     });
 

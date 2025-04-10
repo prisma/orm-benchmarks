@@ -14,7 +14,7 @@ export default function writeResults(
   const resultsDir = path.join('.', `results/${db}-${benchmarkOptions.size}-${benchmarkOptions.iterations}-${resultsDirectoryTimestamp}`);
 
   if (!fs.existsSync(resultsDir)) {
-    fs.mkdirSync(resultsDir);
+    fs.mkdirSync(resultsDir, {recursive: true});
     console.log(`Results directory didn't exist, created directory: ${resultsDir}`);
   }
 
