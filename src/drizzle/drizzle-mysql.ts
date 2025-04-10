@@ -1,7 +1,7 @@
 import { drizzle } from "drizzle-orm/mysql2";
 import * as schema from "./schema/schema-mysql";
 import * as relations from "./schema/relations-mysql";
-import { eq, desc } from "drizzle-orm";
+import { eq, desc, sql } from "drizzle-orm";
 import measure from "../lib/measure";
 import mysql from "mysql2/promise";
 import { QueryResult } from "../lib/types";
@@ -18,6 +18,8 @@ export async function drizzleMySQL(databaseUrl: string): Promise<QueryResult[]> 
     schema: { ...schema, ...relations },
     mode: "default",
   });
+   // connect
+   await db.execute(sql`select 1`);
 
   console.log(`run drizzle benchmarks: `, databaseUrl);
 
@@ -167,15 +169,17 @@ export async function drizzleMySQL(databaseUrl: string): Promise<QueryResult[]> 
       "drizzle-nested-update",
       db.transaction(async (trx) => {
         // Update customer name
-        await trx.update(schema.Customer).set({ name: "John Doe Updated" }).where(eq(schema.Customer.id, 1));
+        const customerUpdate = trx.update(schema.Customer).set({ name: "John Doe Updated" }).where(eq(schema.Customer.id, 1));
 
         // Update address
-        await trx
+        const addressUpdate = trx
           .update(schema.Address)
           .set({
             street: "456 New St",
           })
           .where(eq(schema.Address.customerId, 1));
+
+        await Promise.all([customerUpdate, addressUpdate]);
       })
     )
   );

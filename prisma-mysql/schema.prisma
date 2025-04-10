@@ -1,11 +1,11 @@
 generator client {
   provider = "prisma-client-js"
-  output = "../src/prisma/client-mysql"
+  output   = "../src/prisma/client-mysql"
 }
 
 datasource db {
-  provider          = "mysql"
-  url               = env("DATABASE_URL")
+  provider = "mysql"
+  url      = env("DATABASE_URL")
   // shadowDatabaseUrl = env("SHADOW_DATABASE_URL")
 }
 
@@ -28,6 +28,8 @@ model Address {
   country    String?
   customerId Int      @unique
   customer   Customer @relation(fields: [customerId], references: [id], onDelete: Cascade)
+
+  @@index([customerId], name: "Address_customerId_idx")
 }
 
 model Order {
@@ -37,6 +39,8 @@ model Order {
   customerId  Int
   customer    Customer  @relation(fields: [customerId], references: [id], onDelete: Cascade)
   products    Product[] @relation("OrderProducts")
+
+  @@index([customerId], name: "Order_customerId_idx")
 }
 
 model Product {

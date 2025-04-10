@@ -3,7 +3,7 @@ import { drizzle } from "drizzle-orm/postgres-js";
 // import { Customer, Order, Address } from "./schema/schema-postgres";
 import * as schema from "./schema/schema-postgres";
 import * as relations from "./schema/relations-postgres";
-import { eq, desc } from "drizzle-orm";
+import { eq, desc, sql } from "drizzle-orm";
 import measure from "../lib/measure";
 import postgres from "postgres";
 import { QueryResult } from "../lib/types";
@@ -13,6 +13,8 @@ export async function drizzlePg(databaseUrl: string): Promise<QueryResult[]> {
     ssl: databaseUrl.includes("localhost") ? undefined : { rejectUnauthorized: false }
   });
   const db = drizzle(client, { schema: { ...schema, ...relations } });
+  // connect
+  await db.execute(sql`select 1`);
   console.log(`Run drizzle benchmarks: `, databaseUrl);
 
   const results: QueryResult[] = [];
@@ -115,7 +117,7 @@ export async function drizzlePg(databaseUrl: string): Promise<QueryResult[]> {
         email: "john.doe@example.com",
         isActive: false,
       })
-      .returning();
+      .returning({id: schema.Customer.id});
 
     const customerId = customer[0].id;
 
@@ -127,7 +129,7 @@ export async function drizzlePg(databaseUrl: string): Promise<QueryResult[]> {
         date: `${new Date().toISOString()}`,
         totalAmount: "100.5",
       })
-      .returning();
+      .returning({id: schema.Order.id});
 
     const orderId = insertedOrder[0].id;
 
@@ -163,18 +165,20 @@ export async function drizzlePg(databaseUrl: string): Promise<QueryResult[]> {
       "drizzle-nested-update",
       db.transaction(async (trx) => {
         // Update customer name
-        await trx
+        const customerUpdate = trx
         .update(schema.Customer)
         .set({ name: "John Doe Updated" })
         .where(eq(schema.Customer.id, 1));
 
         // Update address
-        await trx
+        const addressUpdate = trx
           .update(schema.Address)
           .set({
             street: "456 New St",
           })
           .where(eq(schema.Address.customerId, 1));
+
+        await Promise.all([customerUpdate, addressUpdate]);
       })
     )
   );
@@ -214,7 +218,7 @@ export async function drizzlePg(databaseUrl: string): Promise<QueryResult[]> {
         target: schema.Customer.id,
         set: { name: "John Doe Upserted" },
       })
-      .returning();
+      .returning({id: schema.Customer.id});
     const customerId = customer[0].id;
 
     // Update address
