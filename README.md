@@ -122,3 +122,6 @@ You can turn on two debug setting via the `DEBUG` environment variable:
 - This repo contains an unfinished MySQL implementation.
 - The final results that are published on [`benchmarks.prisma.io`](https://benchmarks.prisma.io) are based on the data in [`./results-website`](./results-website).
 - The script in [`./src/lib/website-output.ts`](./src/lib/website-output.ts) is used to generate the JSON structures that are the basis for the result visualisation in [`benchmarks.prisma.io`](https://benchmarks.prisma.io).
+- For Postgres, there are two ways how the seeding is implemented:
+  - Option 1: Seed data with Prisma Client's `createMany` query (implemented in [./src/lib/prepare-pg-prisma.ts](./src/lib/prepare-pg-prisma.ts))
+  - Option 2: Seed data with Prisma Client's `createMany` query only once, then store a DB dump in `./data/...` and restore the dump upon subsequent invocations (implemented in [./src/lib/prepare-pg-native.ts](./src/lib/prepare-pg-native.ts))

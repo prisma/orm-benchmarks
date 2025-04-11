@@ -1,3 +1,9 @@
+/**
+ * This file seeds the DB using `createMany` queries from Prisma ORM only the first time.
+ * It then creates a database dump with the seeded data via `pg_dump`.
+ * This database dump is restored for all subsequent invocations via `pg_restore`.
+ */
+
 import { PrismaClient } from "../prisma/client-pg";
 import { faker } from "@faker-js/faker";
 import { executeCommand, extractConnectionDetailsFromUrl } from "./execute-command";
@@ -13,29 +19,25 @@ export async function preparePg(
   const NUMBER_OF_RELATED_RECORDS = 10;
   const FAKER_SEED = options.fakerSeed || 42;
 
-  // const dataDir = path.join('.', 'data');
+  const dataDir = path.join('.', 'data');
 
-  // if (!fs.existsSync(dataDir)) {
-  //   fs.mkdirSync(dataDir);
-  //   console.log(`data directory didn't exist, created directory: ${dataDir}`);
-  // }
+  if (!fs.existsSync(dataDir)) {
+    fs.mkdirSync(dataDir);
+    console.log(`data directory didn't exist, created directory: ${dataDir}`);
+  }
 
+  const filePath = path.join('./data', `/data-pg-${NUMBER_OF_RECORDS}-${FAKER_SEED}.sql`);
+  if (await fileExists(filePath)) {
+    console.log(`Use SQL dump: ${filePath}`);
+    await restoreFromSQLDumpPg(options.databaseUrl, filePath);
+    return;
+  }
 
-  // const filePath = `./data/data-pg-${NUMBER_OF_RECORDS}-${FAKER_SEED}.sql`;
-  // const filePath = path.join('./data', `/data-pg-${NUMBER_OF_RECORDS}-${FAKER_SEED}.sql`);
-  // if (await fileExists(filePath)) {
-  //   console.log(`Use SQL dump: ${filePath}`);
-  //   await restoreFromSQLDumpPg(options.databaseUrl, filePath);
-  //   return;
-  // }
-
-  // console.log(`${filePath} doesn't exist yet, creating SQL dump ...`);
+  console.log(`${filePath} doesn't exist yet, creating SQL dump ...`);
 
   const prisma = new PrismaClient({
     datasourceUrl: options.databaseUrl,
   });
-
-  // console.log(`Preparing DB ...`, databaseUrl);
 
   // Clean tables
   console.log(`Clearing tables ...`);
@@ -52,7 +54,6 @@ export async function preparePg(
 
   await prisma.customer.deleteMany();
   await prisma.$executeRaw`ALTER SEQUENCE "Customer_id_seq" RESTART WITH 1`;
-
 
   faker.seed(FAKER_SEED);
 
@@ -144,7 +145,7 @@ export async function preparePg(
 
   await prisma.$disconnect();
 
-  // await createSQLDumpPg(options.databaseUrl, filePath);
+  await createSQLDumpPg(options.databaseUrl, filePath);
 }
 
 async function createSQLDumpPg(databaseUrl: string, filePath?: string) {
@@ -153,11 +154,11 @@ async function createSQLDumpPg(databaseUrl: string, filePath?: string) {
     console.log(`Error while creating SQL dump. DB URL not valid.`);
     return;
   }
-  // console.log(`Dumping dataset with connection details: `, connectionDetails);
+  console.log(`Dumping dataset with connection details: `, connectionDetails);
   const { host, user, db, password } = connectionDetails;
-  // const command = `pg_dump -h ${host} -U ${user} -d ${db} --no-owner -F c -b -v -f ${filePath}`;
+  const command = `pg_dump -h ${host} -U ${user} -d ${db} --no-owner -F c -b -v -f ${filePath}`;
   // Other options for Xata
-  const command = `pg_dump -h ${host} -U ${user} -d ${db} --no-acl --no-owner --no-table-access-method -F c -b -v -f ${filePath}`;
+  // const command = `pg_dump -h ${host} -U ${user} -d ${db} --no-acl --no-owner --no-table-access-method -F c -b -v -f ${filePath}`;
   console.log(`SQL dump command: `, command);
   try {
     await executeCommand(command, { PGPASSWORD: password });
@@ -170,7 +171,7 @@ async function createSQLDumpPg(databaseUrl: string, filePath?: string) {
 
 async function restoreFromSQLDumpPg(databaseUrl: string, filePath: string) {
   const connectionDetails = extractConnectionDetailsFromUrl(databaseUrl);
-  // console.log(`Restoring dataset with connection details: `, connectionDetails);
+  console.log(`Restoring dataset with connection details: `, connectionDetails);
   if (!connectionDetails) {
     console.log(`Error while creating SQL dump. DB URL not valid.`);
     return;
