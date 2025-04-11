@@ -1,6 +1,6 @@
-import { MultipleBenchmarkRunResults, ORM, Database, BenchmarkOptions } from "./types";
+import type { MultipleBenchmarkRunResults, ORM, Database, BenchmarkOptions } from "./types";
 import * as fs from "fs";
-import * as path from 'path';
+import * as path from "path";
 
 export default function writeResults(
   orm: ORM,
@@ -9,9 +9,18 @@ export default function writeResults(
   benchmarkOptions: BenchmarkOptions,
   resultsDirectoryTimestamp: string
 ) {
+  // Create base results directory if it doesn't exist
+  const baseResultsDir = path.join(".", "results");
+  if (!fs.existsSync(baseResultsDir)) {
+    fs.mkdirSync(baseResultsDir);
+    console.log(`Created base results directory: ${baseResultsDir}`);
+  }
 
   // Create dedicated results directory for this benchmark run
-  const resultsDir = path.join('.', `results/${db}-${benchmarkOptions.size}-${benchmarkOptions.iterations}-${resultsDirectoryTimestamp}`);
+  const resultsDir = path.join(
+    ".",
+    `results/${db}-${benchmarkOptions.size}-${benchmarkOptions.iterations}-${resultsDirectoryTimestamp}`
+  );
 
   if (!fs.existsSync(resultsDir)) {
     fs.mkdirSync(resultsDir);
@@ -26,7 +35,7 @@ export default function writeResults(
 
   // Extract rows
   const rows = results.map((batch) => {
-    const row: { [key: string]: number | string; } = {};
+    const row: { [key: string]: number | string } = {};
     batch.forEach((item) => {
       row[item.query] = item.time;
     });
