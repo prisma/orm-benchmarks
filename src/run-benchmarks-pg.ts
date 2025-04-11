@@ -1,4 +1,5 @@
-import { preparePg } from "./lib/prepare-pg";
+import { preparePg } from "./lib/prepare-pg-native"; // seed via `pg_restore`
+// import { preparePg } from "./lib/prepare-pg-prisma"; // seed via `createMany`
 import writeResults from "./lib/write-results";
 import { BenchmarkOptions, MultipleBenchmarkRunResults,} from "./lib/types";
 import { prismaPg } from "./prisma/prisma-pg";

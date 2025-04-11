@@ -152,7 +152,7 @@ const config = {
       "value": "prisma-client-js"
     },
     "output": {
-      "value": "/Users/nikolasburk/Desktop/bench/src/prisma/client-pg",
+      "value": "/Users/nikolasburk/Desktop/orm-benchmarks/src/prisma/client-pg",
       "fromEnvVar": null
     },
     "config": {
