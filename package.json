@@ -9,7 +9,8 @@
     "website:output": "npx ts-node ./src/lib/website-output --results-directory"
   },
   "dependencies": {
-    "@prisma/client": "5.15.0",
+    "@prisma/adapter-pg": "^6.17.0",
+    "@prisma/client": "^6.17.0",
     "dotenv": "^16.4.5",
     "drizzle-orm": "^0.31.2",
     "fast-csv": "^5.0.1",
@@ -25,7 +26,7 @@
     "@types/faker": "^6.6.9",
     "@types/node": "20.14.7",
     "drizzle-kit": "^0.22.7",
-    "prisma": "5.15.0",
+    "prisma": "^6.17.0",
     "ts-node": "10.9.2",
     "typescript": "5.5.2"
   }
