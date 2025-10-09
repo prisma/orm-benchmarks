@@ -193,7 +193,7 @@ async function restoreFromSQLDumpPg(databaseUrl: string, filePath: string) {
   } catch (error) {
     console.error("Failed to execute psql command.");
   }
-  const command = `pg_restore -h ${host} -U ${user} -d ${db} --no-owner -v ${filePath}`;
+  const command = `pg_restore -h ${host} -U ${user} -d ${db} --no-owner --no-acl -v ${filePath}`;
   console.log(`SQL restore command: `, command);
   try {
     await executeCommand(command, { PGPASSWORD: password });
