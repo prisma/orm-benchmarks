@@ -1,15 +1,15 @@
-import { PrismaPg } from '@prisma/adapter-pg'
-import { PrismaClient } from './client-pg/client'
+import { PrismaPg } from '@prisma/adapter-pg';
+import { PrismaClient } from './client-pg/client';
 import measure from "../lib/measure";
 import { QueryResult } from "../lib/types";
 
 export async function prismaPg(databaseUrl: string): Promise<QueryResult[]> {
   console.log(`Run prisma benchmarks: `, databaseUrl);
 
-const connectionString = databaseUrl
+  const connectionString = databaseUrl;
 
-const adapter = new PrismaPg({ connectionString });
-const prisma = new PrismaClient({ adapter });
+  const adapter = new PrismaPg({ connectionString });
+  const prisma = new PrismaClient({ adapter });
 
   await prisma.$connect();
 

@@ -28,6 +28,7 @@ export function executeCommand(command: string, envVars: NodeJS.ProcessEnv) {
 export function extractConnectionDetailsFromUrl(databaseUrl: string): ConnectionDetails | null {
 
   if (databaseUrl.startsWith('postgres')) {
+    console.log(databaseUrl);
     // PostgreSQL
     // const regex = /postgresql:\/\/([^:]+):([^@]+)@([^:]+):(\d+)\/(.+)/;
     const regex = /postgresql:\/\/([^:]+):([^@]+)@([^\/:]+)(?::(\d+))?\/([^?]+)(?:\?.*)?/;

@@ -16,6 +16,7 @@ async function main() {
     return
   }
   const databaseUrl = process.env.DATABASE_URL
+  console.log(`Running benchmarks against database URL: ${databaseUrl}`);
 
   const database = extractDatabase(databaseUrl);
 

@@ -11,7 +11,7 @@
  */
 
 import * as runtime from "@prisma/client/runtime/client"
-import type * as Prisma from "./prismaNamespace.js"
+import type * as Prisma from "./prismaNamespace"
 
 
 const config: runtime.GetPrismaClientConfig = {
@@ -26,7 +26,11 @@ const config: runtime.GetPrismaClientConfig = {
       "fromEnvVar": null
     },
     "config": {
-      "engineType": "client"
+      "runtime": "nodejs",
+      "importFileExtension": "",
+      "engineType": "client",
+      "generatedFileExtension": "ts",
+      "moduleFormat": "cjs"
     },
     "binaryTargets": [
       {
@@ -46,7 +50,6 @@ const config: runtime.GetPrismaClientConfig = {
     "db"
   ],
   "activeProvider": "postgresql",
-  "postinstall": false,
   "inlineDatasources": {
     "db": {
       "url": {
@@ -55,8 +58,8 @@ const config: runtime.GetPrismaClientConfig = {
       }
     }
   },
-  "inlineSchema": "generator client {\n  provider   = \"prisma-client\"\n  output     = \"../src/prisma-ppg/client-pg\"\n  engineType = \"client\"\n}\n\ndatasource db {\n  provider = \"postgresql\"\n  url      = env(\"DATABASE_URL\")\n}\n\nmodel Customer {\n  id        Int      @id @default(autoincrement())\n  createdAt DateTime @default(now())\n  name      String?\n  email     String // @unique\n  address   Address?\n  isActive  Boolean  @default(false)\n  // extraInfo   Json?\n  orders    Order[]\n}\n\nmodel Address {\n  id         Int      @id @default(autoincrement())\n  street     String?\n  city       String?\n  postalCode String?\n  country    String?\n  customerId Int      @unique\n  customer   Customer @relation(fields: [customerId], references: [id], onDelete: Cascade)\n}\n\nmodel Order {\n  id          Int       @id @default(autoincrement())\n  date        DateTime\n  totalAmount Float\n  customerId  Int\n  customer    Customer  @relation(fields: [customerId], references: [id], onDelete: Cascade)\n  products    Product[] @relation(\"OrderProducts\")\n}\n\nmodel Product {\n  id          Int     @id @default(autoincrement())\n  name        String\n  price       Float\n  quantity    Int\n  description String?\n  orders      Order[] @relation(\"OrderProducts\")\n}\n",
-  "inlineSchemaHash": "241b8fc8ae21e4111f056109b88a2ed7cd6aa4a624ef604648fed59c9d36c985",
+  "inlineSchema": "generator client {\n  provider               = \"prisma-client\"\n  output                 = \"../src/prisma-ppg/client-pg\"\n  engineType             = \"client\"\n  moduleFormat           = \"cjs\"\n  generatedFileExtension = \"ts\"\n  importFileExtension    = \"\" // Empty string for CommonJS (no .js extension)\n  runtime                = \"nodejs\"\n}\n\ndatasource db {\n  provider = \"postgresql\"\n  url      = env(\"DATABASE_URL\")\n}\n\nmodel Customer {\n  id        Int      @id @default(autoincrement())\n  createdAt DateTime @default(now())\n  name      String?\n  email     String // @unique\n  address   Address?\n  isActive  Boolean  @default(false)\n  // extraInfo   Json?\n  orders    Order[]\n}\n\nmodel Address {\n  id         Int      @id @default(autoincrement())\n  street     String?\n  city       String?\n  postalCode String?\n  country    String?\n  customerId Int      @unique\n  customer   Customer @relation(fields: [customerId], references: [id], onDelete: Cascade)\n}\n\nmodel Order {\n  id          Int       @id @default(autoincrement())\n  date        DateTime\n  totalAmount Float\n  customerId  Int\n  customer    Customer  @relation(fields: [customerId], references: [id], onDelete: Cascade)\n  products    Product[] @relation(\"OrderProducts\")\n}\n\nmodel Product {\n  id          Int     @id @default(autoincrement())\n  name        String\n  price       Float\n  quantity    Int\n  description String?\n  orders      Order[] @relation(\"OrderProducts\")\n}\n",
+  "inlineSchemaHash": "d6c8400ad992b15d5a40f88f335ab3a944b48055b503f97a62b5f34f83ddda20",
   "copyEngine": true,
   "runtimeDataModel": {
     "models": {},
@@ -76,10 +79,10 @@ async function decodeBase64AsWasm(wasmBase64: string): Promise<WebAssembly.Modul
 }
 
 config.compilerWasm = {
-  getRuntime: async () => await import("@prisma/client/runtime/query_compiler_bg.postgresql.mjs"),
+  getRuntime: async () => await import("@prisma/client/runtime/query_compiler_bg.postgresql.js"),
 
   getQueryCompilerWasmModule: async () => {
-    const { wasm } = await import("@prisma/client/runtime/query_compiler_bg.postgresql.wasm-base64.mjs")
+    const { wasm } = await import("@prisma/client/runtime/query_compiler_bg.postgresql.wasm-base64.js")
     return await decodeBase64AsWasm(wasm)
   }
 }

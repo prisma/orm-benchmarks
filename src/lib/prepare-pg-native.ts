@@ -4,7 +4,8 @@
  * This database dump is restored for all subsequent invocations via `pg_restore`.
  */
 
-import { PrismaClient } from "../prisma/client-pg";
+import { PrismaPg } from '@prisma/adapter-pg';
+import { PrismaClient } from '../prisma-ppg/client-pg/client';
 import { faker } from "@faker-js/faker";
 import { executeCommand, extractConnectionDetailsFromUrl } from "./execute-command";
 import * as path from 'path';
@@ -35,9 +36,16 @@ export async function preparePg(
 
   console.log(`${filePath} doesn't exist yet, creating SQL dump ...`);
 
-  const prisma = new PrismaClient({
-    datasourceUrl: options.databaseUrl,
-  });
+  const connectionString = options.databaseUrl;
+
+  const adapter = new PrismaPg({ connectionString });
+  const prisma = new PrismaClient({ adapter });
+
+  await prisma.$connect();
+
+  // const prisma = new PrismaClient({
+  //   datasourceUrl: options.databaseUrl,
+  // });
 
   // Clean tables
   console.log(`Clearing tables ...`);

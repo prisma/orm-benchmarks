@@ -2,7 +2,7 @@ import { preparePg } from "./lib/prepare-pg-native"; // seed via `pg_restore`
 // import { preparePg } from "./lib/prepare-pg-prisma"; // seed via `createMany`
 import writeResults from "./lib/write-results";
 import { BenchmarkOptions, MultipleBenchmarkRunResults,} from "./lib/types";
-import { prismaPg } from "./prisma/prisma-pg";
+import { prismaPg } from "./prisma-ppg/prisma-pg";
 import { typeormPg } from "./typeorm/typeorm-pg";
 import { drizzlePg } from "./drizzle/drizzle-pg";
 import { compareResults } from "./lib/compare-results";
@@ -14,6 +14,7 @@ export default async function runBenchmarksPg(
 
   const resultsDirectoryTimestamp = Date.now().toString();
 
+  console.log(`Running PRISMA benchmarks for PostgreSQL with size ${size}, seed ${fakerSeed}, iterations ${iterations}`);
   const prismaResults: MultipleBenchmarkRunResults = [];
   for (let i = 0; i < iterations; i++) {
     await preparePg({ databaseUrl, size, fakerSeed });
