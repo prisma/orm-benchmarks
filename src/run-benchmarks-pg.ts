@@ -15,7 +15,12 @@ export default async function runBenchmarksPg(
   const resultsDirectoryTimestamp = Date.now().toString();
 
   const prismaResults: MultipleBenchmarkRunResults = [];
+  console.log(`\n🔥 Starting Prisma benchmarks (${iterations} iterations)`);
   for (let i = 0; i < iterations; i++) {
+    const remaining = iterations - i - 1;
+    console.log(
+      `📊 Prisma iteration ${i + 1}/${iterations} (${remaining} remaining)`
+    );
     try {
       await preparePg({ databaseUrl, size, fakerSeed });
       const results = await prismaPg(databaseUrl);
@@ -38,7 +43,12 @@ export default async function runBenchmarksPg(
   );
 
   const drizzleResults: MultipleBenchmarkRunResults = [];
+  console.log(`\n🔥 Starting Drizzle benchmarks (${iterations} iterations)`);
   for (let i = 0; i < iterations; i++) {
+    const remaining = iterations - i - 1;
+    console.log(
+      `📊 Drizzle iteration ${i + 1}/${iterations} (${remaining} remaining)`
+    );
     try {
       await preparePg({ databaseUrl, size, fakerSeed });
       const results = await drizzlePg(databaseUrl);
@@ -60,7 +70,12 @@ export default async function runBenchmarksPg(
   );
 
   const typeormResults: MultipleBenchmarkRunResults = [];
+  console.log(`\n🔥 Starting TypeORM benchmarks (${iterations} iterations)`);
   for (let i = 0; i < iterations; i++) {
+    const remaining = iterations - i - 1;
+    console.log(
+      `📊 TypeORM iteration ${i + 1}/${iterations} (${remaining} remaining)`
+    );
     try {
       await preparePg({ databaseUrl, size, fakerSeed });
       const results = await typeormPg(databaseUrl);
